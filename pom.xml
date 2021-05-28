@@ -6,6 +6,7 @@
     <modules>
         <module>Blog-Web</module>
         <module>Blog-Admin</module>
+        <module>Blog-Common</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>
@@ -29,6 +30,9 @@
         <easypoi.version>4.2.0</easypoi.version>
         <sentinel.version>2.1.0.RELEASE</sentinel.version>
         <swagger.starter.version>3.0.0</swagger.starter.version>
+        <hutool.version>5.6.6</hutool.version>
+        <maven.version>3.8.1</maven.version>
+        <jwt.version>0.7.0</jwt.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -135,23 +139,47 @@
                 <artifactId>swagger-models</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
+            <!--hutool-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!--jwt-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.3.6.RELEASE</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>
