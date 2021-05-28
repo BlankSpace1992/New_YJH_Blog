@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>Blog-Web</module>
+        <module>Blog-Admin</module>
+    </modules>
+    <groupId>com.cloud.blog</groupId>
+    <artifactId>spring-cloud-blog</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>spring-cloud-blog</name>
+    <description>个人博客-SpringCloudAlibaba</description>
+    <!-- 统一管理jar包版本 -->
+    <properties>
+        <java.version>1.8</java.version>
+        <springboot.verion>2.2.5.RELEASE</springboot.verion>
+        <springcloud.version>Hoxton.SR1</springcloud.version>
+        <cloudalibaba.version>2.1.0.RELEASE</cloudalibaba.version>
+        <mysql.version>8.0.18</mysql.version>
+        <druid.version>1.1.20</druid.version>
+        <log4j.version>1.2.12</log4j.version>
+        <lombok.version>1.16.18</lombok.version>
+        <mybatis.spring.boot.version>1.3.0</mybatis.spring.boot.version>
+        <mybatis.plus.version>3.3.2</mybatis.plus.version>
+        <pagehelper.version>1.2.13</pagehelper.version>
+        <swagger.version>1.5.21</swagger.version>
+        <easypoi.version>4.2.0</easypoi.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!--spring boot 2.2.5.RELEASE-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.verion}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring cloud Hoxton.SR1-->
+            <!--            Spring Cloud	Spring Boot
+                        Angel版本	兼容Spring Boot 1.2.x
+                        Brixton版本	兼容Spring Boot 1.3.x，也兼容Spring Boot 1.4.x
+                        Camden版本	兼容Spring Boot 1.4.x，也兼容Spring Boot 1.5.x
+                        Dalston版本、Edgware版本	兼容Spring Boot 1.5.x，不兼容Spring Boot 2.0.x
+                        Finchley版本	兼容Spring Boot 2.0.x，不兼容Spring Boot 1.5.x
+                        Greenwich版本	兼容Spring Boot 2.1.x
+                        Hoxton版本	兼容Spring Boot 2.2.x-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${springcloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--spring cloud alibaba 2.1.0.RELEASE-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${cloudalibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--mysql connect核心包-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <!--druid 连接池核心依赖-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <!-- log4j 日志核心依赖-->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <!--lombok 核心依赖-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <optional>true</optional>
+            </dependency>
+
+            <!-- mybatis-plus-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis.plus.version}</version>
+            </dependency>
+
+            <!-- mybatis plus 代码生成器依赖 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis.plus.version}</version>
+            </dependency>
+
+            <!-- pagehelper 分页插件 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.mybatis</groupId>
+                        <artifactId>mybatis</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--easypoi Excel处理核心依赖-->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-base</artifactId>
+                <version>${easypoi.version}</version>
+            </dependency>
+            <!-- swagger2-->
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-models</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
