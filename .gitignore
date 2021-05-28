@@ -1,1 +1,9 @@
 /.idea/
+/log/
+/Blog-Web/target/Blog-Web-0.0.1-SNAPSHOT.jar
+/Blog-Admin/target/classes/com/blog/BlogAdminApplication.class
+/Blog-Admin/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+/Blog-Admin/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/Blog-Web/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/Blog-Web/target/maven-archiver/pom.properties
+/Blog-Web/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst

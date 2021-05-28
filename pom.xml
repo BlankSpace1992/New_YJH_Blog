@@ -27,6 +27,8 @@
         <pagehelper.version>1.2.13</pagehelper.version>
         <swagger.version>1.5.21</swagger.version>
         <easypoi.version>4.2.0</easypoi.version>
+        <sentinel.version>2.1.0.RELEASE</sentinel.version>
+        <swagger.starter.version>3.0.0</swagger.starter.version>
     </properties>
     <dependencyManagement>
         <dependencies>
