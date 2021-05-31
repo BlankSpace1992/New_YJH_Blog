@@ -206,4 +206,32 @@ public class BaseSysConf {
     public static final String FRIENDLY_LINK_COUNT = "FRIENDLY_LINK_COUNT";
     public static final  String PROJECT_NAME_ = "PROJECT_NAME";
     public static final  String MAX_STORAGE_SIZE = "MAX_STORAGE_SIZE";
+
+    public static final String ALL = "all";
+    public static final String TITLE = "title";
+    public static final String AVATAR = "avatar";
+    public static final String PASS_WORD = "passWord";
+
+    public static final String BLOG_COUNT = "blogCount";
+    public static final String USER_COUNT = "userCount";
+    public static final String COMMENT_COUNT = "commentCount";
+    public static final String VISIT_COUNT = "visitCount";
+    public static final String BLOG_COUNT_BY_TAG = "blogCountByTag";
+    public static final String VISIT_BY_WEEK = "visitByWeek";
+
+    public static final String ADMINUIDS = "adminUids";
+    public static final String ROLEUIDS = "roleUids";
+    public static final String CLAIMS = "claims";
+
+
+
+    public static final String ROLES = "roles";
+
+    public static final String PARENT_LIST = "parentList";
+    public static final String SON_LIST = "sonList";
+    public static final String BUTTON_LIST = "buttonList";
+
+
+    public static final String LOG = "log";
+    public static final String EXCEPTION = "exception";
 }

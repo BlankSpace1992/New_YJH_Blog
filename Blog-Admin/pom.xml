@@ -86,10 +86,22 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <!--集成redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-redis</artifactId>
+        </dependency>
         <!--公共包-->
         <dependency>
             <groupId>com.cloud.blog</groupId>
             <artifactId>Blog-Common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--工具包-->
+        <dependency>
+            <groupId>com.cloud.blog</groupId>
+            <artifactId>Blog-Utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

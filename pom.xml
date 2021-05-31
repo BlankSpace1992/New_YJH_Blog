@@ -7,6 +7,7 @@
         <module>Blog-Web</module>
         <module>Blog-Admin</module>
         <module>Blog-Common</module>
+        <module>Blog-Utils</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>
@@ -33,6 +34,8 @@
         <hutool.version>5.6.6</hutool.version>
         <maven.version>3.8.1</maven.version>
         <jwt.version>0.7.0</jwt.version>
+        <redis.version>1.4.1.RELEASE</redis.version>
+        <fastjson.version>2.5.3</fastjson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -150,6 +153,17 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+            <!--集成redis-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
