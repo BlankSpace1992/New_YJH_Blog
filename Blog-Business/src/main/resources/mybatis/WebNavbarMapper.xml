@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.mapper.WebNavbarMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.domain.WebNavbar">
+    <!--@mbg.generated-->
+    <!--@Table t_web_navbar-->
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="navbar_level" jdbcType="BOOLEAN" property="navbarLevel" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="parent_uid" jdbcType="VARCHAR" property="parentUid" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="icon" jdbcType="VARCHAR" property="icon" />
+    <result column="is_show" jdbcType="BOOLEAN" property="isShow" />
+    <result column="is_jump_external_url" jdbcType="BOOLEAN" property="isJumpExternalUrl" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, `name`, navbar_level, summary, parent_uid, url, icon, is_show, is_jump_external_url, 
+    sort, `status`, create_time, update_time
+  </sql>
+</mapper>

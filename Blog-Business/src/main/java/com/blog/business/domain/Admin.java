@@ -2,7 +2,6 @@ package com.blog.business.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -13,13 +12,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 管理员表
  *
  * @author yujunhong
- * @date 2021/05/31 01:48:33
+ * @date 2021/06/01 11:07:42
  */
 @ApiModel(value = "管理员表")
 @Data
@@ -112,7 +110,7 @@ public class Admin {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private int status;
+    private Object status;
     /**
      * 创建时间
      */
@@ -173,10 +171,4 @@ public class Admin {
     @ApiModelProperty(value = "履历")
     @Excel(name = "履历")
     private String personResume;
-
-    /**
-     * 所拥有的角色名
-     */
-    @TableField(exist = false)
-    private List<String> roleNames;
 }

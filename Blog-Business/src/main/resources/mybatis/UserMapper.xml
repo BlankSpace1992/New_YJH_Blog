@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.domain.User">
+    <!--@mbg.generated-->
+    <!--@Table t_user-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+    <result column="gender" jdbcType="BOOLEAN" property="gender" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="valid_code" jdbcType="VARCHAR" property="validCode" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="login_count" jdbcType="INTEGER" property="loginCount" />
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="qq_number" jdbcType="VARCHAR" property="qqNumber" />
+    <result column="we_chat" jdbcType="VARCHAR" property="weChat" />
+    <result column="occupation" jdbcType="VARCHAR" property="occupation" />
+    <result column="comment_status" jdbcType="BOOLEAN" property="commentStatus" />
+    <result column="ip_source" jdbcType="VARCHAR" property="ipSource" />
+    <result column="browser" jdbcType="VARCHAR" property="browser" />
+    <result column="os" jdbcType="VARCHAR" property="os" />
+    <result column="start_email_notification" jdbcType="BOOLEAN" property="startEmailNotification" />
+    <result column="user_tag" jdbcType="BOOLEAN" property="userTag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, user_name, pass_word, gender, avatar, email, birthday, mobile, valid_code, 
+    summary, login_count, last_login_time, last_login_ip, `status`, create_time, update_time, 
+    nick_name, `source`, uuid, qq_number, we_chat, occupation, comment_status, ip_source, 
+    browser, os, start_email_notification, user_tag
+  </sql>
+</mapper>

@@ -1,6 +1,5 @@
 package com.blog.security;
 
-import com.blog.business.domain.Admin;
 import com.blog.constants.EnumsStatus;
 import com.blog.entity.SecurityUser;
 import org.springframework.security.core.GrantedAuthority;

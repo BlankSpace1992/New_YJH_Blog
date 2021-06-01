@@ -7,7 +7,7 @@ module.exports = merge(prodEnv, {
 
   VUE_MOGU_WEB: '"http://localhost:9527"',
   PICTURE_API: '"http://localhost:8607/mogu-picture"',
-	WEB_API: '"http://localhost:8607/mogu-web"',
+	WEB_API: '"http://localhost:8808/cloud-blog-admin"',
   SEARCH_API: '"http://localhost:8607/mogu-search"',
 
 })

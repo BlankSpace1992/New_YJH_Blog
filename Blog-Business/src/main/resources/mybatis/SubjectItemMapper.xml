@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.mapper.SubjectItemMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.domain.SubjectItem">
+    <!--@mbg.generated-->
+    <!--@Table t_subject_item-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="subject_uid" jdbcType="VARCHAR" property="subjectUid" />
+    <result column="blog_uid" jdbcType="VARCHAR" property="blogUid" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, subject_uid, blog_uid, `status`, sort, create_time, update_time
+  </sql>
+</mapper>

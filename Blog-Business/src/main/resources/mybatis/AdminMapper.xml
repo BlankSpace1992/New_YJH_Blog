@@ -31,8 +31,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    `uid`, user_name, pass_word, gender, avatar, email, birthday, mobile, valid_code,
-    summary, login_count, last_login_time, last_login_ip, `status`, create_time, update_time,
+    `uid`, user_name, pass_word, gender, avatar, email, birthday, mobile, valid_code, 
+    summary, login_count, last_login_time, last_login_ip, `status`, create_time, update_time, 
     nick_name, qq_number, we_chat, occupation, github, gitee, role_uid, person_resume
   </sql>
 </mapper>

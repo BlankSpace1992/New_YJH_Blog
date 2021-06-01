@@ -9,6 +9,7 @@
         <module>Blog-Common</module>
         <module>Blog-Utils</module>
         <module>Blog-Business</module>
+        <module>Blog-Gateway</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>
@@ -36,7 +37,7 @@
         <maven.version>3.8.1</maven.version>
         <jwt.version>0.7.0</jwt.version>
         <redis.version>1.4.1.RELEASE</redis.version>
-        <fastjson.version>2.5.3</fastjson.version>
+        <fastjson.version>1.2.47</fastjson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -161,7 +162,12 @@
                 <artifactId>spring-boot-starter-redis</artifactId>
                 <version>${redis.version}</version>
             </dependency>
-
+            <!-- 阿里fastjson包JSON转换-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>

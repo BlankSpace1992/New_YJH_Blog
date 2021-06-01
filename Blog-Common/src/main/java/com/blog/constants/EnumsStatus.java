@@ -23,4 +23,14 @@ public class EnumsStatus {
      * 置顶的
      */
     public static final int STICK = 3;
+
+    /**
+     * 发布
+     */
+    public static final String PUBLISH = "1";
+
+    /**
+     * 下架
+     */
+    public static final String NO_PUBLISH = "0";
 }

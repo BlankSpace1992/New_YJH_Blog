@@ -234,4 +234,6 @@ public class BaseSysConf {
 
     public static final String LOG = "log";
     public static final String EXCEPTION = "exception";
+
+    public static final String NICK_NAME = "nickName";
 }

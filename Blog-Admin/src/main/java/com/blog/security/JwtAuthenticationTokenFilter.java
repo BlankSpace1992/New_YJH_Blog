@@ -68,6 +68,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     /**
      * redis 工具类
      */
+    @Autowired
     private RedisUtil redisUtil;
 
     @Override

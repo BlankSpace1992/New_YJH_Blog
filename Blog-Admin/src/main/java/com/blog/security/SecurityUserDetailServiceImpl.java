@@ -1,8 +1,6 @@
 package com.blog.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.blog.business.domain.Admin;
-import com.blog.business.domain.Role;
 import com.blog.business.service.AdminService;
 import com.blog.business.service.RoleService;
 import com.blog.constants.BaseSysConf;
