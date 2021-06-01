@@ -12,4 +12,7 @@
 /Blog-Business/target/
 /Blog-Common/target/
 /Blog-Utils/target/
+/Blog-Web/target/
+/Blog-Gateway/target/
 /Blog-Business/Blog-Business.iml
+/Blog-Gateway/Blog-Gateway.iml

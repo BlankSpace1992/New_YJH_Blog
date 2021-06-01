@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 
 /**
  * @author yujunhong
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = {
         "com.blog.config","com.cloud.blog","com.blog.business"
 })
+@EnableOpenApi
 public class BlogWebApplication {
     public static void main(String[] args) {
         SpringApplication.run(BlogWebApplication.class);
