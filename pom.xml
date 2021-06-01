@@ -8,6 +8,7 @@
         <module>Blog-Admin</module>
         <module>Blog-Common</module>
         <module>Blog-Utils</module>
+        <module>Blog-Business</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>
@@ -160,11 +161,7 @@
                 <artifactId>spring-boot-starter-redis</artifactId>
                 <version>${redis.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <build>

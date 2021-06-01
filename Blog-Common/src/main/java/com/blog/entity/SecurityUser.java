@@ -1,5 +1,6 @@
 package com.blog.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,8 +10,8 @@ import java.util.Collection;
 /**
  * SpringSecurity中的用户实体类
  *
- * @author 陌溪
- * @date 2020年9月19日21:43:47
+ * @author yujunhong
+ * @date 2021/5/31 15:33
  */
 public class SecurityUser implements UserDetails {
     /**
