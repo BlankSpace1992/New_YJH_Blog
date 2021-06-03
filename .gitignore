@@ -16,3 +16,6 @@
 /Blog-Gateway/target/
 /Blog-Business/Blog-Business.iml
 /Blog-Gateway/Blog-Gateway.iml
+/Blog-Picture/Blog-Picture.iml
+/Blog-Picture/target/classes/com/blog/picture/BlogPictureApplication.class
+/Blog-Picture/target/classes/bootstrap.yml

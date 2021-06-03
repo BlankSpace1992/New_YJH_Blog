@@ -1,7 +1,7 @@
-package com.blog.business.web.mapper;
+package com.blog.business.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.blog.business.web.domain.Admin;
+import com.blog.business.admin.domain.Admin;
 
 /**
  * @author yujunhong

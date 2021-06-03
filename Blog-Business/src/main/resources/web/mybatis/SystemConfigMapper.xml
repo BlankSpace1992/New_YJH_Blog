@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.blog.business.web.mapper.SystemConfigMapper">
-  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.SystemConfig">
+<mapper namespace="com.blog.business.admin.mapper.SystemConfigMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.admin.domain.SystemConfig">
     <!--@mbg.generated-->
     <!--@Table t_system_config-->
     <id column="uid" jdbcType="VARCHAR" property="uid" />
