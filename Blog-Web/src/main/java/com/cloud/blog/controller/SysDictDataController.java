@@ -1,6 +1,6 @@
 package com.cloud.blog.controller;
 
-import com.blog.business.service.SysDictDataService;
+import com.blog.business.web.service.SysDictDataService;
 import com.blog.exception.ResultBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

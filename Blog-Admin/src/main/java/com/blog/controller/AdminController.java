@@ -1,7 +1,8 @@
 package com.blog.controller;
 
 import com.blog.annotation.AuthorityVerify;
-import com.blog.business.service.AdminService;
+import com.blog.business.web.domain.Admin;
+import com.blog.business.web.service.AdminService;
 import com.blog.exception.ResultBody;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

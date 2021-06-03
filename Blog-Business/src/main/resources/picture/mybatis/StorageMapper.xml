@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.picture.mapper.StorageMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.picture.domain.Storage">
+    <!--@mbg.generated-->
+    <!--@Table t_storage-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="admin_uid" jdbcType="VARCHAR" property="adminUid" />
+    <result column="storage_size" jdbcType="BIGINT" property="storageSize" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="max_storage_size" jdbcType="BIGINT" property="maxStorageSize" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, admin_uid, storage_size, `status`, create_time, update_time, max_storage_size
+  </sql>
+</mapper>

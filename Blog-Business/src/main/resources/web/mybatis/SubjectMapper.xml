@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.web.mapper.SubjectMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.Subject">
+    <!--@mbg.generated-->
+    <!--@Table t_subject-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="subject_name" jdbcType="VARCHAR" property="subjectName" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="file_uid" jdbcType="VARCHAR" property="fileUid" />
+    <result column="click_count" jdbcType="INTEGER" property="clickCount" />
+    <result column="collect_count" jdbcType="INTEGER" property="collectCount" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, subject_name, summary, file_uid, click_count, collect_count, `status`, sort,
+    create_time, update_time
+  </sql>
+</mapper>

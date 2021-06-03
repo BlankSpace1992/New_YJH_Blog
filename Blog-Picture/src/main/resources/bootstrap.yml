@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: cloud-blog-picture
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.110.32.148:8848
+      config:
+        server-addr: 47.110.32.148:8848
+        file-extension: yaml
+        group: dev
+        namespace: dev
+    sentinel:
+      transport:
+        dashboard: 47.110.32.148:8070
+        # 默认8719，假如被占用了会自动从8719开始依次+1扫描。直至找到未被占用的端口
+        port: 8719
+server:
+  port: 8085

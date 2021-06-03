@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.web.mapper.WebConfigMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.WebConfig">
+    <!--@mbg.generated-->
+    <!--@Table t_web_config-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="record_num" jdbcType="VARCHAR" property="recordNum" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="ali_pay" jdbcType="VARCHAR" property="aliPay" />
+    <result column="weixin_pay" jdbcType="VARCHAR" property="weixinPay" />
+    <result column="github" jdbcType="VARCHAR" property="github" />
+    <result column="gitee" jdbcType="VARCHAR" property="gitee" />
+    <result column="qq_number" jdbcType="VARCHAR" property="qqNumber" />
+    <result column="qq_group" jdbcType="VARCHAR" property="qqGroup" />
+    <result column="we_chat" jdbcType="VARCHAR" property="weChat" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="show_list" jdbcType="VARCHAR" property="showList" />
+    <result column="login_type_list" jdbcType="VARCHAR" property="loginTypeList" />
+    <result column="open_comment" jdbcType="VARCHAR" property="openComment" />
+    <result column="open_mobile_comment" jdbcType="BOOLEAN" property="openMobileComment" />
+    <result column="open_admiration" jdbcType="BOOLEAN" property="openAdmiration" />
+    <result column="open_mobile_admiration" jdbcType="BOOLEAN" property="openMobileAdmiration" />
+    <result column="link_apply_template" jdbcType="VARCHAR" property="linkApplyTemplate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, logo, `name`, summary, keyword, author, record_num, `status`, create_time,
+    update_time, title, ali_pay, weixin_pay, github, gitee, qq_number, qq_group, we_chat,
+    email, show_list, login_type_list, open_comment, open_mobile_comment, open_admiration,
+    open_mobile_admiration, link_apply_template
+  </sql>
+</mapper>

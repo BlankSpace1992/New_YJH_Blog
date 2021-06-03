@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.picture.mapper.FileMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.picture.domain.File">
+    <!--@mbg.generated-->
+    <!--@Table t_file-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="file_old_name" jdbcType="VARCHAR" property="fileOldName" />
+    <result column="pic_name" jdbcType="VARCHAR" property="picName" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+    <result column="pic_expanded_name" jdbcType="VARCHAR" property="picExpandedName" />
+    <result column="file_size" jdbcType="INTEGER" property="fileSize" />
+    <result column="file_sort_uid" jdbcType="VARCHAR" property="fileSortUid" />
+    <result column="admin_uid" jdbcType="VARCHAR" property="adminUid" />
+    <result column="user_uid" jdbcType="VARCHAR" property="userUid" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="qi_niu_url" jdbcType="VARCHAR" property="qiNiuUrl" />
+    <result column="minio_url" jdbcType="VARCHAR" property="minioUrl" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, file_old_name, pic_name, pic_url, pic_expanded_name, file_size, file_sort_uid, 
+    admin_uid, user_uid, `status`, create_time, update_time, qi_niu_url, minio_url
+  </sql>
+</mapper>

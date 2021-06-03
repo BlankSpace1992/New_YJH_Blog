@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.blog.business.web.mapper.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.SysLog">
+    <!--@mbg.generated-->
+    <!--@Table t_sys_log-->
+    <id column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="admin_uid" jdbcType="VARCHAR" property="adminUid" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="class_path" jdbcType="VARCHAR" property="classPath" />
+    <result column="method" jdbcType="VARCHAR" property="method" />
+    <result column="params" jdbcType="LONGVARCHAR" property="params" />
+    <result column="operation" jdbcType="VARCHAR" property="operation" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="ip_source" jdbcType="VARCHAR" property="ipSource" />
+    <result column="spend_time" jdbcType="INTEGER" property="spendTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `uid`, user_name, admin_uid, ip, url, `type`, class_path, `method`, params, `operation`,
+    `status`, create_time, update_time, ip_source, spend_time
+  </sql>
+</mapper>
