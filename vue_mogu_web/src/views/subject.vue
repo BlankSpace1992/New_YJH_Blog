@@ -78,10 +78,10 @@ export default {
       getSubjectList(params).then(response => {
         console.log("得到的结果", response)
         if (response.code == this.$ECode.SUCCESS) {
-          this.dataList = response.data.records;
-          this.total = response.data.total;
-          this.pageSize = response.data.size;
-          this.currentPage = response.data.current;
+          this.dataList = response.result.records;
+          this.total = response.result.total;
+          this.pageSize = response.result.size;
+          this.currentPage = response.result.current;
         }
       });
     },

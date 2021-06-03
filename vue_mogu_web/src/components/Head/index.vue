@@ -20,8 +20,8 @@ export default {
   },
   created() {
     getWebConfig().then(response => {
-      if (response.code == this.$ECode.SUCCESS) {
-        this.info = response.data;
+      if (response.data.code === this.$ECode.SUCCESS) {
+        this.info = response.data.result;
       }
     });
   },

@@ -162,8 +162,8 @@
       // 是否排序
       secondParams.append("useSort", 1);
       getBlogByLevel(secondParams).then(response => {
-        if(response.code == this.$ECode.SUCCESS) {
-          this.secondData = response.data.records;
+        if(response.data.code === this.$ECode.SUCCESS) {
+          this.secondData = response.data.result.records;
         }
       });
       // 获取最新博客
@@ -221,11 +221,12 @@
         params.append("currentPage", this.currentPage);
         params.append("pageSize", this.pageSize);
         getNewBlog(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            that.newBlogData = response.data.records;
-            that.total = response.data.total;
-            that.pageSize = response.data.size;
-            that.currentPage = response.data.current;
+          if (response.data.code === this.$ECode.SUCCESS) {
+            that.newBlogData = response.data.result.records;
+            console.log("获取最新博客",that.newBlogData);
+            that.total = response.data.result.total;
+            that.pageSize = response.data.result.size;
+            that.currentPage = response.data.result.current;
           }
           that.loadingInstance.close();
         },function(err){
@@ -241,13 +242,14 @@
         params.append("currentPage", that.currentPage);
         params.append("pageSize", that.pageSize);
         getNewBlog(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.data.records.length > 0) {
+          console.log("获取最新博客",response);
+          if (response.data.code === this.$ECode.SUCCESS && response.data.result.records.length > 0) {
             that.isEnd = false;
-            var newData = that.newBlogData.concat(response.data.records);
+            var newData = that.newBlogData.concat(response.data.result.records);
             that.newBlogData = newData;
-            that.total = response.data.total;
-            that.pageSize = response.data.size;
-            that.currentPage = response.data.current;
+            that.total = response.data.result.total;
+            that.pageSize = response.data.result.size;
+            that.currentPage = response.data.result.current;
 
             //全部加载完毕
             if (newData.length < that.pageSize) {

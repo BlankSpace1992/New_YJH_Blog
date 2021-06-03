@@ -49,10 +49,10 @@ export default {
     params.append("currentPage", this.currentPage);
     params.append("pageSize", this.pageSize);
     getBlogByTime(params).then(response => {
-      that.newBlogData = response.data.records;
-      that.total = response.data.total;
-      that.pageSize = response.data.size;
-      that.currentPage = response.data.current;
+      that.newBlogData = response.data.result.records;
+      that.total = response.data.result.total;
+      that.pageSize = response.data.result.size;
+      that.currentPage = response.data.result.current;
       this.isEnd = false;
     });
   },
@@ -72,13 +72,13 @@ export default {
       params.append("currentPage", this.currentPage + 1);
       params.append("pageSize", this.pageSize);
       getBlogByTime(params).then(response => {
-        if (response.code == this.$ECode.SUCCESS && response.data.records.length > 0) {
+        if (response.data.code === this.$ECode.SUCCESS && response.result.records.length > 0) {
           that.isEnd = false;
-          var newData = that.newBlogData.concat(response.data.records);
+          var newData = that.newBlogData.concat(response.data.result.records);
           that.newBlogData = newData;
-          that.total = response.data.total;
-          that.pageSize = response.data.size;
-          that.currentPage = response.data.current;
+          that.total = response.data.result.total;
+          that.pageSize = response.data.result.size;
+          that.currentPage = response.data.result.current;
         } else {
           that.isEnd = true;
         }

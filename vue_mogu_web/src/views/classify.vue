@@ -91,7 +91,7 @@ export default {
     var that = this;
     getBlogSortList().then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        var activities = response.data;
+        var activities = response.result;
         var result = [];
         for (var a = 0; a < activities.length; a++) {
           var dataForDate = {
@@ -115,9 +115,9 @@ export default {
       params.append("blogSortUid", blogSortUid);
       getArticleByBlogSortUid(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.itemByDate = response.data.records;
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
+          this.itemByDate = response.result.records;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
         }
       });
     },
@@ -134,9 +134,9 @@ export default {
       params.append("currentPage", this.currentPage + 1);
       getArticleByBlogSortUid(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.itemByDate = this.itemByDate.concat(response.data.records);
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
+          this.itemByDate = this.itemByDate.concat(response.result.records);
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
         }
       });
     },

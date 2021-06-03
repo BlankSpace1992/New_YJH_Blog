@@ -8,10 +8,10 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        server-addr: 47.110.32.148:8848
     sentinel:
       transport:
-        dashboard: localhost:8070
+        dashboard: 47.110.32.148:8070
         # 默认8719，假如被占用了会自动从8719开始依次+1扫描。直至找到未被占用的端口
         port: 8719
     gateway:

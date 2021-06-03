@@ -90,7 +90,7 @@
         var dictTypeList =  ['sys_user_tag']
         getListByDictTypeList(dictTypeList).then(response => {
           if (response.code == this.$ECode.SUCCESS) {
-            var dictMap = response.data;
+            var dictMap = response.result;
             this.userTagDictList = dictMap.sys_user_tag.list
             this.setUserTag(dictMap.sys_user_tag.list)
           }
@@ -126,7 +126,7 @@
         params.source = e.source
         addComment(params).then(response => {
             if (response.code == this.$ECode.SUCCESS) {
-              let commentData = response.data
+              let commentData = response.result
               document.getElementById(commentData.toUid).style.display = 'none'
               let comments = this.$store.state.app.commentList;
               commentData.user = this.userInfo;
@@ -161,7 +161,7 @@
         params.pageSize = 10;
         getCommentList(params).then(response => {
           if (response.code == this.$ECode.SUCCESS) {
-            this.comments = response.data;
+            this.comments = response.result;
           }
         });
       }
@@ -212,14 +212,14 @@
           if (response.code == this.$ECode.SUCCESS) {
             this.$notify({
               title: '成功',
-              message: response.data,
+              message: response.result,
               type: 'success',
               offset: 100
             });
           } else {
             this.$notify.error({
               title: '错误',
-              message: response.data,
+              message: response.result,
               type: 'success',
               offset: 100
             });

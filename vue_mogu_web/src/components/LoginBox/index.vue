@@ -244,12 +244,12 @@
             localLogin(params).then(response => {
               if (response.code == this.$ECode.SUCCESS) {
                 // 跳转到首页
-                location.replace(this.vueMoguWebUrl + "/#/?token=" + response.data)
+                location.replace(this.vueMoguWebUrl + "/#/?token=" + response.result)
                 window.location.reload()
               } else {
                 this.$message({
                   type: "error",
-                  message: response.data
+                  message: response.result
                 })
               }
             });
@@ -280,14 +280,14 @@
               if (response.code == this.$ECode.SUCCESS) {
                 this.$message({
                   type: "success",
-                  message: response.data
+                  message: response.result
                 })
                 // 打开登录页面
                 this.goLogin();
               } else {
                 this.$message({
                   type: "error",
-                  message: response.data
+                  message: response.result
                 })
               }
             });
@@ -312,7 +312,7 @@
             if (response.code == this.$ECode.SUCCESS) {
               console.log("得到的响应", response)
               this.showPasswordLogin = false
-              this.wechatOrCode = response.data
+              this.wechatOrCode = response.result
             }
           });
           return
@@ -326,8 +326,8 @@
         params.append("source", source);
         login(params).then(response => {
           if (response.code == this.$ECode.SUCCESS) {
-            var token = response.data.token;
-            window.location.href = response.data.url
+            var token = response.result.token;
+            window.location.href = response.result.url
           }
         });
       },

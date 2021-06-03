@@ -66,7 +66,7 @@ export function getWebConfig (params) {
 
 export function getWebNavbar (params) {
   return request({
-    url: process.env.WEB_API + '/index/getWebNavbar',
+    url: process.env.WEB_API + '/index/getWebNavigation',
     method: 'get',
     params
   })

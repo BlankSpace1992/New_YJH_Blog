@@ -113,10 +113,10 @@
           this.loading = true
           getSubjectItemList(params).then(response => {
             if(response.code == this.$ECode.SUCCESS) {
-              let itemList = response.data.records
+              let itemList = response.result.records
               let oldItemList = this.subjectItemlist
-              this.currentPage = response.data.current
-              this.total = response.data.total
+              this.currentPage = response.result.current
+              this.total = response.result.total
               this.subjectItemlist = oldItemList.concat(itemList);
             }
             this.loading = false

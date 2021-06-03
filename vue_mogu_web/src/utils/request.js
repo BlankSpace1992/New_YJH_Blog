@@ -28,18 +28,18 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    // return response.data
-    const res = response.data
-    if (res.code === 'success' || res.code === 'error') {
+    // return response.result
+    const res = response;
+    if (res.status === 200) {
       return res
-    } else if (res.code === 401 || res.code === 400) {
+    } else if (res.status === 401 || res.status === 400) {
       console.log('返回错误内容', res)
       router.push('404')
       return res
-    } else if (res.code === 500) {
+    } else if (res.status === 500) {
       router.push('500')
       return Promise.reject('error')
-    } else if (res.code === 502) {
+    } else if (res.status === 502) {
       router.push('502')
       return Promise.reject('error')
     } else {

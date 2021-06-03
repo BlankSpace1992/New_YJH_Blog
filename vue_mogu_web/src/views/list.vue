@@ -219,14 +219,14 @@ export default {
           if (response.code == this.$ECode.SUCCESS) {
             that.isEnd = false;
             //获取总页数
-            that.totalPages = response.data.blogList.length;
-            that.total = response.data.total;
-            that.pageSize = response.data.pageSize;
-            that.currentPage = response.data.currentPage;
-            var blogData = response.data.blogList;
+            that.totalPages = response.result.blogList.length;
+            that.total = response.result.total;
+            that.pageSize = response.result.pageSize;
+            that.currentPage = response.result.currentPage;
+            var blogData = response.result.blogList;
 
             // 判断搜索的博客是否有内容
-            if(response.data.total <= 0) {
+            if(response.result.total <= 0) {
               that.isEnd = true;
               that.loading = false;
               this.blogData = []
@@ -254,15 +254,15 @@ export default {
         params.append("pageSize", that.pageSize);
 
         searchBlogByTag(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.data.records.length > 0) {
+          if (response.code == this.$ECode.SUCCESS && response.result.records.length > 0) {
             that.isEnd = false;
             //获取总页数
-            that.totalPages = response.data.total;
+            that.totalPages = response.result.total;
 
-            var blogData = response.data.records;
-            that.total = response.data.total;
-            that.pageSize = response.data.size;
-            that.currentPage = response.data.current;
+            var blogData = response.result.records;
+            that.total = response.result.total;
+            that.pageSize = response.result.size;
+            that.currentPage = response.result.current;
 
             //全部加载完毕
             if (blogData.length < that.pageSize) {
@@ -293,15 +293,15 @@ export default {
         params.append("pageSize", that.pageSize);
 
         searchBlogBySort(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.data.records.length > 0) {
+          if (response.code == this.$ECode.SUCCESS && response.result.records.length > 0) {
             that.isEnd = false;
             //获取总页数
-            that.totalPages = response.data.total;
+            that.totalPages = response.result.total;
 
-            var blogData = response.data.records;
-            that.total = response.data.total;
-            that.pageSize = response.data.size;
-            that.currentPage = response.data.current;
+            var blogData = response.result.records;
+            that.total = response.result.total;
+            that.pageSize = response.result.size;
+            that.currentPage = response.result.current;
 
             //全部加载完毕
             if (blogData.length < that.pageSize) {
@@ -329,18 +329,18 @@ export default {
         params.append("currentPage", that.currentPage);
         params.append("pageSize", that.pageSize);
         searchBlogByAuthor(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.data.records.length > 0) {
+          if (response.code == this.$ECode.SUCCESS && response.result.records.length > 0) {
             that.loading = false;
 
             that.isEnd = false;
 
             //获取总页数
-            that.totalPages = response.data.total;
+            that.totalPages = response.result.total;
 
-            var blogData = response.data.records;
-            that.total = response.data.total;
-            that.pageSize = response.data.size;
-            that.currentPage = response.data.current;
+            var blogData = response.result.records;
+            that.total = response.result.total;
+            that.pageSize = response.result.size;
+            that.currentPage = response.result.current;
 
             //全部加载完毕
             if (blogData.length < that.pageSize) {

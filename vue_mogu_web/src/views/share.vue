@@ -59,10 +59,10 @@ export default {
   created() {
     getStudyVideoBySort().then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        this.studyVideoData = response.data.records;
-        this.total = response.data.total;
-        this.pageSize = response.data.size;
-        this.currentPage = response.data.current;
+        this.studyVideoData = response.result.records;
+        this.total = response.result.total;
+        this.pageSize = response.result.size;
+        this.currentPage = response.result.current;
       }
     });
 

@@ -81,11 +81,11 @@
               params.pageSize = that.pageSize;
               getCommentList(params).then(response => {
                 if (response.code == that.$ECode.SUCCESS) {
-                  that.comments = that.comments.concat(response.data.records);
+                  that.comments = that.comments.concat(response.result.records);
                   that.setCommentList(this.comments);
-                  that.currentPage = response.data.current;
-                  that.pageSize = response.data.size;
-                  that.total = response.data.total;
+                  that.currentPage = response.result.current;
+                  that.pageSize = response.result.size;
+                  that.total = response.result.total;
                 }
               });
             }
@@ -115,7 +115,7 @@
                     } else {
                         this.$notify.error({
                             title: "错误",
-                            message: response.data,
+                            message: response.result,
                             offset: 100
                         });
                     }
@@ -129,11 +129,11 @@
                 params.pageSize = this.pageSize;
                 getCommentList(params).then(response => {
                     if (response.code == this.$ECode.SUCCESS) {
-                        this.comments = response.data.records;
+                        this.comments = response.result.records;
                         this.setCommentList(this.comments);
-                        this.currentPage = response.data.current;
-                        this.pageSize = response.data.size;
-                        this.total = response.data.total;
+                        this.currentPage = response.result.current;
+                        this.pageSize = response.result.size;
+                        this.total = response.result.total;
                     }
                 });
             },

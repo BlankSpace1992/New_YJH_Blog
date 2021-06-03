@@ -35,8 +35,8 @@ export default {
     params.append("level", 1);
     params.append("useSort", 1);
     getBlogByLevel(params).then(response => {
-      if(response.code == this.$ECode.SUCCESS) {
-        this.slideList = response.data.records;
+      if(response.data.code === this.$ECode.SUCCESS) {
+        this.slideList = response.data.result.records;
       }
     });
   },

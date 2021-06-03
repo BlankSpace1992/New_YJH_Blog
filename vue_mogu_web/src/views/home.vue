@@ -706,9 +706,9 @@
         var params = {};
         params.isShow = 1
         getWebNavbar(params).then(response => {
-          if(response.code == this.$ECode.SUCCESS) {
+          if(response.data.code === this.$ECode.SUCCESS) {
             console.log("获取到的导航栏列表", response)
-            let webNavbarList = response.data
+            let webNavbarList = response.data.result
             let newWebNavbarList = []
             for(let a=0; a<webNavbarList.length; a++) {
               if(webNavbarList[a].isShow == 1) {
@@ -754,8 +754,8 @@
         params.currentPage = 1;
         getCommentListByUser(params).then(response => {
           if(response.code == this.$ECode.SUCCESS) {
-            this.commentList = response.data.commentList
-            this.replyList = response.data.replyList
+            this.commentList = response.result.commentList
+            this.replyList = response.result.replyList
           }
         })
       },
@@ -765,7 +765,7 @@
         let params = {}
         getFeedbackList(params).then(response => {
           if(response.code == this.$ECode.SUCCESS) {
-            this.feedbackList = response.data.records;
+            this.feedbackList = response.result.records;
           }
         })
       },
@@ -777,7 +777,7 @@
         params.currentPage = 1;
         getPraiseListByUser(params).then(response => {
           if(response.code == this.$ECode.SUCCESS) {
-            this.praiseList = response.data.records;
+            this.praiseList = response.result.records;
           }
         })
       },
@@ -880,12 +880,12 @@
                   if(response.code == this.$ECode.SUCCESS) {
                     this.$message({
                       type: "success",
-                      message: response.data
+                      message: response.result
                     })
                   } else {
                     this.$message({
                       type: "error",
-                      message: response.data
+                      message: response.result
                     })
                   }
                 });
@@ -902,12 +902,12 @@
                   if(response.code == this.$ECode.SUCCESS) {
                     this.$message({
                       type: "success",
-                      message: response.data
+                      message: response.result
                     })
                   } else {
                     this.$message({
                       type: "error",
-                      message: response.data
+                      message: response.result
                     })
                   }
                 });
@@ -928,14 +928,14 @@
               if(response.code == this.$ECode.SUCCESS) {
                 this.$message({
                   type: "success",
-                  message: response.data
+                  message: response.result
                 })
                 this.feedback = {}
                 this.getFeedback()
               } else {
                 this.$message({
                   type: "error",
-                  message: response.data
+                  message: response.result
                 })
               }
             });
@@ -966,12 +966,12 @@
               if(response.code == this.$ECode.SUCCESS) {
                 this.$message({
                   type: "success",
-                  message: response.data
+                  message: response.result
                 })
               } else {
                 this.$message({
                   type: "error",
-                  message: response.data
+                  message: response.result
                 })
               }
               // 重置表单
@@ -988,8 +988,8 @@
         var dictTypeList =  ['sys_yes_no', 'sys_user_sex', 'sys_feedback_status']
 
         getListByDictTypeList(dictTypeList).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            var dictMap = response.data;
+          if (response.data.code === this.$ECode.SUCCESS) {
+            var dictMap = response.data.result;
             this.genderDictList = dictMap.sys_user_sex.list
             this.yesNoDictList = dictMap.sys_yes_no.list
             this.feedbackDictList = dictMap.sys_feedback_status.list
@@ -1009,9 +1009,9 @@
         }
         if (token != undefined) {
           authVerify(token).then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
+            if (response.data.code === this.$ECode.SUCCESS) {
               this.isLogin = true;
-              this.userInfo = response.data;
+              this.userInfo = response.data.result;
               this.setUserInfo(this.userInfo)
             } else {
               this.isLogin = false;
@@ -1026,9 +1026,9 @@
       },
       setUserReceiveCommentCount: function () {
         getUserReceiveCommentCount().then(response => {
-          console.log("获取用户收到的评论数", response)
-          if (response.code == this.$ECode.SUCCESS) {
-            this.userReceiveCommentCount = response.data
+          if (response.data.code === this.$ECode.SUCCESS) {
+            this.userReceiveCommentCount = response.data.result
+            console.log("获取用户收到的评论数", response);
           }
         });
       },
@@ -1073,10 +1073,11 @@
           this.openComment = webConfigData.openComment
         } else {
           getWebConfig().then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
-              this.info = response.data;
+            if (response.data.code === this.$ECode.SUCCESS) {
+              this.info = response.data.result;
+              console.log("获取网站配置信息", response.data.result);
               // 存储在Vuex中
-              this.setWebConfigData(response.data)
+              this.setWebConfigData(response.data.result)
               this.openComment = this.info.openComment
             }
           });

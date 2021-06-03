@@ -1,9 +1,7 @@
 package com.cloud.blog.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.blog.business.domain.Blog;
-import com.blog.business.domain.Link;
-import com.blog.business.domain.Tag;
+import com.blog.business.domain.*;
 import com.blog.business.service.*;
 import com.blog.config.redis.RedisUtil;
 import com.blog.exception.ResultBody;
@@ -15,6 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 首页相关接口 controller
@@ -94,6 +95,24 @@ public class IndexController {
     }
 
     /**
+     * 博客查询
+     *
+     * @param currentPage 当前页数
+     * @param pageSize    每页显示数目
+     * @param request     请求
+     * @return ResultBody
+     * @author yujunhong
+     * @date 2021/6/2 15:27
+     */
+    @GetMapping("/getBlogBySearch")
+    public ResultBody getBlogBySearch(HttpServletRequest request,
+                                      @ApiParam(name = "currentPage", value = "当前页数", required = false) @RequestParam(name = "currentPage", required = false, defaultValue = "1") Long currentPage,
+                                      @ApiParam(name = "pageSize", value = "每页显示数目", required = false) @RequestParam(name = "pageSize", required = false, defaultValue = "10") Long pageSize) {
+        // TODO: 2021/6/2 暂时未完成
+        return ResultBody.success();
+    }
+
+    /**
      * 按时间戳获取博客
      *
      * @param currentPage 当前页数
@@ -147,9 +166,49 @@ public class IndexController {
      */
     @ApiOperation(value = "增加友情连接点击数")
     @GetMapping(value = "/addLinkCount")
-    public ResultBody addLinkCount(@ApiParam(name = "uid", value = "友情链接Id") @RequestParam(name = "uid", required =
-            true) String uid) {
+    public ResultBody addLinkCount(@ApiParam(name = "uid", value = "友情链接Id") @RequestParam(name = "uid") String uid) {
         linkService.addLinkCount(uid);
+        return ResultBody.success();
+    }
+
+    /**
+     * 获取网站配置
+     *
+     * @return 网站配置信息
+     * @author yujunhong
+     * @date 2021/6/2 13:56
+     */
+    @GetMapping(value = "/getWebConfig")
+    @ApiOperation(value = "获取网站配置")
+    public ResultBody getWebConfig() {
+        WebConfig webConfigByShowList = webConfigService.getWebConfigByShowList();
+        return ResultBody.success(webConfigByShowList);
+    }
+
+    /**
+     * 获取网站导航栏
+     *
+     * @return 获取网站导航栏
+     * @author yujunhong
+     * @date 2021/6/2 14:26
+     */
+    @GetMapping(value = "/getWebNavigation")
+    @ApiOperation(value = "获取网站导航栏")
+    public ResultBody getWebNavigation(@RequestParam(name = "isShow") String isShow) {
+        List<WebNavbar> allList = webNavbarService.getAllList();
+        return ResultBody.success(allList);
+    }
+
+    /**
+     * 记录访问记录
+     *
+     * @return 记录访问记录
+     * @author yujunhong
+     * @date 2021/6/2 15:22
+     */
+    @ApiOperation(value = "记录访问记录")
+    @GetMapping(value = "/recorderVisitPage")
+    public ResultBody recorderVisitPage(@ApiParam(name = "pageName", value = "页面名称") @RequestParam(name = "pageName") String pageName) {
         return ResultBody.success();
     }
 }

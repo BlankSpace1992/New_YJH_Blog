@@ -1,6 +1,7 @@
 package com.blog.business.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yujunhong
@@ -39,7 +41,7 @@ public class WebNavbar {
      */
     @ApiModelProperty(value = "级别")
     @Excel(name = "级别")
-    private Object navbarLevel;
+    private String navbarLevel;
     /**
      * 概要
      */
@@ -100,4 +102,16 @@ public class WebNavbar {
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
     private Date updateTime;
+
+    /**
+     * 父菜单
+     */
+    @TableField(exist = false)
+    private WebNavbar parentWebNavbar;
+
+    /**
+     * 子菜单
+     */
+    @TableField(exist = false)
+    private List<WebNavbar> childWebNavbar;
 }

@@ -44,16 +44,15 @@ export default {
         }
       } else {
         getWebConfig().then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            this.contact = response.data;
-            console.log(response.data.showList)
-            let showList = response.data.showList
+          if (response.data.code === this.$ECode.SUCCESS) {
+            this.contact = response.data.result;
+            let showList = response.data.result.showList
             if(showList.length > 2) {
               this.isShow = true;
             }
 
             this.mailto = "mailto:" + this.contact.email;
-            this.setWebConfigData(response.data)
+            this.setWebConfigData(response.result)
 
           }
         });

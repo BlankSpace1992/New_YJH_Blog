@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/subject/**",
                         "/login/**",
                         "/oauth/**",
-                        "/web/comment/**",
+                        "/comment/**",
                         "/freemarker/**",
                         "/sysDictData/**",
                         "/elasticSearchBlog/**",

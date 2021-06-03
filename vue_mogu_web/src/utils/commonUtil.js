@@ -8,7 +8,7 @@ import { Message } from 'element-ui'
  */
 const ECode = {
   // 默认页大小
-  SUCCESS: "success",
+  SUCCESS: "200",
   // 默认页码
   ERROR: "error",
 }

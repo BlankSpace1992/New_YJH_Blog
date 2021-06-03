@@ -74,7 +74,7 @@ public class SysDictData {
      */
     @ApiModelProperty(value = "是否默认（1是 0否）,默认为0")
     @Excel(name = "是否默认（1是 0否）,默认为0")
-    private Object isDefault;
+    private Integer isDefault;
     /**
      * 创建人UID
      */

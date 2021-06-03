@@ -76,8 +76,8 @@ export default {
   created() {
     getWebConfig().then(response => {
       console.log("从接口中获取")
-      if (response.code == this.$ECode.SUCCESS) {
-        this.webConfigData = response.data;
+      if (response.data.code === this.$ECode.SUCCESS) {
+        this.webConfigData = response.data.result;
         this.payCode = this.webConfigData.aliPayPhoto;
       }
     });
@@ -122,7 +122,7 @@ export default {
             type: 'success',
             offset: 100
           });
-          this.$emit('update:praiseCount',response.data);
+          this.$emit('update:praiseCount',response.result);
         } else {
           this.$notify.error({
             title: '错误',
@@ -138,7 +138,7 @@ export default {
       params.append("uid", uid);
       getBlogPraiseCountByUid(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.praiseCount = response.data;
+          this.praiseCount = response.result;
         }
       });
     }

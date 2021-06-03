@@ -33,8 +33,8 @@ export default {
       fourthParams.append("level", 4);
       fourthParams.append("useSort", 1);
       getBlogByLevel(fourthParams).then(response => {
-        if(response.code == this.$ECode.SUCCESS) {
-          this.fourthData = response.data.records;
+        if(response.data.code === this.$ECode.SUCCESS) {
+          this.fourthData = response.data.result.records;
         }
       });
     },

@@ -9,7 +9,7 @@ import showdownKatex from 'showdown-katex'
  */
 const ECode = {
   // 默认页大小
-  SUCCESS: "success",
+  SUCCESS: "200",
   // 默认页码
   ERROR: "error",
 }

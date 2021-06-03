@@ -221,15 +221,15 @@
           }
           getBlogByUid(params).then(response => {
             if (response.code == this.$ECode.SUCCESS) {
-              this.blogData = response.data;
-              this.blogUid = response.data.uid
-              this.blogOid = response.data.oid
-              this.commentInfo.blogUid = response.data.uid;
+              this.blogData = response.result;
+              this.blogUid = response.result.uid
+              this.blogOid = response.result.oid
+              this.commentInfo.blogUid = response.result.uid;
               this.getSameBlog()
               this.getCommentDataList();
             }
             setTimeout(()=>{
-              that.blogContent = response.data.content
+              that.blogContent = response.result.content
               that.loadingInstance.close();
             }, 200)
           });
@@ -268,11 +268,11 @@
               params.pageSize = that.pageSize;
               getCommentList(params).then(response => {
                 if (response.code == that.$ECode.SUCCESS) {
-                  that.comments = that.comments.concat(response.data.records);
+                  that.comments = that.comments.concat(response.result.records);
                   that.setCommentList(that.comments);
-                  that.currentPage = response.data.current;
-                  that.pageSize = response.data.size;
-                  that.total = response.data.total;
+                  that.currentPage = response.result.current;
+                  that.pageSize = response.result.size;
+                  that.total = response.result.total;
                 }
               });
             }
@@ -309,7 +309,7 @@
               blogParams.append("blogUid", this.blogUid);
               getSameBlogByBlogUid(blogParams).then(response => {
                 if (response.code == this.$ECode.SUCCESS) {
-                  this.sameBlogData = response.data.records;
+                  this.sameBlogData = response.result.records;
                 }
               });
             },
@@ -321,10 +321,10 @@
                 this.openComment = webConfigData.openComment
               } else {
                 getWebConfig().then(response => {
-                  if (response.code == this.$ECode.SUCCESS) {
-                    webConfigData = response.data;
+                  if (response.data.code === this.$ECode.SUCCESS) {
+                    webConfigData = response.data.result;
                     // 存储在Vuex中
-                    this.setWebConfigData(response.data)
+                    this.setWebConfigData(response.data.result)
                     this.openAdmiration = webConfigData.openAdmiration
                     this.openComment = webConfigData.openComment
                   }
@@ -349,7 +349,7 @@
                     } else {
                         this.$notify.error({
                             title: "错误",
-                            message: response.data,
+                            message: response.result,
                             offset: 100
                         });
                     }
@@ -364,11 +364,11 @@
                 params.pageSize = this.pageSize;
                 getCommentList(params).then(response => {
                     if (response.code == this.$ECode.SUCCESS) {
-                        this.comments = response.data.records;
+                        this.comments = response.result.records;
                         this.setCommentList(this.comments);
-                        this.currentPage = response.data.current;
-                        this.pageSize = response.data.size;
-                        this.total = response.data.total
+                        this.currentPage = response.result.current;
+                        this.pageSize = response.result.size;
+                        this.total = response.result.total
                     }
                 });
             },
