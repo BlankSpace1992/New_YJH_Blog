@@ -3,7 +3,6 @@ package com.blog.business.admin.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.blog.business.admin.domain.SystemConfig;
 import com.blog.business.admin.mapper.SystemConfigMapper;
 import com.blog.business.admin.service.SystemConfigService;
 import com.blog.config.redis.RedisUtil;

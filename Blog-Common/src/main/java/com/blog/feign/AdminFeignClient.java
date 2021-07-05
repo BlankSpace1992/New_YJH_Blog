@@ -1,7 +1,6 @@
 package com.blog.feign;
 
 import com.blog.config.FeignConfiguration;
-import com.blog.exception.ResultBody;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -20,5 +19,5 @@ public interface AdminFeignClient {
      * @date 2021/6/3 14:47
      */
     @GetMapping(value = "/systemConfig/getSystemConfig")
-    ResultBody getSystemConfig();
+    String getSystemConfig();
 }
