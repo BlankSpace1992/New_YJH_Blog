@@ -1,7 +1,9 @@
 package com.blog.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.blog.business.admin.domain.Admin;
 import com.blog.business.admin.service.AdminService;
+import com.blog.business.web.domain.Role;
 import com.blog.business.web.service.RoleService;
 import com.blog.constants.BaseSysConf;
 import org.springframework.beans.factory.annotation.Autowired;

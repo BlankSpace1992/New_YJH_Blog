@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/6/1 13:55
  */
 @Configuration
-@MapperScan(value = "com.blog.business.mapper")
+@MapperScan(value = {"com.blog.business.web.mapper","com.blog.business.admin.mapper","com.blog.business.picture.mapper"})
 public class BlogWebApplicationConfig {
 }

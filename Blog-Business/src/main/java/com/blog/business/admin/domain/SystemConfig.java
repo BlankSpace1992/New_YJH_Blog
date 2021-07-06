@@ -1,4 +1,4 @@
-package com.blog.entity.admin;
+package com.blog.business.admin.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;

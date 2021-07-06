@@ -19,3 +19,12 @@
 /Blog-Picture/Blog-Picture.iml
 /Blog-Picture/target/classes/com/blog/picture/BlogPictureApplication.class
 /Blog-Picture/target/classes/bootstrap.yml
+/Blog-Picture/target/classes/com/blog/picture/config/MetaObjectHandlerConfig.class
+/Blog-Picture/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+/Blog-Picture/target/classes/com/blog/picture/controller/FileController.class
+/Blog-Picture/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/Blog-Picture/target/classes/com/blog/picture/config/InterceptorConfig.class
+/Blog-Picture/target/classes/com/blog/picture/config/MybatisPlusConfig.class
+/Blog-Picture/target/classes/com/blog/picture/config/Swagger3Config.class
+/Blog-Picture/target/classes/com/blog/picture/config/TokenInterceptor.class
+/Blog-Picture/target/classes/com/blog/picture/config/WebSecurityConfig.class

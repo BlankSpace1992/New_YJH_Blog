@@ -1,6 +1,7 @@
 package com.blog.business.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blog.business.admin.domain.SystemConfig;
 
 /**
  * @author yujunhong
