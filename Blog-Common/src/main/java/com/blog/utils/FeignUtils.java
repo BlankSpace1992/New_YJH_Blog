@@ -4,13 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.blog.config.redis.RedisUtil;
 import com.blog.constants.*;
+import com.blog.entity.SystemConfigCommon;
 import com.blog.exception.CommonErrorException;
 import com.blog.feign.AdminFeignClient;
 import com.blog.feign.WebFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author yujunhong
@@ -70,8 +76,8 @@ public class FeignUtils {
      * @return 配置信息
      * @author yujunhong
      * @date 2021/7/1 14:18
-     *//*
-    public SystemConfig getSystemConfig() {
+     */
+    public SystemConfigCommon getSystemConfig() {
         ServletRequestAttributes attribute =
                 Optional.of((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).orElseThrow(() -> new CommonErrorException(ErrorCode.PLEASE_SET_QI_NIU, BaseMessageConf.PLEASE_SET_QI_NIU));
         // 获取请求
@@ -100,7 +106,7 @@ public class FeignUtils {
             throw new CommonErrorException(ErrorCode.PLEASE_SET_QI_NIU, BaseMessageConf.PLEASE_SET_QI_NIU);
         }
 
-        SystemConfig systemConfig = new SystemConfig();
+        SystemConfigCommon systemConfig = new SystemConfigCommon();
         // 图片是否上传七牛云
         String uploadQiNiu = systemConfigMap.get(BaseSysConf.UPLOAD_QI_NIU);
         // 是否上传本地保存
@@ -140,5 +146,5 @@ public class FeignUtils {
             throw new CommonErrorException(ErrorCode.PLEASE_SET_QI_NIU, BaseMessageConf.PLEASE_SET_QI_NIU);
         }
             return systemConfig;
-    }*/
+    }
 }
