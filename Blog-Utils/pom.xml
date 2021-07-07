@@ -28,7 +28,13 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>3.0.10</version>
+            <version>7.1.4</version>
+        </dependency>
+        <!--Markdown 转 Html-->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>${flexmark.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
