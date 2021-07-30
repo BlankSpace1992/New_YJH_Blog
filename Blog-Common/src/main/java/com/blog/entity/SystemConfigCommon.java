@@ -3,7 +3,6 @@ package com.blog.entity;
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -181,7 +180,7 @@ public class SystemConfigCommon {
      */
     @ApiModelProperty(value = "图片是否上传Minio (0:否， 1：是)")
     @Excel(name = "图片是否上传Minio (0:否， 1：是)")
-    private Object uploadMinio;
+    private String uploadMinio;
     /**
      * Minio服务器文件域名前缀
      */

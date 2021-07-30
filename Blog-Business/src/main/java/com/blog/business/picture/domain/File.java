@@ -62,7 +62,7 @@ public class File {
      */
     @ApiModelProperty(value = "文件大小")
     @Excel(name = "文件大小")
-    private Integer fileSize;
+    private Long fileSize;
     /**
      * 文件分类uid
      */

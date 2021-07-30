@@ -1,12 +1,23 @@
 package com.blog.picture.controller;
 
 import com.blog.business.picture.service.FileService;
+import com.blog.constants.BaseMessageConf;
+import com.blog.constants.BaseSysConf;
+import com.blog.entity.FileVO;
+import com.blog.entity.SystemConfigCommon;
+import com.blog.exception.ResultBody;
 import com.blog.utils.FeignUtils;
 import com.blog.utils.MinIoUtils;
-import io.swagger.annotations.Api;
+import com.blog.utils.StringUtils;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yujunhong
@@ -23,5 +34,100 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    
+    /**
+     * 截图上传
+     *
+     * @param file 截图文件
+     * @return 成功标志
+     * @author yujunhong
+     * @date 2021/7/7 16:50
+     */
+    @ApiOperation(value = "截图上传")
+    @PostMapping(value = "/cropperPicture")
+    public ResultBody cropperPicture(@RequestParam(value = "file") MultipartFile file) {
+        List<MultipartFile> multipartFileList = new ArrayList<>();
+        multipartFileList.add(file);
+        fileService.cropperPicture(multipartFileList);
+        return ResultBody.success();
+    }
+
+    /**
+     * 获取文件的信息接口
+     *
+     * @param fileIds 文件id集合
+     * @param code    切割符
+     * @return 文件信息
+     * @author yujunhong
+     * @date 2021/7/30 14:42
+     */
+    @ApiOperation(value = "通过fileIds获取图片信息接口")
+    @GetMapping(value = "/getPicture")
+    public ResultBody getPicture(@ApiParam(name = "fileIds", value = "文件ids") @RequestParam(name = "fileIds",
+            required = false) String fileIds,
+                                 @ApiParam(name = "code", value = "切割符") @RequestParam(name = "code", required =
+                                         false) String code) {
+        if (StringUtils.isEmpty(fileIds)) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.PICTURE_UID_IS_NULL);
+        }
+        List<Map<String, Object>> fileServicePicture = fileService.getPicture(fileIds, code);
+        return ResultBody.success(fileServicePicture);
+    }
+
+    /**
+     * 多文件上传 同步处理
+     * 上传图片接口   传入 userId sysUserId ,有那个传哪个，记录是谁传的,
+     * projectName 传入的项目名称如 base 默认是base
+     * sortName 传入的模块名， 如 admin，user ,等，不在数据库中记录的是不会上传的
+     *
+     * @param request   请求
+     * @param fileDatas 上传文件集合
+     * @return 成功信息
+     * @author yujunhong
+     * @date 2021/7/30 15:01
+     */
+    @ApiOperation(value = "多图片上传接口", notes = "多图片上传接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fileDatas", value = "文件数据", required = true),
+            @ApiImplicitParam(name = "userUid", value = "用户UID", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "sysUserId", value = "管理员UID", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "projectName", value = "项目名", required = false, dataType = "String"),
+            @ApiImplicitParam(name = "sortName", value = "模块名", required = false, dataType = "String")
+    })
+    @PostMapping(value = "/pictures")
+    public synchronized ResultBody uploadPicture(HttpServletRequest request, List<MultipartFile> fileDatas) {
+        // 获取系统配置文件
+        SystemConfigCommon systemConfig = feignUtils.getSystemConfig();
+        fileService.batchUploadFile(request, fileDatas, systemConfig);
+        return ResultBody.success();
+    }
+
+    /**
+     * 通过url将图片上传到服务器中
+     *
+     * @param fileVO 文件图片类
+     * @return 成功信息
+     * @author yujunhong
+     * @date 2021/7/30 15:08
+     */
+    @ApiOperation(value = "通过URL上传图片")
+    @PostMapping(value = "/uploadPictureUrl")
+    public ResultBody uploadPictureUrl(@RequestBody FileVO fileVO) {
+        fileService.uploadPictureByUrl(fileVO);
+        return ResultBody.success();
+    }
+
+    /**
+     * ckEditor 文本编辑器 图片上传
+     *
+     * @param request 请求
+     * @return 成功上传
+     * @author yujunhong
+     * @date 2021/7/30 15:53
+     */
+    @ApiOperation(value = "ckEditor 文本编辑器 图片上传")
+    @PostMapping(value = "/ckEditorUploadFile")
+    public ResultBody ckEditorUploadFile(HttpServletRequest request) {
+        fileService.ckEditorUploadFile(request);
+        return ResultBody.success();
+    }
 }

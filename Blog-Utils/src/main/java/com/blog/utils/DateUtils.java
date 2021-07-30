@@ -14,7 +14,8 @@ import java.util.*;
 /**
  * 时间工具类
  *
- * @author waylon
+ * @author yujunhong
+ * @date 2021/7/12 14:23
  */
 public class DateUtils extends DateUtil {
     public static String YYYY = "yyyy";
@@ -599,5 +600,42 @@ public class DateUtils extends DateUtil {
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * 获取当前的月
+     *
+     * @author yujunhong
+     * @date 2021/7/12 14:24
+     */
+    public static Integer getMonth() {
+        Calendar calendar = new GregorianCalendar(TimeZone
+                .getDefault());
+        return calendar.get(Calendar.MONTH) + 1;
+    }
+
+    /**
+     * 获取当前天
+     *
+     * @author yujunhong
+     * @date 2021/7/12 14:24
+     */
+    public static Integer getDay() {
+        Calendar calendar = new GregorianCalendar(TimeZone
+                .getDefault());
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
+     * 获取当前的年
+     *
+     * @author yujunhong
+     * @date 2021/7/12 14:25
+     */
+    public static Integer getYears() {
+        Calendar calendar = new GregorianCalendar(TimeZone
+                .getDefault());
+        return calendar.get(Calendar.YEAR);
+
     }
 }
