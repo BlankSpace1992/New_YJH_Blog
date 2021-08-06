@@ -38,7 +38,7 @@ public class QiNiuServiceImpl implements QiNiuService {
     /**
      * 获取上传路径地址
      */
-    @Value(value = "${file.upload.file}")
+    @Value(value = "${file.upload.path}")
     private String path;
 
     @Override

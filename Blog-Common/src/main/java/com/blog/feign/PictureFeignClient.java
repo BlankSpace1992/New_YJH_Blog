@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yujunhong
@@ -28,7 +29,7 @@ public interface PictureFeignClient {
      * @date 2021/6/3 14:50
      */
     @GetMapping(value = "/file/getPicture")
-    String getPicture(@RequestParam(value = "fileIds") String fileIds, @RequestParam(value = "code") String code);
+    List<Map<String, Object>> getPicture(@RequestParam(value = "fileIds") String fileIds, @RequestParam(value = "code") String code);
 
     /**
      * 通过URL List上传图片

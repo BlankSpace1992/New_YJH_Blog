@@ -28,3 +28,4 @@
 /Blog-Picture/target/classes/com/blog/picture/config/Swagger3Config.class
 /Blog-Picture/target/classes/com/blog/picture/config/TokenInterceptor.class
 /Blog-Picture/target/classes/com/blog/picture/config/WebSecurityConfig.class
+/Blog-Picture/target/classes/com/blog/picture/config/BlogPictureConfig.class

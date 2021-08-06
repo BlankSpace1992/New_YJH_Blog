@@ -5,22 +5,22 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.business.web.domain.Blog;
+import com.blog.business.web.domain.BlogSort;
 import com.blog.business.web.domain.Tag;
 import com.blog.business.web.mapper.BlogMapper;
 import com.blog.business.web.service.BlogService;
+import com.blog.business.web.service.BlogSortService;
 import com.blog.business.web.service.SysParamsService;
 import com.blog.business.web.service.TagService;
 import com.blog.config.redis.RedisUtil;
-import com.blog.constants.BaseRedisConf;
-import com.blog.constants.BaseSysConf;
-import com.blog.constants.EnumsLevel;
-import com.blog.constants.EnumsStatus;
+import com.blog.constants.*;
+import com.blog.feign.PictureFeignClient;
 import com.blog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author yujunhong
@@ -34,6 +34,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     private SysParamsService sysParamsService;
     @Autowired
     private TagService tagService;
+    @Autowired
+    private PictureFeignClient pictureFeignClient;
+    @Autowired
+    private BlogSortService blogSortService;
 
     @Override
     public IPage<Blog> getBlogByLevel(Integer level, Integer currentPage, Integer useSort) {
@@ -77,9 +81,12 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         IPage<Blog> blogByLevel = this.getBlogByLevel(page, level);
         // 获取数据缓存到redis中
         List<Blog> records = blogByLevel.getRecords();
+        // 设置标签以及分类
+        setBlog(records);
         if (StringUtils.isNotEmpty(records)) {
             redisUtil.set(redisKey, JSON.toJSONString(records), 3600);
         }
+        blogByLevel.setRecords(records);
         return blogByLevel;
     }
 
@@ -197,5 +204,187 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         });
         // TODO: 2021/6/1 图片问题未解决
         return page;
+    }
+
+    @Override
+    public List<Blog> setTagAndSortAndPictureByBlogList(List<Blog> list) {
+        // 分类集合id
+        List<String> sortIds = new ArrayList<>();
+        // 标签集合id
+        List<String> tagIds = new ArrayList<>();
+        // 文件集合id-避免重复
+        Set<String> fileIds = new HashSet<>();
+        list.forEach(item -> {
+            if (StringUtils.isNotEmpty(item.getFileUid())) {
+                fileIds.add(item.getFileUid());
+            }
+            if (StringUtils.isNotEmpty(item.getBlogSortUid())) {
+                sortIds.add(item.getBlogSortUid());
+            }
+            if (StringUtils.isNotEmpty(item.getTagUid())) {
+                // tagId有多个按照","区分
+                List<String> string = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, item.getTagUid());
+                tagIds.addAll(string);
+            }
+        });
+        List<Map<String, Object>> picList = new ArrayList<>();
+        // 拼接文件id
+        StringBuilder fileIdBuilder = new StringBuilder();
+        // 手动分页,按照十张图片查一次
+        int count = 1;
+        // 根据文件id,查询图片数据
+        for (String fileId : fileIds) {
+            fileIdBuilder.append(fileId).append(",");
+            if (count % 10 == 0) {
+                picList.addAll(pictureFeignClient.getPicture(fileIdBuilder.toString(), ","));
+                fileIdBuilder = new StringBuilder();
+            }
+            count++;
+        }
+        // 判断是否需要图片需要获取
+        if (fileIdBuilder.length() > Constants.NUM_32) {
+            picList.addAll(pictureFeignClient.getPicture(fileIdBuilder.toString(), ","));
+        }
+
+        // 获取博客分类
+        List<BlogSort> blogSortList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(sortIds)) {
+            blogSortList = blogSortService.listByIds(sortIds);
+        }
+        // 获取标签
+        List<Tag> tagList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(tagIds)) {
+            tagList = tagService.listByIds(tagIds);
+        }
+
+        Map<String, String> pictureMap = new HashMap<>();
+        // 按照uid进行分组
+        Map<String, List<BlogSort>> blogSortMap =
+                blogSortList.stream().collect(Collectors.groupingBy(BlogSort::getUid));
+        Map<String, List<Tag>> tagMap = tagList.stream().collect(Collectors.groupingBy(Tag::getUid));
+        picList.forEach(item -> {
+            pictureMap.put(item.get(BaseSysConf.UID).toString(), item.get(BaseSysConf.URL).toString());
+        });
+        // 注入分类/标签/图片
+        for (Blog blog : list) {
+            // 设置分类
+            if (StringUtils.isNotEmpty(blog.getBlogSortUid())) {
+                if (blogSortMap.containsKey(blog.getBlogSortUid())) {
+                    blog.setBlogSort(blogSortMap.get(blog.getBlogSortUid()).get(0));
+                }
+            }
+            // 设置标签页
+            if (StringUtils.isNotEmpty(blog.getTagUid())) {
+                List<String> tagBlogList = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, blog.getTagUid());
+                List<Tag> tagListTemp = new ArrayList<Tag>();
+                tagBlogList.forEach(tag -> {
+                    if (tagMap.containsKey(tag)) {
+                        tagListTemp.add(tagMap.get(tag).get(0));
+                    }
+                });
+                blog.setTagList(tagListTemp);
+            }
+            // 获取图片
+            if (StringUtils.isNotEmpty(blog.getFileUid())) {
+                List<String> fileBlogList = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, blog.getFileUid());
+                List<String> pictureListTemp = new ArrayList<>();
+                fileBlogList.forEach(picture -> {
+                    pictureListTemp.add(pictureMap.get(picture));
+                });
+                blog.setPhotoList(pictureListTemp);
+                // 只设置一张标题图
+                if (pictureListTemp.size() > 0) {
+                    blog.setPhotoUrl(pictureListTemp.get(0));
+                } else {
+                    blog.setPhotoUrl("");
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 设置博客的标签以及分类,图片
+     *
+     * @param list 查询的博客集合
+     * @author yujunhong
+     * @date 2021/8/6 15:34
+     */
+    private void setBlog(List<Blog> list) {
+        // 图片id
+        StringBuilder fileIds = new StringBuilder();
+        // 分类集合
+        List<String> sortIdList = new ArrayList<>();
+        // 标签集合
+        List<String> tagIdList = new ArrayList<>();
+        // 循环处理每一个博客
+        list.forEach(item -> {
+            if (StringUtils.isNotEmpty(item.getFileUid())) {
+                fileIds.append(item.getFileUid()).append(BaseSysConf.FILE_SEGMENTATION);
+            }
+            if (StringUtils.isNotEmpty(item.getBlogSortUid())) {
+                sortIdList.add(item.getBlogSortUid());
+            }
+            if (StringUtils.isNotEmpty(item.getTagUid())) {
+                tagIdList.add(item.getTagUid());
+            }
+        });
+        // 图片地址
+        List<Map<String, Object>> pictureList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(fileIds.toString())) {
+            pictureList = this.pictureFeignClient.getPicture(fileIds.toString(),
+                    BaseSysConf.FILE_SEGMENTATION);
+        }
+        // 获取对应分类信息
+        List<BlogSort> blogSortList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(sortIdList)) {
+            blogSortList = blogSortService.listByIds(sortIdList);
+        }
+        // 获取对应的标签信息
+        List<Tag> tagList = new ArrayList<>();
+        if (StringUtils.isNotEmpty(tagIdList)) {
+            tagList = tagService.listByIds(tagIdList);
+        }
+
+        // 分类按照id进行分类
+        Map<String, List<BlogSort>> blogSortMap =
+                blogSortList.stream().collect(Collectors.groupingBy(BlogSort::getUid));
+        // 标签按照id进行分类
+        Map<String, List<Tag>> tagMap = tagList.stream().collect(Collectors.groupingBy(Tag::getUid));
+        // 图片按照id进行分类
+        Map<String, String> pictureMap = new HashMap<>();
+        pictureList.forEach(item -> {
+            pictureMap.put(item.get(BaseSQLConf.UID).toString(), item.get(BaseSQLConf.URL).toString());
+        });
+
+        // 循环遍历博客
+        for (Blog blog : list) {
+            //设置分类
+            if (StringUtils.isNotEmpty(blog.getBlogSortUid())) {
+                blog.setBlogSort(blogSortMap.get(blog.getBlogSortUid()).get(0));
+            }
+            //获取标签
+            if (StringUtils.isNotEmpty(blog.getTagUid())) {
+                List<String> tagIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,blog.getTagUid());
+                List<Tag> tagListTemp = new ArrayList<>();
+
+                tagIdsTemp.forEach(tag -> {
+                    if (tagMap.get(tag) != null) {
+                        tagListTemp.add(tagMap.get(tag).get(0));
+                    }
+                });
+                blog.setTagList(tagListTemp);
+            }
+            //获取图片
+            if (StringUtils.isNotEmpty(blog.getFileUid())) {
+                List<String> pictureIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,blog.getFileUid());
+                List<String> pictureListTemp = new ArrayList<>();
+
+                pictureIdsTemp.forEach(picture -> {
+                    pictureListTemp.add(pictureMap.get(picture));
+                });
+                blog.setPhotoList(pictureListTemp);
+            }
+        }
     }
 }

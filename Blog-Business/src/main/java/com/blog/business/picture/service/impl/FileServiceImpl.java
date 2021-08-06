@@ -314,4 +314,152 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
             }
         }
     }
+
+    @Override
+    public Map<String, Object> ckEditorUploadCopyFile() {
+        // 获取请求
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException("图片上传失败"));
+        // 从参数中获取token
+        String token = request.getParameter(BaseSysConf.TOKEN);
+        if (StringUtils.isEmpty(token)) {
+            throw new CommonErrorException(ErrorCode.INSERT_DEFAULT_ERROR, "未获取到token");
+        }
+        // 拆分token
+        String[] params = token.split("\\?url=");
+        // 从redis获取系统配置文件
+        Map<String, String> qiNiuConfig = new HashMap<>();
+        Map<String, String> systemConfigMap = feignUtils.getSystemConfigMap(params[0]);
+        SystemConfigCommon systemConfig = feignUtils.getSystemConfigByMap(systemConfigMap);
+        // 需要上传的url
+        String url = params[1];
+        // 判断需要上传的域名和本机图片域名是否一致
+        if (FilePriority.QI_NIU.equals(systemConfig.getContentPicturePriority())) {
+            // 判断需要上传的域名和本机图片域名是否一致，如果一致，那么就不需要重新上传，而是直接返回
+            if (StringUtils.isNotEmpty(systemConfig.getQiNiuPictureBaseUrl()) && StringUtils.isNotEmpty(url) && url.contains(systemConfig.getQiNiuPictureBaseUrl())) {
+                Map<String, Object> result = new HashMap<>();
+                result.put(BaseSysConf.UPLOADED, 1);
+                result.put(BaseSysConf.FILE_NAME, url);
+                result.put(BaseSysConf.URL, url);
+                return result;
+            }
+        } else if (FilePriority.MINIO.equals(systemConfig.getContentPicturePriority())) {
+            // 表示优先显示Minio对象存储
+            // 判断需要上传的域名和本机图片域名是否一致，如果一致，那么就不需要重新上传，而是直接返回
+            if (StringUtils.isNotEmpty(systemConfig.getMinioPictureBaseUrl()) && StringUtils.isNotEmpty(url) && url.contains(systemConfig.getMinioPictureBaseUrl())) {
+                Map<String, Object> result = new HashMap<>();
+                result.put(BaseSysConf.UPLOADED, 1);
+                result.put(BaseSysConf.FILE_NAME, url);
+                result.put(BaseSysConf.URL, url);
+                return result;
+            }
+        }
+        // 表示优先显示本地服务器
+        // 判断需要上传的域名和本机图片域名是否一致，如果一致，那么就不需要重新上传，而是直接返回
+        else {
+            if (StringUtils.isNotEmpty(systemConfig.getLocalPictureBaseUrl()) && StringUtils.isNotEmpty(url) && url.contains(systemConfig.getLocalPictureBaseUrl())) {
+                Map<String, Object> result = new HashMap<>();
+                result.put(BaseSysConf.UPLOADED, 1);
+                result.put(BaseSysConf.FILE_NAME, url);
+                result.put(BaseSysConf.URL, url);
+                return result;
+            }
+        }
+        // 查询文件分类
+        LambdaQueryWrapper<FileSort> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(FileSort::getSortName, BaseSysConf.ADMIN);
+        wrapper.eq(FileSort::getProjectName, BaseSysConf.BLOG);
+        wrapper.eq(FileSort::getStatus, EnumsStatus.ENABLE);
+        FileSort fileSort =
+                Optional.ofNullable(fileSortService.getOne(wrapper)).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "文件不被允许上传"));
+        // 获取地址
+        String sortUrl = StringUtils.isEmpty(fileSort.getUrl()) ? "base/common/" : fileSort.getUrl();
+        // 存储文件名
+        String newFileName = System.currentTimeMillis() + ".jpg";
+        // 文件url的访问地址
+        String localUrl = StringUtils.EMPTY;
+        String qiNiuUrl = StringUtils.EMPTY;
+        String minioUrl = StringUtils.EMPTY;
+        // 上传到本地服务器
+        if (OpenStatus.OPEN.equals(systemConfig.getUploadLocal())) {
+            localUrl = localFileService.uploadPictureByUrl(url, fileSort);
+        }
+        // 上传到minio
+        if (OpenStatus.OPEN.equals(systemConfig.getUploadMinio())) {
+            minioUrl = minioService.uploadPictureByUrl(url);
+        }
+        // 上传到七牛云
+        if (OpenStatus.OPEN.equals(systemConfig.getUploadQiNiu())) {
+            qiNiuUrl = qiNiuService.uploadPictureByUrl(url, systemConfig);
+        }
+
+        File file = new File();
+        file.setCreateTime(new Date(System.currentTimeMillis()));
+        file.setFileSortUid(fileSort.getUid());
+        file.setFileOldName(url);
+        file.setFileSize(0L);
+        file.setPicExpandedName(Constants.FILE_SUFFIX_JPG);
+        file.setPicName(newFileName);
+
+        // 设置本地图片
+        file.setPicUrl(systemConfig.getLocalPictureBaseUrl() + localUrl);
+        // 设置minio图片
+        file.setMinioUrl(systemConfig.getMinioPictureBaseUrl() + minioUrl);
+        // 设置七牛云图片
+        file.setQiNiuUrl(systemConfig.getQiNiuPictureBaseUrl() + qiNiuUrl);
+
+        file.setStatus(EnumsStatus.ENABLE);
+        file.setUserUid(BaseSysConf.DEFAULT_UID);
+        file.setAdminUid(BaseSysConf.DEFAULT_UID);
+        this.save(file);
+        Map<String, Object> result = new HashMap<>();
+        result.put(BaseSysConf.UPLOADED, 1);
+        result.put(BaseSysConf.FILE_NAME, newFileName);
+        // 设置显示方式
+        if (FilePriority.QI_NIU.equals(systemConfigMap.get(BaseSysConf.PICTURE_PRIORITY))) {
+            result.put(BaseSysConf.URL, systemConfig.getQiNiuPictureBaseUrl() + qiNiuUrl);
+        } else if (FilePriority.MINIO.equals(systemConfigMap.get(BaseSysConf.PICTURE_PRIORITY))) {
+            result.put(BaseSysConf.URL, systemConfig.getMinioPictureBaseUrl() + localUrl);
+        } else {
+            result.put(BaseSysConf.URL, systemConfig.getLocalPictureBaseUrl() + localUrl);
+        }
+        return result;
+    }
+
+    @Override
+    public void ckEditorUploadToolFile() {
+        // 获取请求
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException("图片上传失败"));
+        // 获取token值
+        String token = request.getParameter(BaseSysConf.TOKEN);
+        // 获取系统配置
+        Map<String, String> systemConfigMap = feignUtils.getSystemConfigMap(token);
+        SystemConfigCommon systemConfig = feignUtils.getSystemConfigByMap(systemConfigMap);
+        // 转换成多部分request
+        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+        // 取得request中的所有文件名
+        Iterator<String> iterator = multiRequest.getFileNames();
+        while (iterator.hasNext()) {
+            MultipartFile file = multiRequest.getFile(iterator.next());
+            if (StringUtils.isNotNull(file)) {
+                // 获取旧名称
+                String oldName = file.getOriginalFilename();
+                // 获取扩展名
+                String expandedName = FileUtils.getExpandedName(oldName);
+                // 对文件大小进行限制
+                if (file.getSize() > (50 * 1024 * 1024)) {
+                    throw new CommonErrorException(BaseSysConf.MESSAGE, "文件大小不能超过50M");
+                }
+                // 设置图片上传服务必要的信息
+                request.setAttribute(BaseSysConf.USER_UID, BaseSysConf.DEFAULT_UID);
+                request.setAttribute(BaseSysConf.ADMIN_UID, BaseSysConf.DEFAULT_UID);
+                request.setAttribute(BaseSysConf.PROJECT_NAME, BaseSysConf.BLOG);
+                request.setAttribute(BaseSysConf.SORT_NAME, BaseSysConf.ADMIN);
+                List<MultipartFile> fileData = new ArrayList<>();
+                fileData.add(file);
+                this.batchUploadFile(request, fileData, systemConfig);
+            }
+        }
+    }
 }

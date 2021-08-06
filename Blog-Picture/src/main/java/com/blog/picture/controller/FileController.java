@@ -1,14 +1,11 @@
 package com.blog.picture.controller;
 
 import com.blog.business.picture.service.FileService;
-import com.blog.constants.BaseMessageConf;
-import com.blog.constants.BaseSysConf;
 import com.blog.entity.FileVO;
 import com.blog.entity.SystemConfigCommon;
 import com.blog.exception.ResultBody;
 import com.blog.utils.FeignUtils;
 import com.blog.utils.MinIoUtils;
-import com.blog.utils.StringUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,15 +59,15 @@ public class FileController {
      */
     @ApiOperation(value = "通过fileIds获取图片信息接口")
     @GetMapping(value = "/getPicture")
-    public ResultBody getPicture(@ApiParam(name = "fileIds", value = "文件ids") @RequestParam(name = "fileIds",
+    public List<Map<String, Object>> getPicture(@ApiParam(name = "fileIds", value = "文件ids") @RequestParam(name = "fileIds",
             required = false) String fileIds,
-                                 @ApiParam(name = "code", value = "切割符") @RequestParam(name = "code", required =
+                                                @ApiParam(name = "code", value = "切割符") @RequestParam(name = "code", required =
                                          false) String code) {
-        if (StringUtils.isEmpty(fileIds)) {
-            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.PICTURE_UID_IS_NULL);
-        }
+//        if (StringUtils.isEmpty(fileIds)) {
+//            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.PICTURE_UID_IS_NULL);
+//        }
         List<Map<String, Object>> fileServicePicture = fileService.getPicture(fileIds, code);
-        return ResultBody.success(fileServicePicture);
+        return fileServicePicture;
     }
 
     /**
@@ -130,4 +127,33 @@ public class FileController {
         fileService.ckEditorUploadFile(request);
         return ResultBody.success();
     }
+
+    /**
+     * 复制得图片上传 ckEditor
+     *
+     * @return 上传成功
+     * @author yujunhong
+     * @date 2021/8/2 10:27
+     */
+    @ApiOperation(value = "复制得图片上传")
+    @PostMapping(value = "/ckEditorUploadCopyFile")
+    public ResultBody ckEditorUploadCopyFile() {
+        Map<String, Object> map = fileService.ckEditorUploadCopyFile();
+        return ResultBody.success(map);
+    }
+
+    /**
+     * ckEditor工具栏 插入\编辑超链接的文件上传
+     *
+     * @return 上传成功
+     * @author yujunhong
+     * @date 2021/8/2 14:06
+     */
+    @ApiOperation(value = "工具栏-插入/编辑超链接的文件上传")
+    @PostMapping(value = "/ckEditorUploadToolFile")
+    public ResultBody ckEditorUploadToolFile() {
+        fileService.ckEditorUploadToolFile();
+        return ResultBody.success();
+    }
+
 }

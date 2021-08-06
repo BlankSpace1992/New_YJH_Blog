@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.Blog;
 
+import java.util.List;
+
 /**
  * @author yujunhong
  * @date 2021/6/1 11:05
@@ -61,4 +63,14 @@ public interface BlogService extends IService<Blog> {
      * @date 2021/6/1 16:17
      */
     IPage<Blog> getBlogByTime(Integer currentPage);
+
+    /**
+     * 给博客列表设置分类,标签,图片
+     *
+     * @param
+     * @return
+     * @author yujunhong
+     * @date 2021/8/2 15:03
+     */
+    List<Blog> setTagAndSortAndPictureByBlogList(List<Blog> list);
 }

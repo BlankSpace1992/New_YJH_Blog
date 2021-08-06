@@ -66,4 +66,21 @@ public interface FileService extends IService<File> {
      * @date 2021/7/30 15:56
      */
     void ckEditorUploadFile(HttpServletRequest request);
+
+    /**
+     * 复制得图片上传
+     *
+     * @return map
+     * @author yujunhong
+     * @date 2021/8/2 10:30
+     */
+    Map<String, Object> ckEditorUploadCopyFile();
+
+    /**
+     * ckEditor工具栏 插入\编辑超链接的文件上传
+     *
+     * @author yujunhong
+     * @date 2021/8/2 14:08
+     */
+    void ckEditorUploadToolFile();
 }

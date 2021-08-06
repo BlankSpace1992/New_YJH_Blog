@@ -43,7 +43,31 @@
         article_source
     </sql>
     <select id="getBlogByLevel" resultMap="BaseResultMap">
-        select a.title, a.summary, a.uid
+        select a.uid,
+               a.title,
+               a.summary,
+               a.content,
+               a.tag_uid,
+               a.click_count,
+               a.collect_count,
+               a.file_uid,
+               a.status,
+               a.create_time,
+               a.update_time,
+               a.admin_uid,
+               a.is_original,
+               a.author,
+               a.articles_part,
+               a.blog_sort_uid,
+               a.level,
+               a.is_publish,
+               a.sort,
+               a.open_comment,
+               a.type,
+               a.outside_link,
+               a.oid,
+               a.user_uid,
+               a.article_source
         from t_blog as a
         where a.level = #{level,jdbcType=INTEGER}
           and a.status = #{status,jdbcType=INTEGER}
