@@ -44,7 +44,7 @@ public class Tag {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 标签简介
      */

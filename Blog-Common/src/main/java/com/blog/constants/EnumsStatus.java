@@ -33,4 +33,23 @@ public class EnumsStatus {
      * 下架
      */
     public static final String NO_PUBLISH = "0";
+
+    /**
+     * 评论
+     */
+    public static final Integer COMMENT = 0;
+
+    /**
+     * 点赞
+     */
+    public static final Integer PRAISE = 1;
+
+    /**
+     * 关闭
+     */
+    public static final String CLOSE = "0";
+    /**
+     * 开启
+     */
+    public static final String OPEN = "1";
 }

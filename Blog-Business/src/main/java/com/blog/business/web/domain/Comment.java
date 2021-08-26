@@ -2,6 +2,7 @@ package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 评论表
@@ -68,7 +70,7 @@ public class Comment {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 创建时间
      */
@@ -99,4 +101,53 @@ public class Comment {
     @ApiModelProperty(value = "一级评论UID")
     @Excel(name = "一级评论UID")
     private String firstCommentUid;
+
+    /**
+     * 本条评论是哪个用户说的
+     */
+    @TableField(exist = false)
+    private User user;
+
+    /**
+     * 发表评论的用户名
+     */
+    @TableField(exist = false)
+    private String userName;
+
+    /**
+     * 被回复的用户名
+     */
+    @TableField(exist = false)
+    private String toUserName;
+
+
+    /**
+     * 本条评论对哪个用户说的，如果没有则为一级评论
+     */
+    @TableField(exist = false)
+    private User toUser;
+
+    /**
+     * 本条评论下的回复
+     */
+    @TableField(exist = false)
+    private List<Comment> replyList;
+
+    /**
+     * 本条评论回复的那条评论
+     */
+    @TableField(exist = false)
+    private Comment toComment;
+
+    /**
+     * 评论来源名称
+     */
+    @TableField(exist = false)
+    private String sourceName;
+
+    /**
+     * 该评论来源的博客
+     */
+    @TableField(exist = false)
+    private Blog blog;
 }

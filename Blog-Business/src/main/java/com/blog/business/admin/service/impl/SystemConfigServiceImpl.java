@@ -3,16 +3,20 @@ package com.blog.business.admin.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.admin.domain.SystemConfig;
 import com.blog.business.admin.mapper.SystemConfigMapper;
 import com.blog.business.admin.service.SystemConfigService;
 import com.blog.config.redis.RedisUtil;
+import com.blog.constants.BaseMessageConf;
 import com.blog.constants.BaseRedisConf;
 import com.blog.constants.BaseSysConf;
 import com.blog.constants.EnumsStatus;
-import com.blog.business.admin.domain.SystemConfig;
+import com.blog.exception.CommonErrorException;
 import com.blog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * @author yujunhong
@@ -36,7 +40,8 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
         wrapper.eq(SystemConfig::getStatus, EnumsStatus.ENABLE);
         wrapper.orderByDesc(SystemConfig::getCreateTime);
         wrapper.last(BaseSysConf.LIMIT_ONE);
-        SystemConfig systemConfig = this.getOne(wrapper);
+        SystemConfig systemConfig =
+                Optional.ofNullable(this.getOne(wrapper)).orElseThrow(() -> new CommonErrorException((BaseMessageConf.SYSTEM_CONFIG_IS_NOT_EXIST)));
         // 将数据缓存进redis
         if (StringUtils.isNotNull(systemConfig)) {
             redisUtil.set(BaseRedisConf.SYSTEM_CONFIG, JSON.toJSONString(systemConfig), 86400);

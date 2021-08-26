@@ -1,9 +1,11 @@
 package com.blog.business.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.Blog;
 import com.blog.business.web.domain.BlogSort;
 import com.blog.business.web.domain.Tag;
@@ -14,11 +16,16 @@ import com.blog.business.web.service.SysParamsService;
 import com.blog.business.web.service.TagService;
 import com.blog.config.redis.RedisUtil;
 import com.blog.constants.*;
+import com.blog.exception.CommonErrorException;
 import com.blog.feign.PictureFeignClient;
+import com.blog.holder.RequestHolder;
+import com.blog.utils.IpUtils;
 import com.blog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,7 +44,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @Autowired
     private PictureFeignClient pictureFeignClient;
     @Autowired
+    private WebUtils webUtils;
+    @Autowired
     private BlogSortService blogSortService;
+    @Value(value = "${BLOG.ORIGINAL_TEMPLATE}")
+    private String originalTemplate;
+    @Value(value = "${BLOG.REPRINTED_TEMPLATE}")
+    private String printedTemplate;
 
     @Override
     public IPage<Blog> getBlogByLevel(Integer level, Integer currentPage, Integer useSort) {
@@ -117,27 +130,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         baseMapper.getHotBlog(page, EnumsStatus.PUBLISH, EnumsStatus.ENABLE);
         // 获取博客列表
         List<Blog> blogList = page.getRecords();
-        // 获取对应标签数据
-        blogList.forEach(item -> {
-            // 获取标签id
-            String tagUid = item.getTagUid();
-            // 按照逗号进行拆分
-            String[] tagUids = tagUid.split(BaseSysConf.FILE_SEGMENTATION);
-            List<Tag> tags = new ArrayList<>();
-            for (String uid : tagUids) {
-                Tag tag = tagService.getById(uid);
-                if (StringUtils.isNull(tag)) {
-                    continue;
-                }
-                tags.add(tag);
-            }
-            item.setTagList(tags);
-        });
+        // 获取对应标签/分类/图片
+        setBlog(blogList);
         // 将数据缓存金redis
         if (StringUtils.isNotEmpty(blogList)) {
             redisUtil.set(BaseRedisConf.HOT_BLOG, JSON.toJSONString(blogList), 3600);
         }
-        // TODO: 2021/6/1 图片问题未解决
+        page.setRecords(blogList);
         return page;
     }
 
@@ -154,23 +153,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         baseMapper.getNewBlog(page, EnumsStatus.PUBLISH, EnumsStatus.ENABLE);
         // 获取博客数据
         List<Blog> blogList = page.getRecords();
-        // 获取对应标签数据
-        blogList.forEach(item -> {
-            // 获取标签id
-            String tagUid = item.getTagUid();
-            // 按照逗号进行拆分
-            String[] tagUids = tagUid.split(BaseSysConf.FILE_SEGMENTATION);
-            List<Tag> tags = new ArrayList<>();
-            for (String uid : tagUids) {
-                Tag tag = tagService.getById(uid);
-                if (StringUtils.isNull(tag)) {
-                    continue;
-                }
-                tags.add(tag);
-            }
-            item.setTagList(tags);
-        });
-        // TODO: 2021/6/1 图片问题未解决
+        setBlog(blogList);
+        page.setRecords(blogList);
         return page;
     }
 
@@ -186,23 +170,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         baseMapper.getBlogByTime(page, EnumsStatus.PUBLISH, EnumsStatus.ENABLE);
         // 获取博客数据
         List<Blog> blogList = page.getRecords();
-        // 获取对应标签数据
-        blogList.forEach(item -> {
-            // 获取标签id
-            String tagUid = item.getTagUid();
-            // 按照逗号进行拆分
-            String[] tagUids = tagUid.split(BaseSysConf.FILE_SEGMENTATION);
-            List<Tag> tags = new ArrayList<>();
-            for (String uid : tagUids) {
-                Tag tag = tagService.getById(uid);
-                if (StringUtils.isNull(tag)) {
-                    continue;
-                }
-                tags.add(tag);
-            }
-            item.setTagList(tags);
-        });
-        // TODO: 2021/6/1 图片问题未解决
+        setBlog(blogList);
+        page.setRecords(blogList);
         return page;
     }
 
@@ -303,6 +272,81 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         return list;
     }
 
+    @Override
+    public Blog getBlogContentByUid(String uid, Integer oid) {
+        // 获取请求
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR,
+                        "获取用户IP失败"));
+        // 获取用户ip
+        String ipAddr = IpUtils.getIpAddr(request);
+        // 判断uid和oid是否不存在
+        if (StringUtils.isEmpty(uid) && oid == 0) {
+            throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.PARAM_INCORRECT);
+        }
+        Blog blog = null;
+        // 首先根据uid进行查询
+        if (StringUtils.isNotEmpty(uid)) {
+            blog = this.getById(uid);
+        } else {
+            LambdaQueryWrapper<Blog> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Blog::getOid, oid);
+            blog = this.getOne(wrapper);
+        }
+        // 判断博客是否为空/博客状态/是否发布
+        if (blog == null || Integer.parseInt(blog.getStatus()) == EnumsStatus.DISABLED || EnumsStatus.NO_PUBLISH.equals(blog.getIsPublish())) {
+            throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.BLOG_IS_DELETE);
+        }
+        // 设置版权说明
+        setBlogCopyRight(blog);
+        // 设置博客标签
+        setTagByBlog(blog);
+        // 设置分类
+        setSortByBlog(blog);
+        // 设置博客标题图
+        setPhotoListByBlog(blog);
+        // 从redis中获取数据判断是否已经点击
+        String key = BaseRedisConf.BLOG_CLICK + Constants.SYMBOL_COLON + ipAddr + Constants.SYMBOL_WELL + blog.getUid();
+        Integer blogClockResult =
+                (Integer) redisUtil.get(key);
+        // 如果为空则并未点击
+        if (StringUtils.isNull(blogClockResult)) {
+            Integer clickCount = blog.getClickCount() + 1;
+            blog.setClickCount(clickCount);
+            this.updateById(blog);
+
+            // 保存进redis中,过期时间为24小时
+            redisUtil.set(key, blog.getClickCount(), 86400);
+        }
+        return blog;
+    }
+
+    @Override
+    public IPage<Blog> getSameBlogByBlogUid(String blogUid) {
+        // 获取当前博客信息
+        Blog blog = this.getById(blogUid);
+        // 获取博客分类信息
+        String blogSortUid = blog.getBlogSortUid();
+        // 默认查询十个数据
+        Page<Blog> page = new Page<>();
+        page.setCurrent(1);
+        page.setSize(10);
+        // 查询blogSortUid相同的博客
+        LambdaQueryWrapper<Blog> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        wrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        wrapper.eq(Blog::getBlogSortUid, blogSortUid);
+        // 过滤掉当前的博客
+        wrapper.ne(Blog::getUid, blogUid);
+        wrapper.orderByDesc(Blog::getCreateTime);
+        Page<Blog> blogPage = this.page(page, wrapper);
+        // 设置标签,分类,以及图片
+        List<Blog> blogList = blogPage.getRecords();
+        blogList = this.setTagAndSortAndPictureByBlogList(blogList);
+        blogPage.setRecords(blogList);
+        return blogPage;
+    }
+
     /**
      * 设置博客的标签以及分类,图片
      *
@@ -365,7 +409,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             }
             //获取标签
             if (StringUtils.isNotEmpty(blog.getTagUid())) {
-                List<String> tagIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,blog.getTagUid());
+                List<String> tagIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, blog.getTagUid());
                 List<Tag> tagListTemp = new ArrayList<>();
 
                 tagIdsTemp.forEach(tag -> {
@@ -377,13 +421,88 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             }
             //获取图片
             if (StringUtils.isNotEmpty(blog.getFileUid())) {
-                List<String> pictureIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,blog.getFileUid());
+                List<String> pictureIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,
+                        blog.getFileUid());
                 List<String> pictureListTemp = new ArrayList<>();
 
                 pictureIdsTemp.forEach(picture -> {
                     pictureListTemp.add(pictureMap.get(picture));
                 });
                 blog.setPhotoList(pictureListTemp);
+            }
+        }
+    }
+
+    /**
+     * 设置博客版权
+     *
+     * @param blog 博客实体
+     * @author yujunhong
+     * @date 2021/8/9 15:03
+     */
+    private void setBlogCopyRight(Blog blog) {
+        // 判断是否原创
+        if (Constants.STR_ONE.equals(blog.getIsOriginal())) {
+            blog.setCopyright(originalTemplate);
+        } else {
+            String reprintedTemplate = printedTemplate;
+            String[] variable = {blog.getArticlesPart(), blog.getAuthor()};
+            String str = String.format(reprintedTemplate, (Object) variable);
+            blog.setCopyright(str);
+        }
+    }
+
+    /**
+     * 为博客设置标签
+     *
+     * @param blog 博客实体对象
+     * @author yujunhong
+     * @date 2021/8/9 15:11
+     */
+    private void setTagByBlog(Blog blog) {
+        String tagUid = blog.getTagUid();
+        if (!StringUtils.isEmpty(tagUid)) {
+            String[] uids = tagUid.split(BaseSysConf.FILE_SEGMENTATION);
+            List<Tag> tagList = new ArrayList<>();
+            for (String uid : uids) {
+                Tag tag = tagService.getById(uid);
+                if (tag != null && tag.getStatus() != EnumsStatus.DISABLED) {
+                    tagList.add(tag);
+                }
+            }
+            blog.setTagList(tagList);
+        }
+    }
+
+    /**
+     * 为博客设置分类
+     *
+     * @param blog 博客实体对象
+     * @author yujunhong
+     * @date 2021/8/9 15:14
+     */
+    private void setSortByBlog(Blog blog) {
+        if (blog != null && !StringUtils.isEmpty(blog.getBlogSortUid())) {
+            BlogSort blogSort = blogSortService.getById(blog.getBlogSortUid());
+            blog.setBlogSort(blogSort);
+        }
+    }
+
+    /**
+     * 设置博客标题图
+     *
+     * @param blog 博客实体对象
+     * @author yujunhong
+     * @date 2021/8/9 15:16
+     */
+    private void setPhotoListByBlog(Blog blog) {
+        //获取标题图片
+        if (blog != null && !StringUtils.isEmpty(blog.getFileUid())) {
+            List<Map<String, Object>> pictureListMap = this.pictureFeignClient.getPicture(blog.getFileUid(),
+                    Constants.SYMBOL_COMMA);
+            List<String> picList = webUtils.getPicture(pictureListMap);
+            if (picList != null && picList.size() > 0) {
+                blog.setPhotoList(picList);
             }
         }
     }

@@ -220,16 +220,16 @@
             params.append("oid", this.blogOid)
           }
           getBlogByUid(params).then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
-              this.blogData = response.result;
-              this.blogUid = response.result.uid
-              this.blogOid = response.result.oid
-              this.commentInfo.blogUid = response.result.uid;
+            if (response.data.code == this.$ECode.SUCCESS) {
+              this.blogData = response.data.result;
+              this.blogUid = response.data.result.uid
+              this.blogOid = response.data.result.oid
+              this.commentInfo.blogUid = response.data.result.uid;
               this.getSameBlog()
               this.getCommentDataList();
             }
             setTimeout(()=>{
-              that.blogContent = response.result.content
+              that.blogContent = this.blogData.content
               that.loadingInstance.close();
             }, 200)
           });

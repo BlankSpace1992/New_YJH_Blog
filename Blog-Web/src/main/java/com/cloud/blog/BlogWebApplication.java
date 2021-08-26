@@ -11,7 +11,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
  * @author yujunhong
  * @date 2021/5/26 15:24
  */
-@SpringBootApplication(scanBasePackages = {"com.blog.config", "com.cloud.blog", "com.blog.business.web"})
+@SpringBootApplication(scanBasePackages = {"com.blog.config", "com.cloud.blog", "com.blog.business.admin","com.blog.business.web","com.blog.business.utils"})
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @EnableOpenApi

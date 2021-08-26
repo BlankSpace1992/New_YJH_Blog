@@ -67,10 +67,31 @@ public interface BlogService extends IService<Blog> {
     /**
      * 给博客列表设置分类,标签,图片
      *
-     * @param
-     * @return
+     * @param list 博客列表
+     * @return 包含图片/标签/分类的博客列表
      * @author yujunhong
      * @date 2021/8/2 15:03
      */
     List<Blog> setTagAndSortAndPictureByBlogList(List<Blog> list);
+
+    /**
+     * 通过点击博客获取详情信息
+     *
+     * @param uid 博客UID
+     * @param oid 博客OID
+     * @return 博客内容
+     * @author yujunhong
+     * @date 2021/8/9 14:46
+     */
+    Blog getBlogContentByUid(String uid, Integer oid);
+
+    /**
+     * 根据blogId获取相关博客
+     *
+     * @param blogUid 博客id
+     * @return 相关博客信息
+     * @author yujunhong
+     * @date 2021/8/12 14:19
+     */
+    IPage<Blog> getSameBlogByBlogUid(String blogUid);
 }

@@ -6,6 +6,7 @@ import com.blog.entity.SystemConfigCommon;
 import com.blog.exception.ResultBody;
 import com.blog.utils.FeignUtils;
 import com.blog.utils.MinIoUtils;
+import com.blog.utils.StringUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -59,15 +60,16 @@ public class FileController {
      */
     @ApiOperation(value = "通过fileIds获取图片信息接口")
     @GetMapping(value = "/getPicture")
-    public List<Map<String, Object>> getPicture(@ApiParam(name = "fileIds", value = "文件ids") @RequestParam(name = "fileIds",
+    public List<Map<String, Object>> getPicture(@ApiParam(name = "fileIds", value = "文件ids") @RequestParam(name =
+            "fileIds",
             required = false) String fileIds,
-                                                @ApiParam(name = "code", value = "切割符") @RequestParam(name = "code", required =
-                                         false) String code) {
-//        if (StringUtils.isEmpty(fileIds)) {
-//            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.PICTURE_UID_IS_NULL);
-//        }
-        List<Map<String, Object>> fileServicePicture = fileService.getPicture(fileIds, code);
-        return fileServicePicture;
+                                                @ApiParam(name = "code", value = "切割符") @RequestParam(name = "code",
+                                                        required =
+                                                                false) String code) {
+        if (StringUtils.isEmpty(fileIds)) {
+            return new ArrayList<>();
+        }
+        return fileService.getPicture(fileIds, code);
     }
 
     /**

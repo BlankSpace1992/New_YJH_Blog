@@ -1,9 +1,12 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.User;
 import com.blog.business.web.mapper.UserMapper;
 import com.blog.business.web.service.UserService;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+
+import java.util.List;
 
 /**
  *
@@ -12,9 +15,11 @@ import javax.annotation.Resource;
  *
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Resource
-    private UserMapper userMapper;
 
+    @Override
+    public List<User> getUserListByIds(List<String> userUidList) {
+        return baseMapper.getUserListByIds(userUidList);
+    }
 }

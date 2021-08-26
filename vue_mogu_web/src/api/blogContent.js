@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getBlogByUid (params) {
   return request({
-    url: process.env.WEB_API + '/content/getBlogByUid',
+    url: process.env.WEB_API + '/content/getBlogContentByUid',
     method: 'get',
     params
   })

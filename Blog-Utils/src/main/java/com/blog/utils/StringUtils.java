@@ -500,4 +500,37 @@ public class StringUtils extends StrUtil {
         result = Arrays.asList(split);
         return result;
     }
+
+
+    /**
+     * 判断评论是否为垃圾评论（仅通过单一字符重复出现来判断，以后可以扩展更多的检测方法）
+     *
+     * @param content 评论内容
+     * @return 是否垃圾评论
+     * @author yujunhong
+     * @date 2021/8/25 16:25
+     */
+    public static Boolean isCommentSpam(String content) {
+        if (content == null) {
+            return true;
+        }
+        char[] chars = content.toCharArray();
+        // 最大重复次数
+        int maxCount = 4;
+        for (int a = 0; a < chars.length; a++) {
+            int count = 1;
+            for (int b = a; b < chars.length - 1; b++) {
+                if (chars[b + 1] == chars[b]) {
+                    count++;
+                    // 判断字符重复的次数是否大于阈值
+                    if (count >= maxCount) {
+                        return true;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
 }

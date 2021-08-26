@@ -2,6 +2,7 @@ package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -164,7 +165,7 @@ public class User {
      */
     @ApiModelProperty(value = "评论状态 1:正常 0:禁言")
     @Excel(name = "评论状态 1:正常 0:禁言")
-    private Object commentStatus;
+    private Integer commentStatus;
     /**
      * ip来源
      */
@@ -188,11 +189,17 @@ public class User {
      */
     @ApiModelProperty(value = "是否开启邮件通知 1:开启 0:关闭")
     @Excel(name = "是否开启邮件通知 1:开启 0:关闭")
-    private Object startEmailNotification;
+    private Integer startEmailNotification;
     /**
      * 用户标签：0：普通用户，1：管理员，2：博主 等
      */
     @ApiModelProperty(value = "用户标签：0：普通用户，1：管理员，2：博主 等")
     @Excel(name = "用户标签：0：普通用户，1：管理员，2：博主 等")
-    private Object userTag;
+    private Integer userTag;
+
+    /**
+     * 用户头像
+     */
+    @TableField(exist = false)
+    private String photoUrl;
 }

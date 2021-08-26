@@ -1,9 +1,10 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.CommentReport;
 import com.blog.business.web.mapper.CommentReportMapper;
 import com.blog.business.web.service.CommentReportService;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 
 /**
  *
@@ -12,9 +13,7 @@ import javax.annotation.Resource;
  *
  */
 @Service
-public class CommentReportServiceImpl implements CommentReportService {
+public class CommentReportServiceImpl extends ServiceImpl<CommentReportMapper, CommentReport> implements CommentReportService {
 
-    @Resource
-    private CommentReportMapper commentReportMapper;
 
 }
