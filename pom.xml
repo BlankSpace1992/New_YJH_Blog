@@ -11,6 +11,7 @@
         <module>Blog-Business</module>
         <module>Blog-Gateway</module>
         <module>Blog-Picture</module>
+        <module>Blog-Search</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>

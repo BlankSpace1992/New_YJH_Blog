@@ -179,7 +179,7 @@
         if(blog.type == "0") {
           let routeData = this.$router.resolve({
             path: "/info",
-            query: {blogOid: blog.oid}
+            query: {blogUid: blog.uid}
           });
           window.open(routeData.href, '_blank');
         } else if(blog.type == "1") {

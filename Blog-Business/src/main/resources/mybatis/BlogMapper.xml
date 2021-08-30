@@ -100,7 +100,11 @@
                a.blog_sort_uid,
                b.uid,
                b.sort_name,
-               b.sort_name as blogSortName
+               b.sort_name as blogSortName,
+               a.type,
+               a.oid,
+               a.outside_link,
+               a.author
         from t_blog as a
                      left join t_blog_sort b on a.blog_sort_uid = b.uid
         where a.is_publish = #{isPublish,jdbcType=VARCHAR}

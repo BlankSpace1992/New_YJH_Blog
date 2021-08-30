@@ -29,3 +29,5 @@
 /Blog-Picture/target/classes/com/blog/picture/config/TokenInterceptor.class
 /Blog-Picture/target/classes/com/blog/picture/config/WebSecurityConfig.class
 /Blog-Picture/target/classes/com/blog/picture/config/BlogPictureConfig.class
+/Blog-Search/Blog-Search.iml
+/Blog-Search/target/
