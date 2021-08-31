@@ -105,7 +105,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     public IPage<Blog> getBlogByLevel(IPage<Blog> page, Integer level) {
-        baseMapper.getBlogByLevel(page, level, EnumsStatus.ENABLE);
+        baseMapper.getBlogByLevel(page, level, EnumsStatus.ENABLE,EnumsStatus.PUBLISH);
         return page;
     }
 
@@ -176,7 +176,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     @Override
-    public List<Blog> setTagAndSortAndPictureByBlogList(List<Blog> list) {
+    public void setTagAndSortAndPictureByBlogList(List<Blog> list) {
         // 分类集合id
         List<String> sortIds = new ArrayList<>();
         // 标签集合id
@@ -269,7 +269,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
                 }
             }
         }
-        return list;
     }
 
     @Override
@@ -342,7 +341,221 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         Page<Blog> blogPage = this.page(page, wrapper);
         // 设置标签,分类,以及图片
         List<Blog> blogList = blogPage.getRecords();
-        blogList = this.setTagAndSortAndPictureByBlogList(blogList);
+        this.setTagAndSortAndPictureByBlogList(blogList);
+        blogPage.setRecords(blogList);
+        return blogPage;
+    }
+
+    @Override
+    public List<Blog> getBlogBySearch(Long currentPage, Long pageSize) {
+        // 分页查询
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage);
+        page.setSize(sysParamsService.getSysParamsValueByKey(BaseSysConf.BLOG_NEW_COUNT));
+        // 查询数据
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        blogWrapper.orderByDesc(Blog::getCreateTime);
+        Page<Blog> blogPage = this.page(page, blogWrapper);
+        // 获取数据
+        List<Blog> blogList = blogPage.getRecords();
+        this.setBlog(blogList);
+        return blogList;
+    }
+
+    @Override
+    public Map<String, Object> searchBlog(String keywords, Long currentPage, Long pageSize) {
+        // 去除空格
+        final String keyword = keywords.trim();
+        // 注入分页参数
+        Page<Blog> page = new Page<>();
+        page.setSize(pageSize);
+        page.setCurrent(currentPage);
+        // 查询数据
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.and(wrapper -> wrapper.like(Blog::getTitle, keyword).or().like(Blog::getSummary, keyword));
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        // 查询字段不包含内容
+        blogWrapper.select(Blog.class, item -> !item.getProperty().equals(BaseSQLConf.CONTENT));
+        blogWrapper.orderByDesc(Blog::getClickCount);
+        IPage<Blog> blogPage = this.page(page, blogWrapper);
+        // 获取数据
+        List<Blog> blogList = blogPage.getRecords();
+        // 博客分类id集合
+        List<String> blogSortUidList = new ArrayList<>();
+        // 拼接图片地址
+        final StringBuffer fileUidBuilder = new StringBuffer();
+        blogList.forEach(item -> {
+            // 获取图片uid
+            blogSortUidList.add(item.getBlogSortUid());
+            if (StringUtils.isNotEmpty(item.getFileUid())) {
+                fileUidBuilder.append(item.getFileUid() + BaseSysConf.FILE_SEGMENTATION);
+            }
+            // 给标题和简介设置高亮
+            item.setTitle(getHighlighted(item.getTitle(), keyword));
+            item.setSummary(getHighlighted(item.getSummary(), keyword));
+        });
+        // 获取图片数据
+        List<Map<String, Object>> picture = pictureFeignClient.getPicture(fileUidBuilder.toString(),
+                BaseSysConf.FILE_SEGMENTATION);
+        // 根据图片数据uid分组
+        Map<String, String> pictureMap = new HashMap<>();
+        picture.forEach(item -> pictureMap.put(item.get(BaseSQLConf.UID).toString(),
+                item.get(BaseSQLConf.URL).toString()));
+        // 处理博客分类情况
+        List<BlogSort> blogSortList = new ArrayList<>();
+        if (blogSortUidList.size() > 0) {
+            blogSortList = blogSortService.listByIds(blogSortUidList);
+        }
+        // 按照分类uid进行分组
+        Map<String, String> blogSortMap = blogSortList.stream().collect(Collectors.toMap(BlogSort::getUid,
+                BlogSort::getSortName));
+        // 设置分类名 和 图片
+        blogList.forEach(item -> {
+            if (blogSortMap.get(item.getBlogSortUid()) != null) {
+                item.setBlogSortName(blogSortMap.get(item.getBlogSortUid()));
+            }
+
+            //获取图片
+            if (StringUtils.isNotEmpty(item.getFileUid())) {
+                List<String> pictureUidsTemp = StringUtils.stringToList(item.getFileUid(),
+                        BaseSysConf.FILE_SEGMENTATION);
+                List<String> pictureListTemp = new ArrayList<>();
+
+                pictureUidsTemp.forEach(pictureUid -> {
+                    pictureListTemp.add(pictureMap.get(pictureUid));
+                });
+                // 只设置一张标题图
+                if (pictureListTemp.size() > 0) {
+                    item.setPhotoUrl(pictureListTemp.get(0));
+                } else {
+                    item.setPhotoUrl("");
+                }
+            }
+        });
+
+        Map<String, Object> map = new HashMap<>();
+        // 返回总记录数
+        map.put(BaseSysConf.TOTAL, blogPage.getTotal());
+        // 返回总页数
+        map.put(BaseSysConf.TOTAL_PAGE, blogPage.getPages());
+        // 返回当前页大小
+        map.put(BaseSysConf.PAGE_SIZE, pageSize);
+        // 返回当前页
+        map.put(BaseSysConf.CURRENT_PAGE, blogPage.getCurrent());
+        // 返回数据
+        map.put(BaseSysConf.BLOG_LIST, blogList);
+        return map;
+    }
+
+    @Override
+    public IPage<Blog> searchBlogByTag(String tagUid, Long currentPage, Long pageSize) {
+        // 获取标签信息
+        Tag tag = tagService.getById(tagUid);
+        // 判断标签是否为空
+        if (StringUtils.isNotNull(tag)) {
+            HttpServletRequest request =
+                    Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "获取博客信息失败"));
+            // 获取ip地址
+            String ipAddr = IpUtils.getIpAddr(request);
+            //从Redis取出数据，判断该用户24小时内，是否点击过该标签
+            String jsonResult =
+                    (String) redisUtil.get(BaseRedisConf.TAG_CLICK + BaseRedisConf.SEGMENTATION + ipAddr + "#" + tagUid);
+            // 判空
+            if (StringUtils.isEmpty(jsonResult)) {
+                //给标签点击数增加
+                int clickCount = tag.getClickCount() + 1;
+                tag.setClickCount(clickCount);
+                tagService.updateById(tag);
+                //将该用户点击记录存储到redis中, 24小时后过期
+                redisUtil.set(BaseRedisConf.TAG_CLICK + BaseRedisConf.SEGMENTATION + ipAddr + BaseRedisConf.WELL_NUMBER + tagUid, clickCount + "",
+                        24 * 60 * 60);
+            }
+        }
+        // 注入分页参数
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage);
+        page.setSize(pageSize);
+        // 查询相同标签的博客
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.eq(Blog::getTagUid, tagUid);
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        // 查询字段不包含内容
+        blogWrapper.select(Blog.class, item -> !item.getProperty().equals(BaseSQLConf.CONTENT));
+        blogWrapper.orderByDesc(Blog::getCreateTime);
+        Page<Blog> blogPage = this.page(page, blogWrapper);
+        // 获取数据
+        List<Blog> blogList = blogPage.getRecords();
+        setTagAndSortAndPictureByBlogList(blogList);
+        blogPage.setRecords(blogList);
+        return blogPage;
+    }
+
+    @Override
+    public IPage<Blog> searchBlogBySort(String blogSortUid, Long currentPage, Long pageSize) {
+        // 获取分类信息
+        BlogSort blogSort = blogSortService.getById(blogSortUid);
+        // 判空
+        if (StringUtils.isNotNull(blogSort)) {
+            HttpServletRequest request =
+                    Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "获取博客信息失败"));
+            // 获取ip地址
+            String ipAddr = IpUtils.getIpAddr(request);
+            //从Redis取出数据，判断该用户24小时内，是否点击过该分类
+            String jsonResult =
+                    (String) redisUtil.get(BaseRedisConf.TAG_CLICK + BaseRedisConf.SEGMENTATION + ipAddr + BaseRedisConf.WELL_NUMBER + blogSortUid);
+            // 判空
+            if (StringUtils.isEmpty(jsonResult)) {
+                //给标签点击数增加
+                int clickCount = blogSort.getClickCount() + 1;
+                blogSort.setClickCount(clickCount);
+                blogSortService.updateById(blogSort);
+                //将该用户点击记录存储到redis中, 24小时后过期
+                redisUtil.set(BaseRedisConf.TAG_CLICK + BaseRedisConf.SEGMENTATION + ipAddr + BaseRedisConf.WELL_NUMBER + blogSortUid, clickCount + "",
+                        24 * 60 * 60);
+            }
+        }
+        // 注入分页参数
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage);
+        page.setSize(pageSize);
+        // 查询相同分类的博客
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.eq(Blog::getBlogSortUid, blogSortUid);
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        // 查询字段不包含内容
+        blogWrapper.select(Blog.class, item -> !item.getProperty().equals(BaseSQLConf.CONTENT));
+        blogWrapper.orderByDesc(Blog::getCreateTime);
+        Page<Blog> blogPage = this.page(page, blogWrapper);
+        // 获取数据
+        List<Blog> blogList = blogPage.getRecords();
+        setTagAndSortAndPictureByBlogList(blogList);
+        blogPage.setRecords(blogList);
+        return blogPage;
+    }
+
+    @Override
+    public IPage<Blog> searchBlogByAuthor(String author, Long currentPage, Long pageSize) {
+        // 注入分页参数
+        Page<Blog> page = new Page<>();
+        page.setCurrent(currentPage);
+        page.setSize(pageSize);
+        // 查询相同作者的博客
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.eq(Blog::getAuthor, author);
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        // 查询字段不包含内容
+        blogWrapper.select(Blog.class, item -> !item.getProperty().equals(BaseSQLConf.CONTENT));
+        blogWrapper.orderByDesc(Blog::getCreateTime);
+        Page<Blog> blogPage = this.page(page, blogWrapper);
+        // 获取数据
+        List<Blog> blogList = blogPage.getRecords();
+        setTagAndSortAndPictureByBlogList(blogList);
         blogPage.setRecords(blogList);
         return blogPage;
     }
@@ -505,5 +718,79 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
                 blog.setPhotoList(picList);
             }
         }
+    }
+
+    /**
+     * 为关键字设置高亮显示
+     *
+     * @param str     文字内容
+     * @param keyword 关键字
+     * @return 设置高亮后的文字内容
+     * @author yujunhong
+     * @date 2021/8/31 14:42
+     */
+    private String getHighlighted(String str, String keyword) {
+        if (StringUtils.isEmpty(keyword) || StringUtils.isEmpty(str)) {
+            return str;
+        }
+        String startStr = "<span style = 'color:red'>";
+        String endStr = "</span>";
+        // 判断关键字是否直接是搜索的内容，否者直接返回
+        if (str.equals(keyword)) {
+            return startStr + str + endStr;
+        }
+        String lowerCaseStr = str.toLowerCase();
+        String lowerKeyword = keyword.toLowerCase();
+        String[] lowerCaseArray = lowerCaseStr.split(lowerKeyword);
+        boolean isEndWith = lowerCaseStr.endsWith(lowerKeyword);
+
+        // 计算分割后的字符串位置
+        int count = 0;
+        List<Map<String, Integer>> list = new ArrayList<>();
+        List<Map<String, Integer>> keyList = new ArrayList<>();
+        for (int a = 0; a < lowerCaseArray.length; a++) {
+            // 将切割出来的存储map
+            Map<String, Integer> map = new HashMap<>();
+            Map<String, Integer> keyMap = new HashMap<>();
+            map.put("startIndex", count);
+            int len = lowerCaseArray[a].length();
+            count += len;
+            map.put("endIndex", count);
+            list.add(map);
+            if (a < lowerCaseArray.length - 1 || isEndWith) {
+                // 将keyword存储map
+                keyMap.put("startIndex", count);
+                count += keyword.length();
+                keyMap.put("endIndex", count);
+                keyList.add(keyMap);
+            }
+        }
+        // 截取切割对象
+        List<String> arrayList = new ArrayList<>();
+        for (Map<String, Integer> item : list) {
+            Integer start = item.get("startIndex");
+            Integer end = item.get("endIndex");
+            String itemStr = str.substring(start, end);
+            arrayList.add(itemStr);
+        }
+        // 截取关键字
+        List<String> keyArrayList = new ArrayList<>();
+        for (Map<String, Integer> item : keyList) {
+            Integer start = item.get("startIndex");
+            Integer end = item.get("endIndex");
+            String itemStr = str.substring(start, end);
+            keyArrayList.add(itemStr);
+        }
+
+        StringBuffer sb = new StringBuffer();
+        for (int a = 0; a < arrayList.size(); a++) {
+            sb.append(arrayList.get(a));
+            if (a < arrayList.size() - 1 || isEndWith) {
+                sb.append(startStr);
+                sb.append(keyArrayList.get(a));
+                sb.append(endStr);
+            }
+        }
+        return sb.toString();
     }
 }

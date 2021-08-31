@@ -22,7 +22,7 @@ public class BaseSQLConf {
     public final static String SORT = "sort";
     public final static String LINK_STATUS = "link_status";
     public final static String FEEDBACK_STATUS = "feedback_status";
-
+    public final static String CONTENT = "content";
     /**
      * 字典表相关
      */

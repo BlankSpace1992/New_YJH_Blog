@@ -43,6 +43,8 @@
         <flexmark.version>0.62.2</flexmark.version>
         <qiniu.version>[7.2.0, 7.2.99]</qiniu.version>
         <spring.mock.version>2.0.8</spring.mock.version>
+        <commons-beanutils>1.8.0</commons-beanutils>
+        <mybatis-plus-extension>3.1.2</mybatis-plus-extension>
     </properties>
     <dependencyManagement>
         <dependencies>

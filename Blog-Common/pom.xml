@@ -65,6 +65,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.baomidou</groupId>-->
+<!--            <artifactId>mybatis-plus-extension</artifactId>-->
+<!--            <version>${mybatis-plus-extension}</version>-->
+<!--        </dependency>-->
         <!--easypoi Excel处理核心依赖-->
         <dependency>
             <groupId>cn.afterturn</groupId>

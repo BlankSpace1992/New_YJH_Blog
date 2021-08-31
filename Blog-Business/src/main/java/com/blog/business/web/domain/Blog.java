@@ -1,6 +1,7 @@
 package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -94,6 +95,7 @@ public class Blog {
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     /**
      * 更新时间

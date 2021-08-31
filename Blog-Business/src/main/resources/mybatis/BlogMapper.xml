@@ -71,6 +71,7 @@
         from t_blog as a
         where a.level = #{level,jdbcType=INTEGER}
           and a.status = #{status,jdbcType=INTEGER}
+         and a.is_publish=#{isPublish,jdbcType=VARCHAR}
         order by a.create_time
     </select>
 

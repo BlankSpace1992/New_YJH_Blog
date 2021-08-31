@@ -1,6 +1,7 @@
 package com.blog.feign;
 
 import com.blog.config.FeignConfiguration;
+import com.blog.exception.ResultBody;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,8 +33,8 @@ public interface WebFeignClient {
      * @author yujunhong
      * @date 2021/6/22 9:34
      */
-    @GetMapping(value = "/content/getBlogByUid")
-    String getBlogByUid(@RequestParam(value = "uid") String uid);
+    @GetMapping(value = "/content/getBlogContentByUid")
+    ResultBody getBlogByUid(@RequestParam(value = "uid") String uid);
 
     /**
      * 获取标签页相同的博客信息
@@ -75,6 +76,6 @@ public interface WebFeignClient {
      * @date 2021/6/22 9:48
      */
     @GetMapping(value = "/index/getBlogBySearch")
-    String getBlogBySearch(@RequestParam(value = "currentPage", defaultValue = "1") Long currentPage,
+    ResultBody getBlogBySearch(@RequestParam(value = "currentPage", defaultValue = "1") Long currentPage,
                            @RequestParam(value = "pageSize", defaultValue = "10") Long pageSize);
 }

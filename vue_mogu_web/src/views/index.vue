@@ -63,7 +63,7 @@
             </li>
             <li class="createTime">
               <span class="iconfont">&#xe606;</span>
-              {{item.createTime}}
+              {{item.createTime | dateFormat}}
             </li>
           </ul>
         </div>
@@ -121,6 +121,7 @@
   import {getBlogByLevel, getNewBlog, recorderVisitPage} from "../api/index";
   import { Loading } from 'element-ui';
   import {getBlogByUid} from "../api/blogContent";
+  import {formatDate} from "../../../vue_mogu_admin/src/utils";
   export default {
     name: "index",
     components: {
@@ -173,6 +174,11 @@
         recorderVisitPage(params).then(response => {
       });
     },
+    filters:{
+        dateFormat(time){
+          return formatDate(time);
+        }
+    },
     methods: {
       //跳转到文章详情【或推广链接】
       goToInfo(blog) {
@@ -223,7 +229,6 @@
         getNewBlog(params).then(response => {
           if (response.data.code === this.$ECode.SUCCESS) {
             that.newBlogData = response.data.result.records;
-            console.log("获取最新博客",that.newBlogData);
             that.total = response.data.result.total;
             that.pageSize = response.data.result.size;
             that.currentPage = response.data.result.current;

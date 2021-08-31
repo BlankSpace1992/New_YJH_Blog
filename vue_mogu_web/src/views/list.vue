@@ -49,7 +49,8 @@
             class="loadContent"
             @click="loadContent"
             v-if="!isEnd && !loading && totalPages>0"
-          >点击加载更多</div>
+          >点击加载更多
+          </div>
 
           <div class="lds-css ng-scope" v-if="!isEnd && loading">
             <div style="width:100%;height:100%" class="lds-facebook">
@@ -90,285 +91,285 @@
 
 <script>
 
-import ThirdRecommend from "../components/ThirdRecommend";
-import FourthRecommend from "../components/FourthRecommend";
-import TagCloud from "../components/TagCloud";
-import HotBlog from "../components/HotBlog";
-import FollowUs from "../components/FollowUs";
-import {
-  searchBlog,
-  searchBlogByTag,
-  searchBlogBySort,
-  searchBlogByAuthor
-} from "../api/search";
-import {getBlogByUid} from "../api/blogContent";
+  import ThirdRecommend from "../components/ThirdRecommend";
+  import FourthRecommend from "../components/FourthRecommend";
+  import TagCloud from "../components/TagCloud";
+  import HotBlog from "../components/HotBlog";
+  import FollowUs from "../components/FollowUs";
+  import {
+    searchBlog,
+    searchBlogByTag,
+    searchBlogBySort,
+    searchBlogByAuthor
+  } from "../api/search";
+  import {getBlogByUid} from "../api/blogContent";
 
-export default {
-  name: "list",
-  data() {
-    return {
-      blogData: [],
-      keywords: "",
-      currentPage: 1,
-      totalPages: 0,
-      pageSize: 10,
-      total: 0, //总数量
-      tagUid: "",
-      searchBlogData: [], //搜索出来的文章
-      sortUid: "",
-      isEnd: false, //是否到底底部了
-      loading: false //内容是否正在加载
-    };
-  },
-  components: {
-    FourthRecommend,
-    ThirdRecommend,
-    TagCloud,
-    HotBlog,
-    FollowUs,
-  },
-  created() {
-    this.keywords = this.$route.query.keyword;
-    this.tagUid = this.$route.query.tagUid;
-    this.sortUid = this.$route.query.sortUid;
-    this.author = this.$route.query.author;
-
-    if (
-      this.keywords == undefined &&
-      this.tagUid == undefined &&
-      this.sortUid == undefined &&
-      this.author == undefined
-    ) {
-      return;
-    }
-
-    this.search();
-  },
-  mounted() {
-    // 注册scroll事件并监听
-    // var that = this;
-    // window.addEventListener("scroll", function() {
-    //   let scrollTop = document.documentElement.scrollTop; //当前的的位置
-    //   let scrollHeight = document.documentElement.scrollHeight; //最高的位置
-    //   if (scrollTop >= 0.6 * scrollHeight && !that.isEnd && !that.loading) {
-    //     that.loading = true;
-    //     that.currentPage = that.currentPage + 1;
-    //     that.search();
-    //   }
-    // });
-  },
-  watch: {
-    $route(to, from) {
+  export default {
+    name: "list",
+    data() {
+      return {
+        blogData: [],
+        keywords: "",
+        currentPage: 1,
+        totalPages: 0,
+        pageSize: 10,
+        total: 0, //总数量
+        tagUid: "",
+        searchBlogData: [], //搜索出来的文章
+        sortUid: "",
+        isEnd: false, //是否到底底部了
+        loading: false //内容是否正在加载
+      };
+    },
+    components: {
+      FourthRecommend,
+      ThirdRecommend,
+      TagCloud,
+      HotBlog,
+      FollowUs,
+    },
+    created() {
       this.keywords = this.$route.query.keyword;
       this.tagUid = this.$route.query.tagUid;
       this.sortUid = this.$route.query.sortUid;
-      this.searchBlogData = [] // 清空查询出来的博客
+      this.author = this.$route.query.author;
+
+      if (
+        this.keywords == undefined &&
+        this.tagUid == undefined &&
+        this.sortUid == undefined &&
+        this.author == undefined
+      ) {
+        return;
+      }
+
       this.search();
-    }
-  },
-  methods: {
-    //跳转到文章详情
-    goToInfo(blog) {
-      if(blog.type == "0") {
+    },
+    mounted() {
+      // 注册scroll事件并监听
+      // var that = this;
+      // window.addEventListener("scroll", function() {
+      //   let scrollTop = document.documentElement.scrollTop; //当前的的位置
+      //   let scrollHeight = document.documentElement.scrollHeight; //最高的位置
+      //   if (scrollTop >= 0.6 * scrollHeight && !that.isEnd && !that.loading) {
+      //     that.loading = true;
+      //     that.currentPage = that.currentPage + 1;
+      //     that.search();
+      //   }
+      // });
+    },
+    watch: {
+      $route(to, from) {
+        this.keywords = this.$route.query.keyword;
+        this.tagUid = this.$route.query.tagUid;
+        this.sortUid = this.$route.query.sortUid;
+        this.searchBlogData = [] // 清空查询出来的博客
+        this.search();
+      }
+    },
+    methods: {
+      //跳转到文章详情
+      goToInfo(blog) {
+        if (blog.type == "0") {
+          let routeData = this.$router.resolve({
+            path: "/info",
+            query: {blogOid: blog.oid}
+          });
+          window.open(routeData.href, '_blank');
+        } else if (blog.type == "1") {
+          var params = new URLSearchParams();
+          params.append("uid", blog.uid);
+          getBlogByUid(params).then(response => {
+            // 记录一下用户点击日志
+          });
+          window.open(blog.outsideLink, '_blank');
+        }
+      },
+      //点击了分类
+      goToList(uid) {
         let routeData = this.$router.resolve({
-          path: "/info",
-          query: {blogOid: blog.oid}
+          path: "/list",
+          query: {sortUid: uid}
         });
         window.open(routeData.href, '_blank');
-      } else if(blog.type == "1") {
-        var params = new URLSearchParams();
-        params.append("uid", blog.uid);
-        getBlogByUid(params).then(response => {
-          // 记录一下用户点击日志
+      },
+      goToAuthor(author) {
+        let routeData = this.$router.resolve({
+          path: "/list",
+          query: {author: author}
         });
-        window.open(blog.outsideLink, '_blank');
-      }
-    },
-    //点击了分类
-    goToList(uid) {
-      let routeData = this.$router.resolve({
-        path: "/list",
-        query: { sortUid: uid }
-      });
-      window.open(routeData.href, '_blank');
-    },
-    goToAuthor(author) {
-      let routeData = this.$router.resolve({
-        path: "/list",
-        query: {author: author}
-      });
-      window.open(routeData.href, '_blank');
-    },
-    // 加载内容
-    loadContent: function() {
-      var that = this;
-      that.currentPage = that.currentPage + 1;
-      that.search();
-    },
-    search: function() {
-      var that = this;
+        window.open(routeData.href, '_blank');
+      },
+      // 加载内容
+      loadContent: function () {
+        var that = this;
+        that.currentPage = that.currentPage + 1;
+        that.search();
+      },
+      search: function () {
+        var that = this;
 
-      that.loading = true;
+        that.loading = true;
 
-      if (this.keywords != undefined) {
-        var params = new URLSearchParams();
-        params.append("currentPage", that.currentPage);
-        params.append("pageSize", that.pageSize);
-        params.append("keywords", that.keywords);
-        searchBlog(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            that.isEnd = false;
-            //获取总页数
-            that.totalPages = response.result.blogList.length;
-            that.total = response.result.total;
-            that.pageSize = response.result.pageSize;
-            that.currentPage = response.result.currentPage;
-            var blogData = response.result.blogList;
+        if (this.keywords != undefined) {
+          var params = new URLSearchParams();
+          params.append("currentPage", that.currentPage);
+          params.append("pageSize", that.pageSize);
+          params.append("keywords", that.keywords);
+          searchBlog(params).then(response => {
+            if (response.data.code == this.$ECode.SUCCESS) {
+              that.isEnd = false;
+              //获取总页数
+              that.totalPages = response.data.result.blogList.length;
+              that.total = response.data.result.total;
+              that.pageSize = response.data.result.pageSize;
+              that.currentPage = response.data.result.currentPage;
+              var blogData = response.data.result.blogList;
 
-            // 判断搜索的博客是否有内容
-            if(response.result.total <= 0) {
-              that.isEnd = true;
-              that.loading = false;
-              this.blogData = []
-              return;
-            }
+              // 判断搜索的博客是否有内容
+              if (response.data.result.total <= 0) {
+                that.isEnd = true;
+                that.loading = false;
+                this.blogData = []
+                return;
+              }
 
-            //全部加载完毕
-            if (blogData.length < that.pageSize) {
+              //全部加载完毕
+              if (blogData.length < that.pageSize) {
+                that.isEnd = true;
+              }
+
+              blogData = that.searchBlogData.concat(blogData);
+              that.searchBlogData = blogData;
+              this.blogData = blogData;
+            } else {
               that.isEnd = true;
             }
-
-            blogData = that.searchBlogData.concat(blogData);
-            that.searchBlogData = blogData;
-            this.blogData = blogData;
-          } else {
-            that.isEnd = true;
-          }
-          that.loading = false;
-        });
-      } else if (this.tagUid != undefined) {
-        var params = new URLSearchParams();
-
-        params.append("tagUid", that.tagUid);
-        params.append("currentPage", that.currentPage);
-        params.append("pageSize", that.pageSize);
-
-        searchBlogByTag(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.result.records.length > 0) {
-            that.isEnd = false;
-            //获取总页数
-            that.totalPages = response.result.total;
-
-            var blogData = response.result.records;
-            that.total = response.result.total;
-            that.pageSize = response.result.size;
-            that.currentPage = response.result.current;
-
-            //全部加载完毕
-            if (blogData.length < that.pageSize) {
-              that.isEnd = true;
-            }
-
-            // 设置分类名
-            for (var i = 0; i < blogData.length; i++) {
-              blogData[i].blogSort = blogData[i].blogSort.sortName;
-            }
-
-            blogData = that.searchBlogData.concat(blogData);
-            that.searchBlogData = blogData;
-            this.blogData = blogData;
             that.loading = false;
+          });
+        } else if (this.tagUid != undefined) {
+          var params = new URLSearchParams();
 
-          } else {
+          params.append("tagUid", that.tagUid);
+          params.append("currentPage", that.currentPage);
+          params.append("pageSize", that.pageSize);
 
-            that.isEnd = true;
-            that.loading = false;
-          }
-        });
-      } else if (this.sortUid != undefined) {
-        var params = new URLSearchParams();
+          searchBlogByTag(params).then(response => {
+            if (response.data.code == this.$ECode.SUCCESS && response.data.result.records.length > 0) {
+              that.isEnd = false;
+              //获取总页数
+              that.totalPages = response.data.result.total;
 
-        params.append("blogSortUid", that.sortUid);
-        params.append("currentPage", that.currentPage);
-        params.append("pageSize", that.pageSize);
+              var blogData = response.data.result.records;
+              that.total = response.data.result.total;
+              that.pageSize = response.data.result.size;
+              that.currentPage = response.data.result.current;
 
-        searchBlogBySort(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.result.records.length > 0) {
-            that.isEnd = false;
-            //获取总页数
-            that.totalPages = response.result.total;
+              //全部加载完毕
+              if (blogData.length < that.pageSize) {
+                that.isEnd = true;
+              }
 
-            var blogData = response.result.records;
-            that.total = response.result.total;
-            that.pageSize = response.result.size;
-            that.currentPage = response.result.current;
-
-            //全部加载完毕
-            if (blogData.length < that.pageSize) {
-              that.isEnd = true;
-            }
-
-            for (var i = 0; i < blogData.length; i++) {
-              blogData[i].blogSort = blogData[i].blogSort.sortName;
-            }
-
-            blogData = that.searchBlogData.concat(blogData);
-            that.searchBlogData = blogData;
-            this.blogData = blogData;
-            that.loading = false;
-          } else {
-
-
-            that.isEnd = true;
-            that.loading = false;
-          }
-        });
-      } else if (this.author != undefined) {
-        var params = new URLSearchParams();
-        params.append("author", that.author);
-        params.append("currentPage", that.currentPage);
-        params.append("pageSize", that.pageSize);
-        searchBlogByAuthor(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS && response.result.records.length > 0) {
-            that.loading = false;
-
-            that.isEnd = false;
-
-            //获取总页数
-            that.totalPages = response.result.total;
-
-            var blogData = response.result.records;
-            that.total = response.result.total;
-            that.pageSize = response.result.size;
-            that.currentPage = response.result.current;
-
-            //全部加载完毕
-            if (blogData.length < that.pageSize) {
-              that.isEnd = true;
-            }
-
-            for (var i = 0; i < blogData.length; i++) {
-              if (blogData[i].blogSort == undefined) {
-                blogData[i].blogSort = "未分类";
-              } else {
+              // 设置分类名
+              for (var i = 0; i < blogData.length; i++) {
                 blogData[i].blogSort = blogData[i].blogSort.sortName;
               }
+
+              blogData = that.searchBlogData.concat(blogData);
+              that.searchBlogData = blogData;
+              this.blogData = blogData;
+              that.loading = false;
+
+            } else {
+
+              that.isEnd = true;
+              that.loading = false;
             }
+          });
+        } else if (this.sortUid != undefined) {
+          var params = new URLSearchParams();
 
-            blogData = that.searchBlogData.concat(blogData);
-            that.searchBlogData = blogData;
-            this.blogData = blogData;
-            that.loading = false;
-          } else {
+          params.append("blogSortUid", that.sortUid);
+          params.append("currentPage", that.currentPage);
+          params.append("pageSize", that.pageSize);
 
-            that.isEnd = true;
-            that.loading = false;
-          }
-        });
+          searchBlogBySort(params).then(response => {
+            if (response.data.code == this.$ECode.SUCCESS && response.data.result.records.length > 0) {
+              that.isEnd = false;
+              //获取总页数
+              that.totalPages = response.data.result.total;
+
+              var blogData = response.data.result.records;
+              that.total = response.data.result.total;
+              that.pageSize = response.data.result.size;
+              that.currentPage = response.data.result.current;
+
+              //全部加载完毕
+              if (blogData.length < that.pageSize) {
+                that.isEnd = true;
+              }
+
+              for (var i = 0; i < blogData.length; i++) {
+                blogData[i].blogSort = blogData[i].blogSort.sortName;
+              }
+
+              blogData = that.searchBlogData.concat(blogData);
+              that.searchBlogData = blogData;
+              this.blogData = blogData;
+              that.loading = false;
+            } else {
+
+
+              that.isEnd = true;
+              that.loading = false;
+            }
+          });
+        } else if (this.author != undefined) {
+          var params = new URLSearchParams();
+          params.append("author", that.author);
+          params.append("currentPage", that.currentPage);
+          params.append("pageSize", that.pageSize);
+          searchBlogByAuthor(params).then(response => {
+            if (response.data.code == this.$ECode.SUCCESS && response.data.result.records.length > 0) {
+              that.loading = false;
+
+              that.isEnd = false;
+
+              //获取总页数
+              that.totalPages = response.data.result.total;
+
+              var blogData = response.data.result.records;
+              that.total = response.data.result.total;
+              that.pageSize = response.data.result.size;
+              that.currentPage = response.data.result.current;
+
+              //全部加载完毕
+              if (blogData.length < that.pageSize) {
+                that.isEnd = true;
+              }
+
+              for (var i = 0; i < blogData.length; i++) {
+                if (blogData[i].blogSort == undefined) {
+                  blogData[i].blogSort = "未分类";
+                } else {
+                  blogData[i].blogSort = blogData[i].blogSort.sortName;
+                }
+              }
+
+              blogData = that.searchBlogData.concat(blogData);
+              that.searchBlogData = blogData;
+              this.blogData = blogData;
+              that.loading = false;
+            } else {
+
+              that.isEnd = true;
+              that.loading = false;
+            }
+          });
+        }
       }
     }
-  }
-};
+  };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -376,148 +377,159 @@ export default {
 </style>
 
 <style>
-.isEnd {
-  float: left;
-  width: 100%;
-  height: 80px;
-  text-align: center;
-}
+  .isEnd {
+    float: left;
+    width: 100%;
+    height: 80px;
+    text-align: center;
+  }
 
-.ng-scope {
-  margin: 0 auto;
-  width: 18%;
-  height: 10%;
-}
+  .ng-scope {
+    margin: 0 auto;
+    width: 18%;
+    height: 10%;
+  }
 
-.loadContent {
-  width: 120px;
-  height: 30px;
-  line-height: 30px;
-  font-size: 16px;
-  margin: 0 auto;
-  color: aliceblue;
-  cursor: pointer;
-  background: rgba(0, 0, 0, 0.8);
-}
+  .loadContent {
+    width: 120px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    margin: 0 auto;
+    color: aliceblue;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.8);
+  }
 
-@keyframes lds-facebook_1 {
-  0% {
-    top: 0px;
-    height: 200px;
+  @keyframes lds-facebook_1 {
+    0% {
+      top: 0px;
+      height: 200px;
+    }
+    50% {
+      top: 80px;
+      height: 40px;
+    }
+    100% {
+      top: 80px;
+      height: 40px;
+    }
   }
-  50% {
-    top: 80px;
-    height: 40px;
+
+  @-webkit-keyframes lds-facebook_1 {
+    0% {
+      top: 0px;
+      height: 200px;
+    }
+    50% {
+      top: 80px;
+      height: 40px;
+    }
+    100% {
+      top: 80px;
+      height: 40px;
+    }
   }
-  100% {
-    top: 80px;
-    height: 40px;
+
+  @keyframes lds-facebook_2 {
+    0% {
+      top: 20px;
+      height: 160px;
+    }
+    50% {
+      top: 80px;
+      height: 40px;
+    }
+    100% {
+      top: 80px;
+      height: 40px;
+    }
   }
-}
-@-webkit-keyframes lds-facebook_1 {
-  0% {
-    top: 0px;
-    height: 200px;
+
+  @-webkit-keyframes lds-facebook_2 {
+    0% {
+      top: 20px;
+      height: 160px;
+    }
+    50% {
+      top: 80px;
+      height: 40px;
+    }
+    100% {
+      top: 80px;
+      height: 40px;
+    }
   }
-  50% {
-    top: 80px;
-    height: 40px;
+
+  @keyframes lds-facebook_3 {
+    0% {
+      top: 40px;
+      height: 120px;
+    }
+    50% {
+      top: 80px;
+      height: 40px;
+    }
+    100% {
+      top: 80px;
+      height: 40px;
+    }
   }
-  100% {
-    top: 80px;
-    height: 40px;
+
+  @-webkit-keyframes lds-facebook_3 {
+    0% {
+      top: 40px;
+      height: 120px;
+    }
+    50% {
+      top: 80px;
+      height: 40px;
+    }
+    100% {
+      top: 80px;
+      height: 40px;
+    }
   }
-}
-@keyframes lds-facebook_2 {
-  0% {
-    top: 20px;
-    height: 160px;
+
+  .lds-facebook {
+    position: relative;
   }
-  50% {
-    top: 80px;
-    height: 40px;
+
+  .lds-facebook div {
+    position: absolute;
+    width: 20px;
   }
-  100% {
-    top: 80px;
-    height: 40px;
+
+  .lds-facebook div:nth-child(1) {
+    left: 40px;
+    background: #1d0e0b;
+    -webkit-animation: lds-facebook_1 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    animation: lds-facebook_1 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    -webkit-animation-delay: -0.2s;
+    animation-delay: -0.2s;
   }
-}
-@-webkit-keyframes lds-facebook_2 {
-  0% {
-    top: 20px;
-    height: 160px;
+
+  .lds-facebook div:nth-child(2) {
+    left: 90px;
+    background: #774023;
+    -webkit-animation: lds-facebook_2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    animation: lds-facebook_2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    -webkit-animation-delay: -0.1s;
+    animation-delay: -0.1s;
   }
-  50% {
-    top: 80px;
-    height: 40px;
+
+  .lds-facebook div:nth-child(3) {
+    left: 140px;
+    background: #d88c51;
+    -webkit-animation: lds-facebook_3 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    animation: lds-facebook_3 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
   }
-  100% {
-    top: 80px;
-    height: 40px;
+
+  .lds-facebook {
+    width: 90px !important;
+    height: 90px !important;
+    -webkit-transform: translate(-45px, -45px) scale(0.45) translate(45px, 45px);
+    transform: translate(-45px, -45px) scale(0.45) translate(45px, 45px);
   }
-}
-@keyframes lds-facebook_3 {
-  0% {
-    top: 40px;
-    height: 120px;
-  }
-  50% {
-    top: 80px;
-    height: 40px;
-  }
-  100% {
-    top: 80px;
-    height: 40px;
-  }
-}
-@-webkit-keyframes lds-facebook_3 {
-  0% {
-    top: 40px;
-    height: 120px;
-  }
-  50% {
-    top: 80px;
-    height: 40px;
-  }
-  100% {
-    top: 80px;
-    height: 40px;
-  }
-}
-.lds-facebook {
-  position: relative;
-}
-.lds-facebook div {
-  position: absolute;
-  width: 20px;
-}
-.lds-facebook div:nth-child(1) {
-  left: 40px;
-  background: #1d0e0b;
-  -webkit-animation: lds-facebook_1 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-  animation: lds-facebook_1 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-  -webkit-animation-delay: -0.2s;
-  animation-delay: -0.2s;
-}
-.lds-facebook div:nth-child(2) {
-  left: 90px;
-  background: #774023;
-  -webkit-animation: lds-facebook_2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-  animation: lds-facebook_2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-  -webkit-animation-delay: -0.1s;
-  animation-delay: -0.1s;
-}
-.lds-facebook div:nth-child(3) {
-  left: 140px;
-  background: #d88c51;
-  -webkit-animation: lds-facebook_3 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-  animation: lds-facebook_3 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-}
-.lds-facebook {
-  width: 90px !important;
-  height: 90px !important;
-  -webkit-transform: translate(-45px, -45px) scale(0.45) translate(45px, 45px);
-  transform: translate(-45px, -45px) scale(0.45) translate(45px, 45px);
-}
 </style>
 

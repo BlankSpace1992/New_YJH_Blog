@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -99,17 +98,16 @@ public class IndexController {
      *
      * @param currentPage 当前页数
      * @param pageSize    每页显示数目
-     * @param request     请求
-     * @return ResultBody
+     * @return 博客查询数据
      * @author yujunhong
      * @date 2021/6/2 15:27
      */
     @GetMapping("/getBlogBySearch")
-    public ResultBody getBlogBySearch(HttpServletRequest request,
+    public ResultBody getBlogBySearch(
                                       @ApiParam(name = "currentPage", value = "当前页数", required = false) @RequestParam(name = "currentPage", required = false, defaultValue = "1") Long currentPage,
                                       @ApiParam(name = "pageSize", value = "每页显示数目", required = false) @RequestParam(name = "pageSize", required = false, defaultValue = "10") Long pageSize) {
-        // TODO: 2021/6/2 暂时未完成
-        return ResultBody.success();
+        List<Blog> blogBySearch = blogService.getBlogBySearch(currentPage, null);
+        return ResultBody.success(blogBySearch);
     }
 
     /**

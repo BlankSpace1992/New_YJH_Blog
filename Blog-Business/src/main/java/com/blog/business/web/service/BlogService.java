@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.Blog;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yujunhong
@@ -72,7 +73,7 @@ public interface BlogService extends IService<Blog> {
      * @author yujunhong
      * @date 2021/8/2 15:03
      */
-    List<Blog> setTagAndSortAndPictureByBlogList(List<Blog> list);
+    void setTagAndSortAndPictureByBlogList(List<Blog> list);
 
     /**
      * 通过点击博客获取详情信息
@@ -94,4 +95,63 @@ public interface BlogService extends IService<Blog> {
      * @date 2021/8/12 14:19
      */
     IPage<Blog> getSameBlogByBlogUid(String blogUid);
+
+    /**
+     * 博客查询
+     *
+     * @param currentPage 当前页数
+     * @param pageSize    每页显示数目
+     * @return 博客查询数据
+     * @author yujunhong
+     * @date 2021/8/31 14:08
+     */
+    List<Blog> getBlogBySearch(Long currentPage, Long pageSize);
+
+    /**
+     * 搜索博客，如需ElasticSearch 需要启动 blog-search
+     *
+     * @param keywords    关键字
+     * @param pageSize    每页显示数目
+     * @param currentPage 当前页数
+     * @return 博客信息
+     * @author yujunhong
+     * @date 2021/8/31 14:29
+     */
+    Map<String, Object> searchBlog(String keywords, Long currentPage, Long pageSize);
+
+    /**
+     * 根据标签获取相关的博客
+     *
+     * @param tagUid      标签id
+     * @param pageSize    每页显示数目
+     * @param currentPage 当前页数
+     * @return 博客信息
+     * @author yujunhong
+     * @date 2021/8/31 14:29
+     */
+    IPage<Blog> searchBlogByTag(String tagUid, Long currentPage, Long pageSize);
+
+    /**
+     * 根据标签获取相关的博客
+     *
+     * @param blogSortUid 博客分类UID
+     * @param pageSize    每页显示数目
+     * @param currentPage 当前页数
+     * @return 博客信息
+     * @author yujunhong
+     * @date 2021/8/31 14:29
+     */
+    IPage<Blog> searchBlogBySort(String blogSortUid, Long currentPage, Long pageSize);
+
+    /**
+     * 根据标签获取相关的博客
+     *
+     * @param author 作者名称
+     * @param pageSize    每页显示数目
+     * @param currentPage 当前页数
+     * @return 博客信息
+     * @author yujunhong
+     * @date 2021/8/31 14:29
+     */
+    IPage<Blog> searchBlogByAuthor(String author, Long currentPage, Long pageSize);
 }

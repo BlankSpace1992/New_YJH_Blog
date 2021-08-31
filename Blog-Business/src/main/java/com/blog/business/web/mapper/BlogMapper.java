@@ -16,12 +16,13 @@ public interface BlogMapper extends BaseMapper<Blog> {
      * @param page   分页数据
      * @param level  等级
      * @param status 状态
+     * @param isPublish  是否发布
      * @return 博客信息
      * @author yujunhong
      * @date 2021/6/1 13:51
      */
     IPage<Blog> getBlogByLevel(IPage<Blog> page, @Param(value = "level") Integer level,
-                               @Param(value = "status") Integer status);
+                               @Param(value = "status") Integer status, @Param(value = "isPublish")String isPublish);
 
     /**
      * 获取首页排行博客

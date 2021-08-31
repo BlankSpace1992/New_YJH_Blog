@@ -16,6 +16,9 @@ public class BaseMessageConf {
     public static final String DELETE_SUCCESS = "删除成功";
     public static final String BATCH_DELETE_SUCCESS = "批量删除成功";
     public static final String DELETE_FAIL = "删除失败";
+    public static final String TAG_IS_EMPTY = "标签不能为空";
+    public static final String SORT_IS_EMPTY = "分类不能为空";
+    public static final String AUTHOR_IS_EMPTY = "作者不能为空";
 
     public static final String ENTITY_EXIST = "该实体已存在";
     public static final String USER_OR_EMAIL_EXIST = "用户名或邮箱已被注册";
