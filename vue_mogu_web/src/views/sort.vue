@@ -94,8 +94,8 @@ export default {
   created() {
     var that = this;
     getSortList().then(response => {
-      if (response.code == this.$ECode.SUCCESS) {
-        var activities = response.result;
+      if (response.data.code == this.$ECode.SUCCESS) {
+        var activities = response.data.result;
         var result = [];
         for (var a = 0; a < activities.length; a++) {
           var temp = activities[a].replace("年", "-").replace("月", "-") + "1";
@@ -115,8 +115,8 @@ export default {
       var params = new URLSearchParams();
       params.append("monthDate", content);
       getArticleByMonth(params).then(response => {
-        if (response.code == this.$ECode.SUCCESS) {
-          this.itemByDate = response.result;
+        if (response.data.code == this.$ECode.SUCCESS) {
+          this.itemByDate = response.data.result;
         }
       });
     },

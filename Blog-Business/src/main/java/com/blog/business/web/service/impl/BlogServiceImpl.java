@@ -1,6 +1,7 @@
 package com.blog.business.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -105,7 +107,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     public IPage<Blog> getBlogByLevel(IPage<Blog> page, Integer level) {
-        baseMapper.getBlogByLevel(page, level, EnumsStatus.ENABLE,EnumsStatus.PUBLISH);
+        baseMapper.getBlogByLevel(page, level, EnumsStatus.ENABLE, EnumsStatus.PUBLISH);
         return page;
     }
 
@@ -558,6 +560,77 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         setTagAndSortAndPictureByBlogList(blogList);
         blogPage.setRecords(blogList);
         return blogPage;
+    }
+
+    @Override
+    public Set<String> getBlogTimeSortList() {
+        //从Redis中获取内容
+        String monthResult = (String) redisUtil.get(BaseSysConf.MONTH_SET);
+        //判断redis中时候包含归档的内容
+        if (StringUtils.isNotEmpty(monthResult)) {
+            return JSON.parseObject(monthResult, new TypeReference<Set<String>>() {
+            });
+        }
+        // 从数据库中查询
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        blogWrapper.orderByDesc(Blog::getCreateTime);
+        //因为首页并不需要显示内容，所以需要排除掉内容字段
+        blogWrapper.select(Blog.class, i -> !i.getProperty().equals(BaseSQLConf.CONTENT));
+        List<Blog> list = this.list(blogWrapper);
+        //给博客增加标签、分类、图片
+        setTagAndSortAndPictureByBlogList(list);
+        // 按照月份进行分组
+        Map<String, List<Blog>> map = list.stream().collect(Collectors.groupingBy(item -> new SimpleDateFormat(
+                "yyyy年MM月").format(item.getCreateTime())));
+        // 保存归档日期
+        Set<String> monthSet = map.keySet();
+        // 缓存该月份下的所有文章  key: 月份   value：月份下的所有文章
+        map.forEach((key, value) -> {
+            redisUtil.set(BaseSysConf.BLOG_SORT_BY_MONTH + BaseSysConf.REDIS_SEGMENTATION + key,
+                    JSON.toJSONString(value));
+        });
+        //将从数据库查询的数据缓存到redis中
+        redisUtil.set(BaseSysConf.MONTH_SET, JSON.toJSONString(monthSet));
+        return monthSet;
+    }
+
+    @Override
+    public List<Blog> getArticleByMonth(String monthDate) {
+        if (StringUtils.isEmpty(monthDate)) {
+            throw new CommonErrorException(BaseMessageConf.PARAM_INCORRECT);
+        }
+        //从Redis中获取内容
+        String contentResult =
+                (String) redisUtil.get(BaseSysConf.BLOG_SORT_BY_MONTH + BaseSysConf.REDIS_SEGMENTATION + monthDate);
+        //判断redis中时候包含该日期下的文章
+        if (StringUtils.isNotEmpty(contentResult)) {
+            return JSON.parseArray(contentResult, Blog.class);
+        }
+        // 从数据库中查询
+        LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
+        blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
+        blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
+        blogWrapper.orderByDesc(Blog::getCreateTime);
+        //因为首页并不需要显示内容，所以需要排除掉内容字段
+        blogWrapper.select(Blog.class, i -> !i.getProperty().equals(BaseSQLConf.CONTENT));
+        List<Blog> list = this.list(blogWrapper);
+        //给博客增加标签、分类、图片
+        setTagAndSortAndPictureByBlogList(list);
+        // 按照月份进行分组
+        Map<String, List<Blog>> map = list.stream().collect(Collectors.groupingBy(item -> new SimpleDateFormat(
+                "yyyy年MM月").format(item.getCreateTime())));
+        // 保存归档日期
+        Set<String> monthSet = map.keySet();
+        // 缓存该月份下的所有文章  key: 月份   value：月份下的所有文章
+        map.forEach((key, value) -> {
+            redisUtil.set(BaseSysConf.BLOG_SORT_BY_MONTH + BaseSysConf.REDIS_SEGMENTATION + key,
+                    JSON.toJSONString(value));
+        });
+        //将从数据库查询的数据缓存到redis中
+        redisUtil.set(BaseSysConf.MONTH_SET, JSON.toJSONString(monthSet));
+        return map.get(monthDate);
     }
 
     /**

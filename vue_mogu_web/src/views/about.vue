@@ -122,12 +122,12 @@
         created() {
             var that = this;
             getMe().then(response => {
-                if (response.code == this.$ECode.SUCCESS) {
-                    this.info = response.result;
+                if (response.data.code == this.$ECode.SUCCESS) {
+                    this.info = response.data.result;
                 }
             });
-            this.getCommentDataList();
-          this.setCommentAndAdmiration()
+          //   this.getCommentDataList();
+          // this.setCommentAndAdmiration();
         },
         methods: {
             //拿到vuex中的写的两个方法

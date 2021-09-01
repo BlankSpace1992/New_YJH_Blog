@@ -179,4 +179,10 @@ public class Admin {
      */
     @TableField(exist = false)
     private List<String> roleNames;
+
+    /**
+     * 用户头像
+     */
+    @TableField(exist = false)
+    private List<String> photoList;
 }

@@ -52,61 +52,6 @@
             <a v-if="webNavbar.isJumpExternalUrl == 1" :href="webNavbar.url" target="_blank" :class="[saveTitle == webNavbar.url ? 'title' : '']">{{ webNavbar.name }}</a>
           </span>
         </li>
-
-<!--        <li>-->
-<!--          <router-link to="/">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/' ? 'title' : '']">首页</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/about">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/about' ? 'title' : '']">关于我</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/sort">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/sort' ? 'title' : '']">归档</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/classify">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/classify' ? 'title' : '']">分类</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/tag">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/tag' ? 'title' : '']">标签</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/subject">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/subject' ? 'title' : '']">专题</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/share">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/share' ? 'title' : '']">学习教程</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li>-->
-<!--          <router-link to="/time">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/time' ? 'title' : '']">时间轴</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
-<!--        <li v-if="openComment=='1'">-->
-<!--          <router-link to="/messageBoard">-->
-<!--            <a href="javascript:void(0);" :class="[saveTitle == '/messageBoard' ? 'title' : '']">留言板</a>-->
-<!--          </router-link>-->
-<!--        </li>-->
-
       </ul>
 
       <div class="searchbox">

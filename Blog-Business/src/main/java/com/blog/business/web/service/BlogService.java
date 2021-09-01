@@ -6,6 +6,7 @@ import com.blog.business.web.domain.Blog;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author yujunhong
@@ -146,7 +147,7 @@ public interface BlogService extends IService<Blog> {
     /**
      * 根据标签获取相关的博客
      *
-     * @param author 作者名称
+     * @param author      作者名称
      * @param pageSize    每页显示数目
      * @param currentPage 当前页数
      * @return 博客信息
@@ -154,4 +155,23 @@ public interface BlogService extends IService<Blog> {
      * @date 2021/8/31 14:29
      */
     IPage<Blog> searchBlogByAuthor(String author, Long currentPage, Long pageSize);
+
+    /**
+     * 获取博客的归档日期
+     *
+     * @return 获取博客的归档日期
+     * @author yujunhong
+     * @date 2021/9/1 17:01
+     */
+    Set<String> getBlogTimeSortList();
+
+    /**
+     * 通过月份获取日期
+     *
+     * @param monthDate 月份
+     * @return 当月文章
+     * @author yujunhong
+     * @date 2021/9/1 17:16
+     */
+    List<Blog> getArticleByMonth(String monthDate);
 }

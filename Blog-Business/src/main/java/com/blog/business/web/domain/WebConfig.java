@@ -2,6 +2,7 @@ package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -181,4 +182,23 @@ public class WebConfig {
     @ApiModelProperty(value = "友链申请模板, 添加友链申请模板格式")
     @Excel(name = "友链申请模板, 添加友链申请模板格式")
     private String linkApplyTemplate;
+
+    /**
+     * Logo图片
+     */
+    @TableField(exist = false)
+    private String logoPhoto;
+
+
+    /**
+     * 支付宝付款码
+     */
+    @TableField(exist = false)
+    private String aliPayPhoto;
+
+    /**
+     * 微信付款码
+     */
+    @TableField(exist = false)
+    private String weixinPayPhoto;
 }
