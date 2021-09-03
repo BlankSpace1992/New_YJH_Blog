@@ -90,8 +90,8 @@
     created() {
       var that = this;
       getTagList().then(response => {
-        if (response.code == this.$ECode.SUCCESS) {
-          var activities = response.result;
+        if (response.data.code == this.$ECode.SUCCESS) {
+          var activities = response.data.result;
           var result = [];
           for (var a = 0; a < activities.length; a++) {
             var dataForDate = {
@@ -114,10 +114,10 @@
         var params = new URLSearchParams();
         params.append("tagUid", tagUid);
         getArticleByTagUid(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            this.itemByDate = response.result.records;
-            this.currentPage = response.result.current;
-            this.pageSize = response.result.size;
+          if (response.data.code == this.$ECode.SUCCESS) {
+            this.itemByDate = response.data.result.records;
+            this.currentPage = response.data.result.current;
+            this.pageSize = response.data.result.size;
           }
         });
       },
@@ -133,10 +133,10 @@
         params.append("tagUid", this.selectBlogUid);
         params.append("currentPage", this.currentPage + 1);
         getArticleByTagUid(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            this.itemByDate = this.itemByDate.concat(response.result.records);
-            this.currentPage = response.result.current;
-            this.pageSize = response.result.size;
+          if (response.data.code == this.$ECode.SUCCESS) {
+            this.itemByDate = this.itemByDate.concat(response.data.result.records);
+            this.currentPage = response.data.result.current;
+            this.pageSize = response.data.result.size;
           }
         });
       },

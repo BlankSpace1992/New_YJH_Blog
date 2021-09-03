@@ -48,7 +48,7 @@ public class CommentController {
      */
     @ApiOperation(value = "获取用户评论列表")
     @PostMapping(value = "/getList")
-    public ResultBody getList(@Validated @RequestBody CommentParamVO commentParamVO) {
+    public ResultBody getList( @RequestBody CommentParamVO commentParamVO) {
         List<Comment> commentList = commentService.getCommentList(commentParamVO);
         return ResultBody.success(commentList);
     }

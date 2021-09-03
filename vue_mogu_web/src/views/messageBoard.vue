@@ -80,12 +80,12 @@
               params.currentPage = that.currentPage + 1
               params.pageSize = that.pageSize;
               getCommentList(params).then(response => {
-                if (response.code == that.$ECode.SUCCESS) {
-                  that.comments = that.comments.concat(response.result.records);
+                if (response.data.code == that.$ECode.SUCCESS) {
+                  that.comments = that.comments.concat(response.data.result.records);
                   that.setCommentList(this.comments);
-                  that.currentPage = response.result.current;
-                  that.pageSize = response.result.size;
-                  that.total = response.result.total;
+                  that.currentPage = response.data.result.current;
+                  that.pageSize = response.data.result.size;
+                  that.total = response.data.result.total;
                 }
               });
             }
@@ -105,7 +105,7 @@
                 params.content = e.content;
                 params.blogUid = e.blogUid;
                 addComment(params).then(response => {
-                    if (response.code == this.$ECode.SUCCESS) {
+                    if (response.data.code == this.$ECode.SUCCESS) {
                         this.$notify({
                             title: "成功",
                             message: "发表成功~",
@@ -128,12 +128,12 @@
                 params.currentPage = this.currentPage;
                 params.pageSize = this.pageSize;
                 getCommentList(params).then(response => {
-                    if (response.code == this.$ECode.SUCCESS) {
-                        this.comments = response.result.records;
+                    if (response.data.code == this.$ECode.SUCCESS) {
+                        this.comments = response.data.result.records;
                         this.setCommentList(this.comments);
-                        this.currentPage = response.result.current;
-                        this.pageSize = response.result.size;
-                        this.total = response.result.total;
+                        this.currentPage = response.data.result.current;
+                        this.pageSize = response.data.result.size;
+                        this.total = response.data.result.total;
                     }
                 });
             },

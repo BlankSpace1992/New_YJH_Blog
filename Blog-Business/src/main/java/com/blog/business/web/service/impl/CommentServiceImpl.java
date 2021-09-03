@@ -58,7 +58,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     public List<Comment> getCommentList(CommentParamVO commentParamVO) {
         // 查询当前博客的评论信息
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Comment::getBlogUid, commentParamVO.getBlogUid());
+        if (StringUtils.isNotEmpty(commentParamVO.getBlogUid())) {
+            wrapper.eq(Comment::getBlogUid, commentParamVO.getBlogUid());
+        }
         wrapper.eq(Comment::getSource, commentParamVO.getSource());
         wrapper.eq(Comment::getStatus, EnumsStatus.ENABLE);
         // 查询出所有一级评论
@@ -127,9 +129,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         });
         // 设置一级评论下得子评论
         Map<String, List<Comment>> toCommentListMap = new HashMap<>();
+        // 筛选出toUid存在的评论
+        List<Comment> toUidCommentList =
+                comments.stream().filter(item -> StringUtils.isNotEmpty(item.getToUid())).collect(Collectors.toList());
         // 评论按照toUid进行分组
         Map<String, List<Comment>> commentToUidMap =
-                comments.stream().collect(Collectors.groupingBy(Comment::getToUid));
+                toUidCommentList.stream().collect(Collectors.groupingBy(Comment::getToUid));
         for (Comment comment : comments) {
             List<Comment> tempList;
             // 回复toUid匹配评论uid

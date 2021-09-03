@@ -90,8 +90,8 @@ export default {
   created() {
     var that = this;
     getBlogSortList().then(response => {
-      if (response.code == this.$ECode.SUCCESS) {
-        var activities = response.result;
+      if (response.data.code == this.$ECode.SUCCESS) {
+        var activities = response.data.result;
         var result = [];
         for (var a = 0; a < activities.length; a++) {
           var dataForDate = {
@@ -114,10 +114,10 @@ export default {
       var params = new URLSearchParams();
       params.append("blogSortUid", blogSortUid);
       getArticleByBlogSortUid(params).then(response => {
-        if (response.code == this.$ECode.SUCCESS) {
-          this.itemByDate = response.result.records;
-          this.currentPage = response.result.current;
-          this.pageSize = response.result.size;
+        if (response.data.code == this.$ECode.SUCCESS) {
+          this.itemByDate = response.data.result.records;
+          this.currentPage = response.data.result.current;
+          this.pageSize = response.data.result.size;
         }
       });
     },
@@ -133,10 +133,10 @@ export default {
       params.append("blogSortUid", this.selectBlogUid);
       params.append("currentPage", this.currentPage + 1);
       getArticleByBlogSortUid(params).then(response => {
-        if (response.code == this.$ECode.SUCCESS) {
-          this.itemByDate = this.itemByDate.concat(response.result.records);
-          this.currentPage = response.result.current;
-          this.pageSize = response.result.size;
+        if (response.data.code == this.$ECode.SUCCESS) {
+          this.itemByDate = this.itemByDate.concat(response.data.result.records);
+          this.currentPage = response.data.result.current;
+          this.pageSize = response.data.result.size;
         }
       });
     },

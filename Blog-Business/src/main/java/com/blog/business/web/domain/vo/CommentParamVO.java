@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * 评论查询条件vo
  *
@@ -55,7 +53,6 @@ public class CommentParamVO {
     /**
      * 博客uid
      */
-    @NotBlank(message = "博客uid不允许为空")
     private String blogUid;
 
     /**

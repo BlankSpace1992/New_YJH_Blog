@@ -77,11 +77,11 @@ export default {
       params.currentPage = this.currentPage
       getSubjectList(params).then(response => {
         console.log("得到的结果", response)
-        if (response.code == this.$ECode.SUCCESS) {
-          this.dataList = response.result.records;
-          this.total = response.result.total;
-          this.pageSize = response.result.size;
-          this.currentPage = response.result.current;
+        if (response.data.code == this.$ECode.SUCCESS) {
+          this.dataList = response.data.result.records;
+          this.total = response.data.result.total;
+          this.pageSize = response.data.result.size;
+          this.currentPage = response.data.result.current;
         }
       });
     },
