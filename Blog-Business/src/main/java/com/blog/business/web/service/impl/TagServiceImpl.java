@@ -1,6 +1,7 @@
 package com.blog.business.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -54,5 +55,13 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
             redisUtil.set(redisKey, JSON.toJSONString(tagList), 3600);
         }
         return page;
+    }
+
+    @Override
+    public List<Tag> getList() {
+        LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Tag::getStatus, EnumsStatus.ENABLE);
+        queryWrapper.orderByDesc(Tag::getSort);
+        return this.list(queryWrapper);
     }
 }

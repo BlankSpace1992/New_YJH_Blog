@@ -2,6 +2,7 @@ package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 专题表
@@ -87,4 +89,10 @@ public class Subject {
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
     private Date updateTime;
+
+    /**
+     * 分类图
+     */
+    @TableField(exist = false)
+    private List<String> photoList;
 }
