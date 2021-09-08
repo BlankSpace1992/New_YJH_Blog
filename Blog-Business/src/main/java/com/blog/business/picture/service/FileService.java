@@ -55,8 +55,9 @@ public interface FileService extends IService<File> {
      * @param fileVO 文件图片类
      * @author yujunhong
      * @date 2021/7/30 15:11
+     * @return
      */
-    void uploadPictureByUrl(FileVO fileVO);
+    List<File> uploadPictureByUrl(FileVO fileVO);
 
     /**
      * ckEditor 文本编辑器 图片上传

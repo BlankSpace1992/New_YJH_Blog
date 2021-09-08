@@ -2,6 +2,7 @@ package com.blog.feign;
 
 import com.blog.config.FeignConfiguration;
 import com.blog.entity.FileVO;
+import com.blog.exception.ResultBody;
 import com.blog.fallback.PictureFeignFallBack;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +39,8 @@ public interface PictureFeignClient {
      * @author yujunhong
      * @date 2021/6/22 9:16
      */
-    @PostMapping(value = "/upload/uploadPictureByUrl")
-    void uploadPictureByUrl(FileVO fileVO);
+    @PostMapping(value = "/upload/uploadPictureUrl")
+    ResultBody uploadPictureByUrl(FileVO fileVO);
 
     /**
      * 初始化网盘大小

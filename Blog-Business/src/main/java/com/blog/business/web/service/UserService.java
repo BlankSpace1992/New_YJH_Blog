@@ -20,4 +20,25 @@ public interface UserService extends IService<User> {
      * @date 2021/8/12 15:36
      */
     List<User> getUserListByIds(List<String> userUidList);
+
+    /**
+     * 通过source uuid获取用户类
+     *
+     * @param source 登陆类型
+     * @param uuid   uuid
+     * @return 用户信息
+     * @author yujunhong
+     * @date 2021/8/12 15:36
+     */
+    User getUserBySourceAndUuid(String source, String uuid);
+
+    /**
+     * 设置Request相关，如浏览器，IP，IP来源
+     *
+     * @param user 用户实体
+     * @return 设置信息后的用户实体
+     * @author yujunhong
+     * @date 2021/9/7 15:50
+     */
+    User setRequestInfo(User user);
 }

@@ -1,5 +1,6 @@
 package com.blog.picture.controller;
 
+import com.blog.business.picture.domain.File;
 import com.blog.business.picture.service.FileService;
 import com.blog.entity.FileVO;
 import com.blog.entity.SystemConfigCommon;
@@ -111,8 +112,8 @@ public class FileController {
     @ApiOperation(value = "通过URL上传图片")
     @PostMapping(value = "/uploadPictureUrl")
     public ResultBody uploadPictureUrl(@RequestBody FileVO fileVO) {
-        fileService.uploadPictureByUrl(fileVO);
-        return ResultBody.success();
+        List<File> files = fileService.uploadPictureByUrl(fileVO);
+        return ResultBody.success(files);
     }
 
     /**

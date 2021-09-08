@@ -152,4 +152,19 @@ public class Constants {
     //异常类型
     public static final String DELIMITER_TO = "@";
     public static final String DELIMITER_COLON = ":";
+
+    /**
+     * 未知
+     */
+    public static final String UNKNOWN = "0";
+
+    /**
+     * 男
+     */
+    public static final String MALE = "1";
+
+    /**
+     * 女
+     */
+    public static final String FEMALE = "2";
 }

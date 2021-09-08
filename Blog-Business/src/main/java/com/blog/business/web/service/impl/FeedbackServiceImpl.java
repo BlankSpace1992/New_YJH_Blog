@@ -1,10 +1,10 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.Feedback;
 import com.blog.business.web.mapper.FeedbackMapper;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
 import com.blog.business.web.service.FeedbackService;
+import org.springframework.stereotype.Service;
 /**
  *
  * @author yujunhong
@@ -12,9 +12,7 @@ import com.blog.business.web.service.FeedbackService;
  *
  */
 @Service
-public class FeedbackServiceImpl implements FeedbackService{
+public class FeedbackServiceImpl extends ServiceImpl<FeedbackMapper, Feedback> implements FeedbackService{
 
-    @Resource
-    private FeedbackMapper feedbackMapper;
 
 }

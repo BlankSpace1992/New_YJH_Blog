@@ -254,4 +254,18 @@ public class BaseSysConf {
     public static final String COMMENT_LIST = "commentList";
     public static final String REPLY_LIST = "replyList";
 
+    /**
+     * 用于第三方登录
+     */
+    public static final String GITHUB = "github";
+    public static final String GITEE = "gitee";
+    public static final String QQ = "qq";
+    public static final String UUID = "uuid";
+    public static final String OPEN_ID = "openId";
+    public final static String MOGU = "MOGU";
+    public final static String LOCATION = "location";
+    public final static String GENDER = "gender";
+    public final static String MALE = "male";
+    public final static String FEMALE = "female";
+
 }

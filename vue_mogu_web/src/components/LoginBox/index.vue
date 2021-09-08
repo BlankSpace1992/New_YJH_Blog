@@ -325,9 +325,10 @@
         var params = new URLSearchParams();
         params.append("source", source);
         login(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            var token = response.result.token;
-            window.location.href = response.result.url
+          console.log("登陆参数",response);
+          if (response.data.code == this.$ECode.SUCCESS) {
+            var token = response.data.result.token;
+            window.location.href = response.data.result.url
           }
         });
       },

@@ -204,7 +204,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     }
 
     @Override
-    public void uploadPictureByUrl(FileVO fileVO) {
+    public List<File> uploadPictureByUrl(FileVO fileVO) {
         // 获取配置文件
         SystemConfigCommon systemConfig;
         if (StringUtils.isNotNull(fileVO.getSystemConfig())) {
@@ -237,8 +237,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         // 获取文件分类信息
         FileSort fileSort =
                 Optional.ofNullable(fileSortService.getOne(wrapper)).orElseThrow(() -> new CommonErrorException(ErrorCode.INSERT_DEFAULT_ERROR, "文件不被允许上传, 请填写文件分类信息"));
+        List<File> files = new ArrayList<>();
         // 文件上传
         if (StringUtils.isNotEmpty(urlList)) {
+
             for (String url : urlList) {
                 //获取新文件名(默认为jpg)
                 String newFileName = System.currentTimeMillis() + ".jpg";
@@ -272,8 +274,10 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                 file.setUserUid(userUid);
                 file.setAdminUid(adminUid);
                 this.save(file);
+                files.add(file);
             }
         }
+        return files;
     }
 
     @Override

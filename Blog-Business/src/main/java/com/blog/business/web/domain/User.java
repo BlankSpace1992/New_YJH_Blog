@@ -93,7 +93,7 @@ public class User {
      */
     @ApiModelProperty(value = "登录次数")
     @Excel(name = "登录次数")
-    private Object loginCount;
+    private Integer loginCount;
     /**
      * 最后登录时间
      */

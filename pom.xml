@@ -45,6 +45,8 @@
         <spring.mock.version>2.0.8</spring.mock.version>
         <commons-beanutils>1.8.0</commons-beanutils>
         <mybatis-plus-extension>3.1.2</mybatis-plus-extension>
+        <justauth.version>1.15.1</justauth.version>
+        <ip2region.version>1.7.2</ip2region.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -174,6 +176,52 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+            <!--JustAuth第三方登录模块-->
+            <dependency>
+                <groupId>me.zhyd.oauth</groupId>
+                <artifactId>JustAuth</artifactId>
+                <version>${justauth.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils}</version>
+            </dependency>
+            <!--springfox swagger 3.0 -->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${swagger.starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>${qiniu.version}</version>
+            </dependency>
+            <!--通过ip获取城市信息-->
+            <!-- https://github.com/lionsoul2014/ip2region -->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
+            </dependency>
+            <!-- minio依赖-->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>7.1.4</version>
+            </dependency>
+            <!--Markdown 转 Html-->
+            <dependency>
+                <groupId>com.vladsch.flexmark</groupId>
+                <artifactId>flexmark-all</artifactId>
+                <version>${flexmark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-mock</artifactId>
+                <version>${spring.mock.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
