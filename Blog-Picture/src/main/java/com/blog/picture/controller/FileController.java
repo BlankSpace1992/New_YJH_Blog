@@ -46,8 +46,7 @@ public class FileController {
     public ResultBody cropperPicture(@RequestParam(value = "file") MultipartFile file) {
         List<MultipartFile> multipartFileList = new ArrayList<>();
         multipartFileList.add(file);
-        fileService.cropperPicture(multipartFileList);
-        return ResultBody.success();
+        return ResultBody.success(fileService.cropperPicture(multipartFileList));
     }
 
     /**

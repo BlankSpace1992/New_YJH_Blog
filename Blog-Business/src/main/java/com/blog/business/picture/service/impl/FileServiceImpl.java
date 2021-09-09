@@ -43,7 +43,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
 
     @Override
-    public void cropperPicture(List<MultipartFile> multipartFileList) {
+    public List<File> cropperPicture(List<MultipartFile> multipartFileList) {
         // 获取请求
         HttpServletRequest request =
                 Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "截图上传失败"));
@@ -56,13 +56,13 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         // minio图片服务器地址
         String minioPictureBaseUrl = systemConfig.getMinioPictureBaseUrl();
         // 上传文件
-        this.batchUploadFile(request, multipartFileList, systemConfig);
+        return this.batchUploadFile(request, multipartFileList, systemConfig);
 
     }
 
     @Override
-    public void batchUploadFile(HttpServletRequest request, List<MultipartFile> multipartFileList,
-                                SystemConfigCommon systemConfig) {
+    public List<File> batchUploadFile(HttpServletRequest request, List<MultipartFile> multipartFileList,
+                                      SystemConfigCommon systemConfig) {
         // 是否上传七牛云
         String uploadQiNiu = systemConfig.getUploadQiNiu();
         // 是否上传本地
@@ -171,6 +171,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
             }
 
         }
+        this.saveBatch(lists);
+        return lists;
     }
 
     @Override

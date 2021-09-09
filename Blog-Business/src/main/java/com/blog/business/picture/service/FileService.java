@@ -22,8 +22,9 @@ public interface FileService extends IService<File> {
      * @param multipartFileList 文件集合
      * @author yujunhong
      * @date 2021/7/7 16:52
+     * @return 图片信息
      */
-    void cropperPicture(List<MultipartFile> multipartFileList);
+    List<File> cropperPicture(List<MultipartFile> multipartFileList);
 
     /**
      * 批量图片上传
@@ -33,9 +34,10 @@ public interface FileService extends IService<File> {
      * @param systemConfig      系统配置文件
      * @author yujunhong
      * @date 2021/7/8 13:43
+     * @return
      */
-    void batchUploadFile(HttpServletRequest request, List<MultipartFile> multipartFileList,
-                         SystemConfigCommon systemConfig);
+    List<File> batchUploadFile(HttpServletRequest request, List<MultipartFile> multipartFileList,
+                               SystemConfigCommon systemConfig);
 
     /**
      * 获取文件的信息接口

@@ -95,7 +95,8 @@ public class FeignUtils {
         Map<String, String> systemConfigMap = new HashMap<>();
         // 判断是否为web端发送过来的请求---后端发送的token长度为32
         if (BaseSysConf.WEB.equals(platform) || (StringUtils.isNotNull(parameterToken) && parameterToken.length() == Constants.THIRTY_TWO)) {
-
+            // 如果是调用web端获取配置的接口
+            systemConfigMap = this.getSystemConfigByWebToken(parameterToken);
         } else {
             // 调用admin端获取配置端口
             if (StringUtils.isNotNull(token)) {
@@ -140,11 +141,11 @@ public class FeignUtils {
 
         // 判断七牛云的参数是否存在异常
         if (OpenStatus.OPEN.equals(uploadQiNiu)
-                && StringUtils.isEmpty(qiNiuPictureBaseUrl)
+                && (StringUtils.isEmpty(qiNiuPictureBaseUrl)
                 || StringUtils.isEmpty(qiNiuAccessKey)
                 || StringUtils.isEmpty(qiNiuSecretKey)
                 || StringUtils.isEmpty(qiNiuBucket)
-                || StringUtils.isEmpty(qiNiuArea)) {
+                || StringUtils.isEmpty(qiNiuArea))) {
             throw new CommonErrorException(ErrorCode.PLEASE_SET_QI_NIU, BaseMessageConf.PLEASE_SET_QI_NIU);
         }
         // 判断本地服务参数是否存在异常

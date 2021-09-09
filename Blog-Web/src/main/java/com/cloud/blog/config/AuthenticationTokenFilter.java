@@ -43,7 +43,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
                 JSONObject jsonObject = JSON.parseObject(userInfo, JSONObject.class);
                 // 将userId存储进request中
                 httpServletRequest.setAttribute(BaseSysConf.TOKEN, accessToken);
-                httpServletRequest.setAttribute(BaseSysConf.USER_NAME, jsonObject.getString(BaseSysConf.UID));
+                httpServletRequest.setAttribute(BaseSysConf.USER_UID, jsonObject.getString(BaseSysConf.UID));
                 httpServletRequest.setAttribute(BaseSysConf.USER_NAME, jsonObject.getString(BaseSysConf.NICK_NAME));
                 log.info("解析出来的用户:{}", jsonObject.get(BaseSysConf.NICK_NAME));
             }

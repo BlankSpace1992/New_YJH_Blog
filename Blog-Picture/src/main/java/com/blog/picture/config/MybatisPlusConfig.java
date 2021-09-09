@@ -1,5 +1,6 @@
 package com.blog.picture.config;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.incrementer.H2KeyGenerator;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -30,5 +31,18 @@ public class MybatisPlusConfig {
     @Bean
     public H2KeyGenerator getH2KeyGenerator() {
         return new H2KeyGenerator();
+    }
+
+    /**
+     * 配置自动填充
+     *
+     * @author yujunhong
+     * @date 2021/9/9 11:02
+     */
+    @Bean
+    public GlobalConfig globalConfig() {
+        GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setMetaObjectHandler(new MetaObjectHandlerConfig());
+        return globalConfig;
     }
 }

@@ -2,6 +2,7 @@ package com.blog.business.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.User;
+import com.blog.business.web.domain.vo.UserVO;
 
 import java.util.List;
 
@@ -41,4 +42,15 @@ public interface UserService extends IService<User> {
      * @date 2021/9/7 15:50
      */
     User setRequestInfo(User user);
+
+    /**
+     * 编辑用户信息
+     *
+     * @param token   token值
+     * @param userUid 用户uid
+     * @param userVO  用户实体
+     * @author yujunhong
+     * @date 2021/9/9 15:08
+     */
+    void editUser(UserVO userVO, String userUid, String token);
 }

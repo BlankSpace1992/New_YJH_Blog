@@ -42,7 +42,6 @@ public class UserVO {
     /**
      * 密码
      */
-    @NotBlank(message = "密码不允许为空")
     private String passWord;
 
     /**

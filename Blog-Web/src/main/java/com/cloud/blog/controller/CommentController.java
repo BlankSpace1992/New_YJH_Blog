@@ -16,7 +16,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +62,7 @@ public class CommentController {
      */
     @ApiOperation(value = "获取用户的评论列表以及回复")
     @PostMapping(value = "/getListByUser")
-    public ResultBody getListByUser(HttpServletRequest request, @Validated @RequestBody UserVO userVO) {
+    public ResultBody getListByUser(HttpServletRequest request,  @RequestBody UserVO userVO) {
         // 判断是否存在用户id
         if (StringUtils.isNull(request.getAttribute(BaseSysConf.USER_UID))) {
             return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.INVALID_TOKEN);

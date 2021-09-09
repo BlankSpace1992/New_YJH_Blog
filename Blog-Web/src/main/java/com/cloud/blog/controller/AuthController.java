@@ -9,6 +9,8 @@ import com.blog.business.admin.domain.SystemConfig;
 import com.blog.business.admin.service.SystemConfigService;
 import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.User;
+import com.blog.business.web.domain.vo.FeedbackVO;
+import com.blog.business.web.domain.vo.UserVO;
 import com.blog.business.web.service.FeedbackService;
 import com.blog.business.web.service.LinkService;
 import com.blog.business.web.service.UserService;
@@ -36,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -287,6 +290,100 @@ public class AuthController {
     }
 
     /**
+     * 获取用户反馈
+     *
+     * @return 用户反馈
+     * @author yujunhong
+     * @date 2021/9/9 14:25
+     */
+    @ApiOperation(value = "获取用户反馈")
+    @GetMapping(value = "/getFeedbackList")
+    public ResultBody getFeedbackList(HttpServletRequest request) {
+        if (StringUtils.isEmpty(String.valueOf(request.getAttribute(BaseSysConf.USER_UID)))) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.INVALID_TOKEN);
+        }
+        String userUid = request.getAttribute(BaseSysConf.USER_UID).toString();
+        return ResultBody.success(feedbackService.getFeedbackList(userUid));
+    }
+
+    /**
+     * 编辑用户信息
+     *
+     * @param request 请求
+     * @param userVO  用户实体
+     * @return ResultBody
+     * @author yujunhong
+     * @date 2021/9/9 15:05
+     */
+    @ApiOperation(value = "编辑用户信息")
+    @PostMapping(value = "/editUser")
+    public ResultBody editUser(HttpServletRequest request, @RequestBody UserVO userVO) {
+        if (request.getAttribute(BaseSysConf.USER_UID) == null || request.getAttribute(BaseSysConf.TOKEN) == null) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.INVALID_TOKEN);
+        }
+        String userUid = request.getAttribute(BaseSysConf.USER_UID).toString();
+        String token = request.getAttribute(BaseSysConf.TOKEN).toString();
+        userService.editUser(userVO, userUid, token);
+        return ResultBody.success();
+    }
+
+    /**
+     * 更新用户密码
+     *
+     * @param request 请求
+     * @param newPwd  新密码
+     * @param oldPwd  旧密码
+     * @return ResultBody
+     * @author yujunhong
+     * @date 2021/9/9 15:16
+     */
+    @ApiOperation(value = "更新用户密码")
+    @PostMapping(value = "/updateUserPwd")
+    public ResultBody updateUserPwd(HttpServletRequest request, @RequestParam(value = "oldPwd") String oldPwd,
+                                    @RequestParam("newPwd") String newPwd) {
+        if (StringUtils.isEmpty(oldPwd)) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.PARAM_INCORRECT);
+        }
+        if (request.getAttribute(BaseSysConf.USER_UID) == null || request.getAttribute(BaseSysConf.TOKEN) == null) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.INVALID_TOKEN);
+        }
+        String userUid = request.getAttribute(BaseSysConf.USER_UID).toString();
+        User user = userService.getById(userUid);
+        // 判断是否是第三方登录的账号
+        if (!user.getSource().equals(BaseSysConf.MOGU)) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.CANNOT_CHANGE_THE_PASSWORD_BY_USER);
+        }
+        // 判断旧密码是否一致
+        if (user.getPassWord().equals(Md5Utils.stringToMd5(oldPwd))) {
+            user.setPassWord(Md5Utils.stringToMd5(newPwd));
+            userService.updateById(user);
+            return ResultBody.success(BaseMessageConf.OPERATION_SUCCESS);
+        }
+        return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.PASSWORD_IS_ERROR);
+    }
+
+    /**
+     * 新增用户反馈
+     *
+     * @param request    请求
+     * @param feedbackVO 反馈实体
+     * @return ResultBody
+     * @author yujunhong
+     * @date 2021/9/9 15:20
+     */
+    @ApiOperation(value = "新增用户反馈")
+    @PostMapping(value = "/addFeedback")
+    public ResultBody addFeedback(HttpServletRequest request, @RequestBody FeedbackVO feedbackVO) {
+        if (request.getAttribute(BaseSysConf.USER_UID) == null) {
+            return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.INVALID_TOKEN);
+        }
+        String userUid = request.getAttribute(BaseSysConf.USER_UID).toString();
+        feedbackService.addFeedback(userUid, feedbackVO);
+        return ResultBody.success();
+    }
+
+
+    /**
      * 鉴权
      *
      * @param source 登陆方式
@@ -304,7 +401,7 @@ public class AuthController {
                         .redirectUri(blogUrl + "/oauth/callback/github")
                         .build());
                 break;
-                case BaseSysConf.GITEE:
+            case BaseSysConf.GITEE:
                 authRequest = new AuthGiteeRequest(AuthConfig.builder()
                         .clientId(giteeClientId)
                         .clientSecret(giteeClientSecret)

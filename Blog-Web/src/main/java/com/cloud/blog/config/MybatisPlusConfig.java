@@ -1,5 +1,6 @@
 package com.cloud.blog.config;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,16 +25,16 @@ public class MybatisPlusConfig {
         return new PaginationInterceptor();
     }
 
-/*    *//**
-     * 打印 sql
-     *//*
+    /**
+     * 配置自动填充
+     *
+     * @author yujunhong
+     * @date 2021/9/9 11:02
+     */
     @Bean
-    public PerformanceInterceptor performanceInterceptor() {
-        PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
-        //格式化sql语句
-        Properties properties = new Properties();
-        properties.setProperty("format", "true");
-        performanceInterceptor.setProperties(properties);
-        return performanceInterceptor;
-    }*/
+    public GlobalConfig globalConfig() {
+        GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setMetaObjectHandler(new MyMetaObjectHandler());
+        return globalConfig;
+    }
 }
