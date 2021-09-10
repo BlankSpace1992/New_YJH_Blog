@@ -66,7 +66,7 @@ public class FileUtils {
             expandedName = StringUtils.substring(fileName, fileName.indexOf(".") + 1);
         }
         expandedName = expandedName.toLowerCase();
-        if (StringUtils.isNotEmpty(expandedName)) {
+        if (StringUtils.isEmpty(expandedName)) {
             return "jpg";
         }
         return expandedName;

@@ -113,7 +113,7 @@
             <div class="imgBody" v-if="userInfo.photoUrl">
               <i class="el-icon-error inputClass" v-show="icon" @click="deletePhoto('user')"
                  @mouseover="icon = true"></i>
-              <img @mouseover="icon = true" @mouseout="icon = false" v-bind:src="userInfo.photoUrl"/>
+              <img @mouseover="icon = true" @mouseout="icon = false" v-bind:src='userInfo.photoUrl'/>
             </div>
 
             <div v-else class="uploadImgBody" @click="checkPhoto">
@@ -834,15 +834,15 @@
       },
 
       cropSuccess(resData) {
-        console.log("图片信息", resData);
+
         this.imagecropperShow = false
         this.imagecropperKey = this.imagecropperKey + 1
         // 判断当前激活的页面
         if (this.activeName == "0") {
           // 激活个人中心页面
-          this.userInfo.photoUrl = resData.result[0].url
-          this.userInfo.avatar = resData.result[0].uid
-          cosole.log("图片信息",this.userInfo);
+          this.userInfo.photoUrl = resData.result[0].picUrl;
+          this.userInfo.photoUrl = process.env.WEB_API + this.userInfo.photoUrl;
+          this.userInfo.avatar = resData.result[0].uid;
         } else if (this.activeName == "5") {
           let photoList = []
           photoList.push(resData[0].url);
