@@ -31,3 +31,8 @@
 /Blog-Picture/target/classes/com/blog/picture/config/BlogPictureConfig.class
 /Blog-Search/Blog-Search.iml
 /Blog-Search/target/
+/Blog-RabbitMq/target/classes/com/blog/rabbitmq/BlogRabbitMqApplication.class
+/Blog-RabbitMq/target/classes/bootstrap.yml
+/Blog-RabbitMq/target/classes/com/blog/rabbitmq/listener/MailListener$1.class
+/Blog-RabbitMq/target/classes/com/blog/rabbitmq/listener/MailListener.class
+/Blog-RabbitMq/target/classes/com/blog/rabbitmq/config/RabbitMqConfig.class
