@@ -12,6 +12,7 @@
         <module>Blog-Gateway</module>
         <module>Blog-Picture</module>
         <module>Blog-Search</module>
+        <module>Blog-RabbitMq</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>
@@ -47,6 +48,7 @@
         <mybatis-plus-extension>3.1.2</mybatis-plus-extension>
         <justauth.version>1.15.1</justauth.version>
         <ip2region.version>1.7.2</ip2region.version>
+        <javax.mail.version>1.4</javax.mail.version>
     </properties>
     <dependencyManagement>
         <dependencies>

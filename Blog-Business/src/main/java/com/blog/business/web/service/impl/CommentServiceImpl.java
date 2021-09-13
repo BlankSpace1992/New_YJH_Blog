@@ -12,6 +12,7 @@ import com.blog.business.web.domain.vo.CommentParamVO;
 import com.blog.business.web.domain.vo.UserVO;
 import com.blog.business.web.mapper.CommentMapper;
 import com.blog.business.web.service.*;
+import com.blog.config.rabbit_mq.RabbitMqUtils;
 import com.blog.config.redis.RedisUtil;
 import com.blog.constants.*;
 import com.blog.enums.EnumCommentSource;
@@ -53,6 +54,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private Long userTokenSurvivalTime;
     @Value(value = "${data.website.url}")
     private String dataWebsiteUrl;
+    @Autowired
+    private RabbitMqUtils rabbitMqUtils;
 
     @Override
     public List<Comment> getCommentList(CommentParamVO commentParamVO) {
@@ -327,9 +330,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                     map.put(BaseSysConf.USER_UID, toUser.getUid());
                     String url = getUrlByCommentSource(commentVO);
                     map.put(BaseSysConf.URL, url);
-                    // 发送评论邮件 --RabbitMQ尚未实现
-                    // TODO: 2021/8/25
-//                    rabbitMqUtil.sendCommentEmail(map);
+                    // 发送评论邮件
+                    rabbitMqUtils.sendCommentEmail(map);
                 }
 
             }

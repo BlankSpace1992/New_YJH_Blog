@@ -17,7 +17,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableDiscoveryClient
 @EnableFeignClients("com.blog.feign")
 @EnableOpenApi
-@ComponentScan(basePackages = {"com.blog.picture.controller","com.blog.utils","com.blog.business.picture","com.blog.config","com.blog.picture.config"})
+@ComponentScan(basePackages = {"com.blog.picture.controller", "com.blog.utils", "com.blog.business.picture", "com.blog.picture.config","com.blog.config.redis"})
 public class BlogPictureApplication {
     public static void main(String[] args) {
         SpringApplication.run(BlogPictureApplication.class);

@@ -7,6 +7,7 @@ import com.blog.business.web.domain.User;
 import com.blog.business.web.domain.vo.UserVO;
 import com.blog.business.web.mapper.UserMapper;
 import com.blog.business.web.service.UserService;
+import com.blog.config.rabbit_mq.RabbitMqUtils;
 import com.blog.config.redis.RedisUtil;
 import com.blog.constants.BaseRedisConf;
 import com.blog.constants.BaseSysConf;
@@ -35,6 +36,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private RedisUtil redisUtil;
     @Value(value = "${BLOG.USER_TOKEN_SURVIVAL_TIME}")
     private Long userTokenSurvivalTime;
+    @Autowired
+    private RabbitMqUtils rabbitMqUtils;
 
     @Override
     public List<User> getUserListByIds(List<String> userUidList) {
@@ -89,10 +92,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 判断用户是否更改了邮箱
         if (userVO.getEmail() != null && !userVO.getEmail().equals(user.getEmail())) {
             user.setEmail(userVO.getEmail());
-            // 使用RabbitMQ发送邮件 // TODO: 2021/9/9 rabbitMQ尚未处理
-//            rabbitMqUtil.sendRegisterEmail(user, token);
         }
+        // 使用RabbitMQ发送邮件
+        rabbitMqUtils.sendRegisterEmail(user.getEmail(), user.getNickName(), user.getValidCode(), token);
         redisUtil.set(BaseRedisConf.USER_TOKEN + Constants.SYMBOL_COLON + token,
-                JSON.toJSONString(user), userTokenSurvivalTime*60*60);
+                JSON.toJSONString(user), userTokenSurvivalTime * 60 * 60);
     }
 }

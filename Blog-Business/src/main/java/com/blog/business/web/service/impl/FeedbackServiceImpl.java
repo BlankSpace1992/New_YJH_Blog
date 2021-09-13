@@ -12,6 +12,7 @@ import com.blog.business.web.domain.vo.FeedbackVO;
 import com.blog.business.web.mapper.FeedbackMapper;
 import com.blog.business.web.service.FeedbackService;
 import com.blog.business.web.service.UserService;
+import com.blog.config.rabbit_mq.RabbitMqUtils;
 import com.blog.constants.BaseMessageConf;
 import com.blog.constants.BaseSysConf;
 import com.blog.constants.EnumsStatus;
@@ -32,6 +33,8 @@ public class FeedbackServiceImpl extends ServiceImpl<FeedbackMapper, Feedback> i
     private UserService userService;
     @Autowired
     private SystemConfigService systemConfigService;
+    @Autowired
+    private RabbitMqUtils rabbitMqUtils;
 
     @Override
     public IPage<Feedback> getFeedbackList(String userUid) {
@@ -63,7 +66,7 @@ public class FeedbackServiceImpl extends ServiceImpl<FeedbackMapper, Feedback> i
                 String feedback = "网站收到新的反馈: " + "<br />"
                         + "标题：" + feedbackVO.getTitle() + "<br />" + "<br />"
                         + "内容" + feedbackVO.getContent();
-//                rabbitMqUtil.sendSimpleEmail(systemConfig.getEmail(), feedback); // TODO: 2021/9/9 rabbitmq尚未完成
+                rabbitMqUtils.sendSimpleEmail(systemConfig.getEmail(), feedback);
             } else {
                 log.error("网站没有配置通知接收的邮箱地址！");
             }

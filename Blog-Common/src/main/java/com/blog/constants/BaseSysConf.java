@@ -268,4 +268,7 @@ public class BaseSysConf {
     public final static String MALE = "male";
     public final static String FEMALE = "female";
 
+    public static final String RECEIVER = "receiver";
+    public static final String SUBJECT = "subject";
+
 }
