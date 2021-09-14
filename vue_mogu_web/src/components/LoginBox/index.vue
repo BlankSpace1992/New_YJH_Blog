@@ -147,8 +147,8 @@
         },
         // 登录类别
         loginType: {
-          password: true,
-          gitee: true,
+          password: false,
+          gitee: false,
           github: true,
           qq: true,
           wechat: true
@@ -242,14 +242,14 @@
             params.passWord = this.loginForm.password;
             params.isRememberMe = 1;
             localLogin(params).then(response => {
-              if (response.code == this.$ECode.SUCCESS) {
+              if (response.data.code == this.$ECode.SUCCESS) {
                 // 跳转到首页
-                location.replace(this.vueMoguWebUrl + "/#/?token=" + response.result)
+                location.replace(this.vueMoguWebUrl + "/#/?token=" + response.data.result)
                 window.location.reload()
               } else {
                 this.$message({
                   type: "error",
-                  message: response.result
+                  message: response.data.message
                 })
               }
             });
@@ -277,17 +277,17 @@
             params.email = this.registerForm.email;
             params.nickName = this.registerForm.nickName
             localRegister(params).then(response => {
-              if (response.code == this.$ECode.SUCCESS) {
+              if (response.data.code == this.$ECode.SUCCESS) {
                 this.$message({
                   type: "success",
-                  message: response.result
+                  message: response.data.result
                 })
                 // 打开登录页面
                 this.goLogin();
               } else {
                 this.$message({
                   type: "error",
-                  message: response.result
+                  message: response.data.message
                 })
               }
             });

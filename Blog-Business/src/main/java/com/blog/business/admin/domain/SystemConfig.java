@@ -212,5 +212,5 @@ public class SystemConfig {
      */
     @ApiModelProperty(value = "是否开启用户邮件激活功能【0 关闭，1 开启】")
     @Excel(name = "是否开启用户邮件激活功能【0 关闭，1 开启】")
-    private Object openEmailActivate;
+    private boolean openEmailActivate;
 }

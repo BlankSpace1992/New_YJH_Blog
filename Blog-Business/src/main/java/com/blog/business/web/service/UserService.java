@@ -3,6 +3,7 @@ package com.blog.business.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.User;
 import com.blog.business.web.domain.vo.UserVO;
+import com.blog.exception.ResultBody;
 
 import java.util.List;
 
@@ -53,4 +54,34 @@ public interface UserService extends IService<User> {
      * @date 2021/9/9 15:08
      */
     void editUser(UserVO userVO, String userUid, String token);
+
+    /**
+     * 用户登录
+     *
+     * @param userVO 登录实体对象
+     * @return token
+     * @author yujunhong
+     * @date 2021/9/14 15:15
+     */
+    ResultBody login(UserVO userVO);
+
+
+    /**
+     * 用户注册
+     *
+     * @param userVO 注册实体对象
+     * @return token
+     * @author yujunhong
+     * @date 2021/9/14 15:15
+     */
+    ResultBody register(UserVO userVO);
+
+    /**
+     * 用户激活
+     *
+     * @param token token值
+     * @author yujunhong
+     * @date 2021/9/14 15:15
+     */
+    ResultBody activeUser(String token);
 }
