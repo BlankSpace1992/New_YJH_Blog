@@ -1,9 +1,11 @@
 package com.blog.business.web.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.Comment;
 import com.blog.business.web.domain.vo.CommentParamVO;
 import com.blog.business.web.domain.vo.UserVO;
+import com.blog.exception.ResultBody;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,7 @@ public interface CommentService extends IService<Comment> {
      * @author yujunhong
      * @date 2021/8/12 15:02
      */
-    List<Comment> getCommentList(CommentParamVO commentParamVO);
+    IPage<Comment> getCommentList(CommentParamVO commentParamVO);
 
     /**
      * 获取用户的评论列表以及回复
@@ -55,7 +57,7 @@ public interface CommentService extends IService<Comment> {
      * @author yujunhong
      * @date 2021/8/25 16:06
      */
-    void add(CommentParamVO commentVO, String userUid);
+    ResultBody add(CommentParamVO commentVO, String userUid);
 
     /**
      * 举报评论

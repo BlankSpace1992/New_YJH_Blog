@@ -288,6 +288,20 @@ public class AuthController {
             return ResultBody.success(map);
         }
     }
+    /**
+     * 删除accessToken
+     *
+     * @param accessToken 鉴权token
+     * @return ResultBody
+     * @author yujunhong
+     * @date 2021/9/7 16:42
+     */
+    @ApiOperation(value = "删除accessToken", notes = "删除accessToken")
+    @RequestMapping("/delete/{accessToken}")
+    public ResultBody deleteUserAccessToken(@PathVariable("accessToken") String accessToken) {
+        redisUtil.delete(BaseRedisConf.USER_TOKEN + Constants.SYMBOL_COLON + accessToken);
+        return ResultBody.success(BaseMessageConf.DELETE_SUCCESS);
+    }
 
     /**
      * 获取用户反馈

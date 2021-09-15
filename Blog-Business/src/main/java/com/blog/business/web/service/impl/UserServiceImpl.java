@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.business.admin.domain.SystemConfig;
 import com.blog.business.admin.service.SystemConfigService;
+import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.User;
 import com.blog.business.web.domain.vo.UserVO;
 import com.blog.business.web.mapper.UserMapper;
@@ -47,6 +48,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private PictureFeignClient pictureFeignClient;
     @Autowired
     private SystemConfigService systemConfigService;
+    @Autowired
+    private WebUtils webUtils;
 
     @Override
     public List<User> getUserListByIds(List<String> userUidList) {
@@ -142,7 +145,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (!StringUtils.isEmpty(user.getAvatar())) {
                 List<Map<String, Object>> picture = pictureFeignClient.getPicture(user.getAvatar(), ",");
                 if (picture != null && picture.size() > 0) {
-                    user.setPhotoUrl((String) picture.get(0).get(BaseSysConf.URL));
+                    user.setPhotoUrl(webUtils.getPicture(picture).get(0));
                 }
             }
             // 生成token

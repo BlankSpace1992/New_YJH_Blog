@@ -17,6 +17,7 @@ import com.blog.config.redis.RedisUtil;
 import com.blog.constants.*;
 import com.blog.enums.EnumCommentSource;
 import com.blog.exception.CommonErrorException;
+import com.blog.exception.ResultBody;
 import com.blog.feign.PictureFeignClient;
 import com.blog.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -58,19 +59,23 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private RabbitMqUtils rabbitMqUtils;
 
     @Override
-    public List<Comment> getCommentList(CommentParamVO commentParamVO) {
+    public IPage<Comment> getCommentList(CommentParamVO commentParamVO) {
         // 查询当前博客的评论信息
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
         if (StringUtils.isNotEmpty(commentParamVO.getBlogUid())) {
             wrapper.eq(Comment::getBlogUid, commentParamVO.getBlogUid());
         }
+        Page<Comment> page = new Page<>();
+        page.setCurrent(commentParamVO.getCurrentPage());
+        page.setSize(commentParamVO.getPageSize());
         wrapper.eq(Comment::getSource, commentParamVO.getSource());
         wrapper.eq(Comment::getStatus, EnumsStatus.ENABLE);
         // 查询出所有一级评论
         wrapper.isNull(Comment::getToUid);
         wrapper.eq(Comment::getType, EnumsStatus.COMMENT);
         wrapper.orderByDesc(Comment::getCreateTime);
-        List<Comment> comments = this.list(wrapper);
+        IPage<Comment> commentPage = this.page(page, wrapper);
+        List<Comment> comments = commentPage.getRecords();
         // 获取所有评论的uid-第一级评论
         List<String> uidList = comments.stream().map(Comment::getUid).collect(Collectors.toList());
         // 查询所有的子评论
@@ -96,7 +101,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 获取用户信息
         List<User> userList = new ArrayList<>();
         if (StringUtils.isNotEmpty(userUidList)) {
-            userList= userService.getUserListByIds(userUidList);
+            userList = userService.getUserListByIds(userUidList);
         }
         // 获取用户头像
         StringBuilder avatarString = new StringBuilder();
@@ -107,10 +112,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         });
         List<Map<String, Object>> pictureList = pictureFeignClient.getPicture(avatarString.toString(),
                 BaseSysConf.FILE_SEGMENTATION);
+        List<Map<String, Object>> realPictureList = webUtils.getPictureMap(pictureList);
         // 拆分图片
         Map<String, String> pictureMap = new HashMap<>();
-        pictureList.forEach(item -> pictureMap.put(item.get(BaseSQLConf.UID).toString(),
+        realPictureList.forEach(item -> pictureMap.put(item.get(BaseSQLConf.UID).toString(),
                 item.get(BaseSQLConf.URL).toString()));
+
         // 获取用户信息并设置用户头像
         Map<String, User> userMap = new HashMap<>();
         userList.forEach(item -> {
@@ -130,24 +137,18 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             }
             commentMap.put(item.getUid(), item);
         });
-        // 设置一级评论下得子评论
-        Map<String, List<Comment>> toCommentListMap = new HashMap<>();
         // 筛选出toUid存在的评论
         List<Comment> toUidCommentList =
                 comments.stream().filter(item -> StringUtils.isNotEmpty(item.getToUid())).collect(Collectors.toList());
         // 评论按照toUid进行分组
         Map<String, List<Comment>> commentToUidMap =
                 toUidCommentList.stream().collect(Collectors.groupingBy(Comment::getToUid));
-        for (Comment comment : comments) {
-            List<Comment> tempList;
-            // 回复toUid匹配评论uid
-            tempList = commentToUidMap.getOrDefault(comment.getToUid(), new ArrayList<>());
-            toCommentListMap.put(comment.getUid(), tempList);
-        }
         // 筛选toUid为空得数据--无回复数据
         List<Comment> firstCommentList =
                 comments.stream().filter(item -> StringUtils.isEmpty(item.getToUid())).collect(Collectors.toList());
-        return getCommentReply(firstCommentList, toCommentListMap);
+        List<Comment> commentReply = getCommentReply(firstCommentList, commentToUidMap);
+        commentPage.setRecords(commentReply);
+        return commentPage;
     }
 
     @Override
@@ -179,7 +180,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 获取用户信息
         List<User> userList = new ArrayList<>();
         if (StringUtils.isNotEmpty(userIdList)) {
-            userList= userService.getUserListByIds(userIdList);
+            userList = userService.getUserListByIds(userIdList);
         }
         // 获取用户头像
         StringBuilder avatarString = new StringBuilder();
@@ -222,14 +223,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 }
             }
             if (userUid.equals(item.getUserUid())) {
-                commentList.add(item);
+                userCommentList.add(item);
             }
             if (userUid.equals(item.getToUserUid())) {
                 replyList.add(item);
             }
         });
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put(BaseSysConf.COMMENT_LIST, commentList);
+        resultMap.put(BaseSysConf.COMMENT_LIST, userCommentList);
         resultMap.put(BaseSysConf.REPLY_LIST, replyList);
         return resultMap;
     }
@@ -269,52 +270,52 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     @Override
-    public void add(CommentParamVO commentVO, String userUid) {
+    public ResultBody add(CommentParamVO commentVO, String userUid) {
         // 获取网站配置信息
         LambdaQueryWrapper<WebConfig> webConfigWrapper = new LambdaQueryWrapper<>();
         webConfigWrapper.eq(WebConfig::getStatus, EnumsStatus.ENABLE);
         WebConfig webConfig = webConfigService.getOne(webConfigWrapper);
         // 判断是狗开启全局评论功能
         if (BaseSysConf.CAN_NOT_COMMENT.equals(webConfig.getOpenComment())) {
-            throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.NO_COMMENTS_OPEN);
+            return ResultBody.error(BaseMessageConf.NO_COMMENTS_OPEN);
         }
         // 判断当前博客是否开启评论功能
         if (StringUtils.isNotEmpty(commentVO.getBlogUid())) {
             Blog blog = blogService.getById(commentVO.getBlogUid());
             if (BaseSysConf.CAN_NOT_COMMENT.equals(blog.getOpenComment())) {
-                throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.NO_COMMENTS_OPEN);
+                return ResultBody.error(BaseMessageConf.NO_COMMENTS_OPEN);
             }
         }
         // 获取用户信息
         User user = userService.getById(userUid);
         // 判断字数是否超过限制
         if (commentVO.getContent().length() > BaseSysConf.ONE_ZERO_TWO_FOUR) {
-            throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.COMMENT_CAN_NOT_MORE_THAN_1024);
+            return ResultBody.error(BaseMessageConf.COMMENT_CAN_NOT_MORE_THAN_1024);
         }
         // 判断该用户是否被禁言
         if (user.getCommentStatus() == BaseSysConf.ZERO) {
-            throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.YOU_DONT_HAVE_PERMISSION_TO_SPEAK);
+            return ResultBody.error(BaseMessageConf.YOU_DONT_HAVE_PERMISSION_TO_SPEAK);
         }
         // 判断是否发送过多无意义评论
-        String jsonResult =
-                (String) redisUtil.get(BaseRedisConf.USER_PUBLISH_SPAM_COMMENT_COUNT + BaseSysConf.REDIS_SEGMENTATION + userUid);
-        if (!StringUtils.isEmpty(jsonResult)) {
-            int count = Integer.parseInt(jsonResult);
+        Object jsonResult =
+                redisUtil.get(BaseRedisConf.USER_PUBLISH_SPAM_COMMENT_COUNT + BaseSysConf.REDIS_SEGMENTATION + userUid);
+        if (StringUtils.isNotNull(jsonResult)) {
+            int count = Integer.parseInt(String.valueOf(jsonResult));
             if (count >= Constants.NUM_FIVE) {
-                throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.PLEASE_TRY_AGAIN_IN_AN_HOUR);
+                return ResultBody.error(BaseMessageConf.PLEASE_TRY_AGAIN_IN_AN_HOUR);
             }
         }
         // 判断是否垃圾评论
         String content = commentVO.getContent();
         if (StringUtils.isCommentSpam(content)) {
-            if (StringUtils.isEmpty(jsonResult)) {
+            if (StringUtils.isNotNull(jsonResult)) {
                 int count = 0;
-                redisUtil.set(BaseRedisConf.USER_PUBLISH_SPAM_COMMENT_COUNT + BaseSysConf.REDIS_SEGMENTATION + userUid, String.valueOf(count), 3600);
+                redisUtil.set(BaseRedisConf.USER_PUBLISH_SPAM_COMMENT_COUNT + BaseSysConf.REDIS_SEGMENTATION + userUid, count, 3600);
             } else {
                 redisUtil.increment(BaseRedisConf.USER_PUBLISH_SPAM_COMMENT_COUNT + BaseSysConf.REDIS_SEGMENTATION + userUid
                         , 1);
             }
-            throw new CommonErrorException(BaseSysConf.ERROR, BaseMessageConf.COMMENT_IS_SPAM);
+            return ResultBody.error(BaseMessageConf.COMMENT_IS_SPAM);
         }
         if (StringUtils.isNotEmpty(commentVO.getToUserUid())) {
             User toUser = userService.getById(commentVO.getToUserUid());
@@ -372,6 +373,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         comment.setUserUid(commentVO.getUserUid());
         comment.setToUid(commentVO.getToUid());
         comment.setStatus(EnumsStatus.ENABLE);
+        this.save(comment);
         //获取图片
         if (StringUtils.isNotEmpty(user.getAvatar())) {
             List<Map<String, Object>> picture = this.pictureFeignClient.getPicture(user.getAvatar(),
@@ -385,13 +387,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         if (StringUtils.isNotEmpty(comment.getToUserUid())) {
             String redisKey =
                     BaseRedisConf.USER_RECEIVE_COMMENT_COUNT + Constants.SYMBOL_COLON + comment.getToUserUid();
-            String count = (String) redisUtil.get(redisKey);
-            if (StringUtils.isNotEmpty(count)) {
+            Object count = redisUtil.get(redisKey);
+            if (StringUtils.isNotNull(count)) {
                 redisUtil.increment(redisKey, Constants.NUM_ONE);
             } else {
-                redisUtil.set(redisKey, Constants.STR_ONE, 86400 * 7);
+                redisUtil.set(redisKey, 1, 86400 * 7);
             }
         }
+        return ResultBody.success(comment);
     }
 
     @Override

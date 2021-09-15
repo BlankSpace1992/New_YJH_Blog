@@ -59,4 +59,14 @@ public class CommentParamVO {
      * 评论来源： MESSAGE_BOARD，ABOUT，BLOG_INFO 等
      */
     private String source;
+
+    /**
+     * 当前页
+     */
+    private Long currentPage;
+
+    /**
+     * 页大小
+     */
+    private Long pageSize;
 }

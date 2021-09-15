@@ -1,5 +1,6 @@
 package com.cloud.blog.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.blog.business.web.domain.Comment;
 import com.blog.business.web.domain.vo.CommentParamVO;
 import com.blog.business.web.domain.vo.UserVO;
@@ -48,7 +49,7 @@ public class CommentController {
     @ApiOperation(value = "获取用户评论列表")
     @PostMapping(value = "/getList")
     public ResultBody getList( @RequestBody CommentParamVO commentParamVO) {
-        List<Comment> commentList = commentService.getCommentList(commentParamVO);
+        IPage<Comment> commentList = commentService.getCommentList(commentParamVO);
         return ResultBody.success(commentList);
     }
 
@@ -113,9 +114,9 @@ public class CommentController {
         if (StringUtils.isNotNull(attribute)) {
             String uid = attribute.toString();
             String redisKey = BaseRedisConf.USER_RECEIVE_COMMENT_COUNT + Constants.SYMBOL_COLON + uid;
-            String count = (String) redisUtil.get(redisKey);
+            Object count = redisUtil.get(redisKey);
             if (StringUtils.isNotNull(count)) {
-                commentCount = Integer.parseInt(count);
+                commentCount = Integer.parseInt(String.valueOf(count));
             }
         }
         return ResultBody.success(commentCount);
@@ -157,8 +158,7 @@ public class CommentController {
             return ResultBody.error(BaseSysConf.ERROR, BaseMessageConf.INVALID_TOKEN);
         }
         String userUid = request.getAttribute(BaseSysConf.USER_UID).toString();
-        commentService.add(commentVO, userUid);
-        return ResultBody.success();
+        return commentService.add(commentVO, userUid);
     }
 
     /**

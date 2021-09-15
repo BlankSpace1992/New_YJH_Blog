@@ -64,7 +64,8 @@
         },
         userInfo: {},
         userTagDictList: [], // 用户标签字典
-        defaultAvatar: this.$SysConf.defaultAvatar
+        defaultAvatar: this.$SysConf.defaultAvatar,
+        url:process.env.WEB_API
       };
     },
     created() {
@@ -125,8 +126,8 @@
         params.toUserUid = e.toUserUid;
         params.source = e.source
         addComment(params).then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
-              let commentData = response.result
+            if (response.data.code == this.$ECode.SUCCESS) {
+              let commentData = response.data.result
               document.getElementById(commentData.toUid).style.display = 'none'
               let comments = this.$store.state.app.commentList;
               commentData.user = this.userInfo;
@@ -160,8 +161,8 @@
         params.currentPage = 0;
         params.pageSize = 10;
         getCommentList(params).then(response => {
-          if (response.code == this.$ECode.SUCCESS) {
-            this.comments = response.result;
+          if (response.data.code == this.$ECode.SUCCESS) {
+            this.comments = response.data.result;
           }
         });
       }
@@ -246,7 +247,7 @@
             params.uid = item.uid;
             params.userUid = this.$store.state.user.userInfo.uid
             deleteComment(params).then(response => {
-              if (response.code == this.$ECode.SUCCESS) {
+              if (response.data.code == this.$ECode.SUCCESS) {
                 this.$notify({
                   title: '成功',
                   message: "删除成功",
