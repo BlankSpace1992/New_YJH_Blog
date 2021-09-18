@@ -17,7 +17,7 @@ public interface SysParamsService extends IService<SysParams> {
      * @author yujunhong
      * @date 2021/6/1 14:08
      */
-    Integer getSysParamsValueByKey(String paramKey);
+    String getSysParamsValueByKey(String paramKey);
 
     /**
      * 根据param_key获取对应的param实体对象

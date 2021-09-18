@@ -60,7 +60,7 @@ service.interceptors.response.use(
     if (loading == null || requestNum <= 0) {
       loading.close()
     }
-    if (res.code === 'success' || res.code === 'error' || res.success) {
+    if (res.code === '200' || res.code === 'error' || res.success) {
       // 请求完毕
       return response.data
     } else {

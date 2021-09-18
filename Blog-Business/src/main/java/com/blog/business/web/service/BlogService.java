@@ -2,7 +2,10 @@ package com.blog.business.web.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blog.business.admin.domain.vo.BlogVO;
 import com.blog.business.web.domain.Blog;
+import com.blog.exception.ResultBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -70,7 +73,6 @@ public interface BlogService extends IService<Blog> {
      * 给博客列表设置分类,标签,图片
      *
      * @param list 博客列表
-     * @return 包含图片/标签/分类的博客列表
      * @author yujunhong
      * @date 2021/8/2 15:03
      */
@@ -174,4 +176,75 @@ public interface BlogService extends IService<Blog> {
      * @date 2021/9/1 17:16
      */
     List<Blog> getArticleByMonth(String monthDate);
+
+    /**
+     * 获取博客信息
+     *
+     * @param blogVO 查询条件vo
+     * @return 获取博客信息
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody getBlogList(BlogVO blogVO);
+
+    /**
+     * 新增博客
+     *
+     * @param blogVO 博客新增实体对象
+     * @return 新增博客
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody add(BlogVO blogVO);
+
+    /**
+     * 编辑博客
+     *
+     * @param blogVO 编辑博客实体对象
+     * @return 编辑博客
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody edit(BlogVO blogVO);
+
+    /**
+     * 本地博客上传
+     *
+     * @param filedatas 本地上传文件
+     * @return ResultBody
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody uploadLocalBlog(List<MultipartFile> filedatas);
+
+    /**
+     * 推荐博客排序调整
+     *
+     * @param blogVOList 博客修改集合实体
+     * @return 推荐博客排序调整
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody editBatch(List<BlogVO> blogVOList);
+
+    /**
+     * 删除博客信息
+     *
+     * @param blogVO 删除博客实体对象
+     * @return 删除博客信息
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody delete(BlogVO blogVO);
+
+    /**
+     * 删除选中博客
+     *
+     * @param blogVoList 博客集合
+     * @return 删除选中博客
+     * @author yujunhong
+     * @date 2021/9/17 11:39
+     */
+    ResultBody deleteBatch(List<BlogVO> blogVoList);
+
 }

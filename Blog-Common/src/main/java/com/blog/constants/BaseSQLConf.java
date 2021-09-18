@@ -23,6 +23,7 @@ public class BaseSQLConf {
     public final static String LINK_STATUS = "link_status";
     public final static String FEEDBACK_STATUS = "feedback_status";
     public final static String CONTENT = "content";
+    public final static String PASS_WORD = "pass_word";
     /**
      * 字典表相关
      */

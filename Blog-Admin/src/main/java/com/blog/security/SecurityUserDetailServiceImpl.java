@@ -45,7 +45,7 @@ public class SecurityUserDetailServiceImpl implements UserDetailsService {
         Admin admin =
                 Optional.ofNullable(adminService.getOne(wrapper)).orElseThrow(() -> new UsernameNotFoundException(String.format("当前用户:{}不存在", username)));
         // 查询出角色信息封装导admin中
-        Role role = roleService.getById(admin.getUid());
+        Role role = roleService.getById(admin.getRoleUid());
         // 角色信息集合
         List<String> roleNames = new ArrayList<>();
         roleNames.add(role.getRoleName());

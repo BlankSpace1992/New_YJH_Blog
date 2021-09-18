@@ -24,7 +24,7 @@ public class SysParamsServiceImpl extends ServiceImpl<SysParamsMapper, SysParams
     private RedisUtil redisUtil;
 
     @Override
-    public Integer getSysParamsValueByKey(String paramKey) {
+    public String getSysParamsValueByKey(String paramKey) {
         // 优先从redis中获取
         String redisKey = BaseRedisConf.SYSTEM_PARAMS + BaseRedisConf.SEGMENTATION + paramKey;
         String paramsValue = (String) redisUtil.get(redisKey);
@@ -38,7 +38,7 @@ public class SysParamsServiceImpl extends ServiceImpl<SysParamsMapper, SysParams
             // 存放进redis中
             redisUtil.set(redisKey, paramsValue,3600);
         }
-        return Integer.valueOf(paramsValue);
+        return paramsValue;
     }
 
     @Override

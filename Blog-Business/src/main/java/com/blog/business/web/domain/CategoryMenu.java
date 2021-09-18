@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
@@ -25,7 +26,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "t_category_menu")
-public class CategoryMenu {
+public class CategoryMenu implements Comparable<CategoryMenu>{
     /**
      * 唯一uid
      */
@@ -44,7 +45,7 @@ public class CategoryMenu {
      */
     @ApiModelProperty(value = "菜单级别")
     @Excel(name = "菜单级别")
-    private Object menuLevel;
+    private Integer menuLevel;
     /**
      * 简介
      */
@@ -98,17 +99,25 @@ public class CategoryMenu {
      */
     @ApiModelProperty(value = "是否显示 1:是 0:否")
     @Excel(name = "是否显示 1:是 0:否")
-    private Object isShow;
+    private Integer isShow;
     /**
      * 菜单类型 0: 菜单   1: 按钮
      */
     @ApiModelProperty(value = "菜单类型 0: 菜单   1: 按钮")
     @Excel(name = "菜单类型 0: 菜单   1: 按钮")
-    private Object menuType;
+    private Integer menuType;
     /**
      * 是否跳转外部链接 0：否，1：是
      */
     @ApiModelProperty(value = "是否跳转外部链接 0：否，1：是")
     @Excel(name = "是否跳转外部链接 0：否，1：是")
-    private Object isJumpExternalUrl;
+    private Integer isJumpExternalUrl;
+
+    @Override
+    public int compareTo(@NotNull CategoryMenu o) {
+        if (this.sort >= o.getSort()) {
+            return -1;
+        }
+        return 1;
+    }
 }

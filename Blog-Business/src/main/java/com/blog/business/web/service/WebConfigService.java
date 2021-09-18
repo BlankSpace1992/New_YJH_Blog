@@ -2,6 +2,7 @@ package com.blog.business.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.WebConfig;
+import com.blog.exception.ResultBody;
 
 /**
  * @author yujunhong
@@ -27,4 +28,13 @@ public interface WebConfigService extends IService<WebConfig> {
      * @date 2021/6/2 13:58
      */
     Boolean isOpenLoginType(String loginType);
+
+    /**
+     * 获取网站名称
+     *
+     * @return 获取网站名称
+     * @author yujunhong
+     * @date 2021/9/18 14:41
+     */
+    ResultBody getWebSiteName();
 }

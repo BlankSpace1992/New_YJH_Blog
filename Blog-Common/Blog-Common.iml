@@ -156,6 +156,7 @@
     <orderEntry type="library" name="Maven: org.springframework.retry:spring-retry:1.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: javax.mail:mail:1.4" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: io.jsonwebtoken:jjwt:0.7.0" level="project" />
     <orderEntry type="module" module-name="Blog-Utils" />
     <orderEntry type="library" name="Maven: cn.hutool:hutool-all:5.6.6" level="project" />
     <orderEntry type="library" name="Maven: io.minio:minio:7.1.4" level="project" />

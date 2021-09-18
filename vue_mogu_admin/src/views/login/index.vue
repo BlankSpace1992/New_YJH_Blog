@@ -135,7 +135,7 @@ export default {
     getWebName: function () {
       getWebSiteName().then(response => {
         if(response.code == this.$ECode.SUCCESS) {
-          this.webSiteName = response.data
+          this.webSiteName = response.result
         }
       });
     },
@@ -161,7 +161,7 @@ export default {
               if (response.code == this.$ECode.SUCCESS) {
                 this.$router.push({ path: this.redirect || "/" });
               } else {
-                this.$message.error(response.data);
+                this.$message.error(response.message);
               }
               this.loading = false;
             })

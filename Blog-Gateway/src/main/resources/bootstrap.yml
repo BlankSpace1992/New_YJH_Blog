@@ -51,5 +51,11 @@ spring:
             - Path=/cloud-blog-picture/**
           filters:
             - StripPrefix=1
+        - id: cloud-blog-admin
+          uri: lb://cloud-blog-admin
+          predicates:
+            - Path=/cloud-blog-admin/**
+          filters:
+            - StripPrefix=1
 server:
   port: 8089

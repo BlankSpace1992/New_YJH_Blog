@@ -5,6 +5,8 @@ import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 字符串处理类
@@ -13,6 +15,8 @@ import java.util.*;
  * @date 2021/7/30 14:48
  */
 public class StringUtils extends StrUtil {
+    static String CHECK_EMAIL_REGEX = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+    static String CHECK_MOBILE_NUMBER_REGEX = "^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$";
     /**
      * 空字符串
      */
@@ -532,5 +536,76 @@ public class StringUtils extends StrUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 匹配正则表达式
+     *
+     * @param regex 正则表达式字符串
+     * @param str   要匹配的字符串
+     * @return 如果str 符合 regex的正则表达式格式,返回true, 否则返回 false;
+     * @author yujunhong
+     * @date 2021/9/17 14:49
+     */
+    public static List<String> match(String str, String regex) {
+        if (null == str) {
+            return null;
+        }
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+        List<String> list = new LinkedList<>();
+        while (matcher.find()) {
+            list.add(matcher.group());
+        }
+        return list;
+    }
+
+    public static boolean checkByRegex(String str, String regex) {
+        if (null == str) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+        return matcher.find();
+    }
+
+    /**
+     * 校验邮箱
+     *
+     * @param email 邮箱
+     * @return 是否为正确邮箱
+     * @author yujunhong
+     * @date 2021/9/17 17:00
+     */
+    public static boolean checkEmail(String email) {
+        boolean flag = false;
+        try {
+            Pattern regex = Pattern.compile(CHECK_EMAIL_REGEX);
+            Matcher matcher = regex.matcher(email);
+            flag = matcher.matches();
+        } catch (Exception e) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    /**
+     * 校验手机号
+     *
+     * @param mobileNumber 电话好嘛
+     * @return 是否为正确手机号
+     * @author yujunhong
+     * @date 2021/9/17 17:00
+     */
+    public static boolean checkMobileNumber(String mobileNumber) {
+        boolean flag;
+        try {
+            Pattern regex = Pattern.compile(CHECK_MOBILE_NUMBER_REGEX);
+            Matcher matcher = regex.matcher(mobileNumber);
+            flag = matcher.matches();
+        } catch (Exception e) {
+            flag = false;
+        }
+        return flag;
     }
 }

@@ -2,6 +2,7 @@ package com.blog.config.jwt;
 
 import com.blog.constants.BaseSysConf;
 import com.blog.entity.SecurityUser;
+import com.blog.utils.StringUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -95,7 +96,7 @@ public class JwtTokenUtil {
      * @date 2021/5/28 17:57
      */
     public boolean isExpired(String token, String base64Security) {
-        if (parseJwt(token, base64Security) != null) {
+        if (StringUtils.isNull(parseJwt(token, base64Security))) {
             return true;
         } else {
             return parseJwt(token, base64Security).getExpiration().before(new Date());

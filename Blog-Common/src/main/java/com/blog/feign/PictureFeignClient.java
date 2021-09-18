@@ -62,8 +62,8 @@ public interface PictureFeignClient {
      * @author yujunhong
      * @date 2021/6/22 9:23
      */
-    @PostMapping(value = "/storage/updateStorageSize")
-    void updateStorageSize(@RequestParam(value = "adminUid") String adminUid,
+    @PostMapping(value = "/storage/editStorageSize")
+    ResultBody editStorageSize(@RequestParam(value = "adminUid") String adminUid,
                            @RequestParam(value = "maxStorageSize") Long maxStorageSize);
 
     /**
@@ -75,5 +75,5 @@ public interface PictureFeignClient {
      * @date 2021/6/22 9:25
      */
     @GetMapping(value = "/storage/getStorageByAdminUid")
-    String getStorageByAdminUid(@RequestParam(value = "adminUidList") List<String> adminUidList);
+    ResultBody getStorageByAdminUid(@RequestParam(value = "adminUidList") List<String> adminUidList);
 }

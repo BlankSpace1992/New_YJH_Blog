@@ -35,7 +35,7 @@ public class LinkServiceImpl extends ServiceImpl<LinkMapper, Link> implements Li
     @Override
     public IPage<Link> getLink() {
         // 获取系统参数中配置得友情链接数量
-        Integer friendLinkCount = sysParamsService.getSysParamsValueByKey(BaseSysConf.FRIENDLY_LINK_COUNT);
+        int friendLinkCount = Integer.parseInt(sysParamsService.getSysParamsValueByKey(BaseSysConf.FRIENDLY_LINK_COUNT));
         // 优先从redis中获取数据
         String redisKey = BaseRedisConf.BLOG_LINK + Constants.SYMBOL_COLON + friendLinkCount;
         String result = (String) redisUtil.get(redisKey);

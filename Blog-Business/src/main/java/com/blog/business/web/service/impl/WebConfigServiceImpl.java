@@ -11,6 +11,7 @@ import com.blog.constants.*;
 import com.blog.enums.EnumAccountType;
 import com.blog.enums.EnumLoginType;
 import com.blog.exception.CommonErrorException;
+import com.blog.exception.ResultBody;
 import com.blog.feign.PictureFeignClient;
 import com.blog.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,7 +140,8 @@ public class WebConfigServiceImpl extends ServiceImpl<WebConfigMapper, WebConfig
         wrapper.orderByDesc(WebConfig::getCreateTime);
         WebConfig webConfig = this.getOne(wrapper);
         if (StringUtils.isNull(webConfig)) {
-            throw new CommonErrorException(ErrorCode.SYSTEM_CONFIG_IS_NOT_EXIST, BaseMessageConf.SYSTEM_CONFIG_IS_NOT_EXIST);
+            throw new CommonErrorException(ErrorCode.SYSTEM_CONFIG_IS_NOT_EXIST,
+                    BaseMessageConf.SYSTEM_CONFIG_IS_NOT_EXIST);
         }
         // 过滤一些不需要显示的用户账号信息
         String loginTypeListJson = webConfig.getLoginTypeList();
@@ -147,29 +149,45 @@ public class WebConfigServiceImpl extends ServiceImpl<WebConfigMapper, WebConfig
         List<String> loginTypeList = JSON.parseArray(loginTypeListJson, String.class);
         for (String item : loginTypeList) {
             if (EnumLoginType.PASSWORD.getCode().equals(item)) {
-                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.PASSWORD, EnumLoginType.PASSWORD.getName());
+                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.PASSWORD,
+                        EnumLoginType.PASSWORD.getName());
             }
             if (EnumLoginType.GITEE.getCode().equals(item)) {
-                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.GITEE, EnumLoginType.GITEE.getName());
+                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.GITEE,
+                        EnumLoginType.GITEE.getName());
             }
             if (EnumLoginType.GITHUB.getCode().equals(item)) {
-                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.GITHUB, EnumLoginType.GITHUB.getName());
+                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.GITHUB,
+                        EnumLoginType.GITHUB.getName());
             }
             if (EnumLoginType.QQ.getCode().equals(item)) {
-                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.QQ, EnumLoginType.QQ.getName());
+                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.QQ,
+                        EnumLoginType.QQ.getName());
             }
             if (EnumLoginType.WECHAT.getCode().equals(item)) {
-                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.WECHAT, EnumLoginType.WECHAT.getName());
+                redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + BaseRedisConf.WECHAT,
+                        EnumLoginType.WECHAT.getName());
             }
         }
         // 再次判断该登录方式是否开启
         loginTypeJson = (String) redisUtil.get(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + loginType);
-        if(StringUtils.isNotEmpty(loginTypeJson)) {
+        if (StringUtils.isNotEmpty(loginTypeJson)) {
             return true;
         } else {
             // 设置一个为空的字符串【防止缓存穿透】
             redisUtil.set(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_COLON + loginType, "");
             return false;
         }
+    }
+
+    @Override
+    public ResultBody getWebSiteName() {
+        LambdaQueryWrapper<WebConfig> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.last(BaseSysConf.LIMIT_ONE);
+        WebConfig webConfig = this.getOne(lambdaQueryWrapper);
+        if (StringUtils.isNotEmpty(webConfig.getName())) {
+            return ResultBody.success(webConfig.getName());
+        }
+        return ResultBody.success();
     }
 }

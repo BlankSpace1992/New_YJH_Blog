@@ -34,7 +34,7 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag> implements TagSe
     @Override
     public IPage<Tag> getHotTag() {
         // 获取系统参数中配置得标签数量
-        Integer hotTagCount = sysParamsService.getSysParamsValueByKey(BaseSysConf.HOT_TAG_COUNT);
+        int hotTagCount = Integer.parseInt(sysParamsService.getSysParamsValueByKey(BaseSysConf.HOT_TAG_COUNT));
         // 优先从redis中获取数据
         String redisKey = BaseRedisConf.BLOG_TAG + Constants.SYMBOL_COLON + hotTagCount;
         String result = (String) redisUtil.get(redisKey);

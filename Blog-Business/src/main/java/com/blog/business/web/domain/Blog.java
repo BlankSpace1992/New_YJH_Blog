@@ -34,7 +34,7 @@ public class Blog {
      */
     @ApiModelProperty(value = "唯一uid")
     @Excel(name = "唯一uid")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 唯一oid

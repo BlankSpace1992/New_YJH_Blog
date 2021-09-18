@@ -31,4 +31,14 @@ public class EnumsLevel {
      * 四级推荐
      */
     public static final int FOURTH = 4;
+
+    /**
+     * 菜单
+     */
+    public static final int MENU = 0;
+
+    /**
+     * 按钮
+     */
+    public static final int BUTTON = 1;
 }

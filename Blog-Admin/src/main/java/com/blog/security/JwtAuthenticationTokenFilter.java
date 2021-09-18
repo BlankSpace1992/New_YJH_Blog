@@ -94,7 +94,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 Date currentNow = DateUtils.getNowDate();
                 // 获取当前时间与过期时间间隔--秒
                 long survivalSecond = DateUtils.between(expire, currentNow, DateUnit.SECOND);
-                // 当存货时间小于更新时间 那么将生成新的token导客户端,同时重置过期时间
+                // 当存活时间小于更新时间 那么将生成新的token导客户端,同时重置过期时间
                 // 而旧的token将会在不久之后在redis之中过期
                 if (survivalSecond < refreshSecond) {
                     // 生成一个新的token

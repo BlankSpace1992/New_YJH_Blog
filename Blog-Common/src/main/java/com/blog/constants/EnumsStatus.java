@@ -61,4 +61,14 @@ public class EnumsStatus {
      * 开启
      */
     public static final Integer OPEN_STATUS = 1;
+
+    /**
+     * 原创
+     */
+    public static final String ORIGINAL = "1";
+
+    /**
+     * 非原创
+     */
+    public static final String UNORIGINAL = "0";
 }

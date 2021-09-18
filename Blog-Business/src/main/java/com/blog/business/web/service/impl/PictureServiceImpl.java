@@ -1,10 +1,10 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.Picture;
 import com.blog.business.web.mapper.PictureMapper;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
 import com.blog.business.web.service.PictureService;
+import org.springframework.stereotype.Service;
 /**
  *
  * @author yujunhong
@@ -12,9 +12,7 @@ import com.blog.business.web.service.PictureService;
  *
  */
 @Service
-public class PictureServiceImpl implements PictureService{
+public class PictureServiceImpl extends ServiceImpl<PictureMapper,Picture> implements PictureService{
 
-    @Resource
-    private PictureMapper pictureMapper;
 
 }

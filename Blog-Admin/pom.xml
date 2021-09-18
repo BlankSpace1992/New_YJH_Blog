@@ -75,11 +75,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!--jwt-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-        </dependency>
         <!--解决Spring Boot Configuration Annotation Processor not configured-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,10 +1,10 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.CategoryMenu;
 import com.blog.business.web.mapper.CategoryMenuMapper;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
 import com.blog.business.web.service.CategoryMenuService;
+import org.springframework.stereotype.Service;
 /**
  *
  * @author yujunhong
@@ -12,9 +12,7 @@ import com.blog.business.web.service.CategoryMenuService;
  *
  */
 @Service
-public class CategoryMenuServiceImpl implements CategoryMenuService{
+public class CategoryMenuServiceImpl extends ServiceImpl<CategoryMenuMapper, CategoryMenu> implements CategoryMenuService{
 
-    @Resource
-    private CategoryMenuMapper categoryMenuMapper;
 
 }

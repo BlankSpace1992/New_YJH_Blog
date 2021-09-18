@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.blog.business.web.domain.Role;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -78,12 +79,6 @@ public class Admin {
     @Excel(name = "手机")
     private String mobile;
     /**
-     * 邮箱验证码
-     */
-    @ApiModelProperty(value = "邮箱验证码")
-    @Excel(name = "邮箱验证码")
-    private String validCode;
-    /**
      * 自我简介最多150字
      */
     @ApiModelProperty(value = "自我简介最多150字")
@@ -94,7 +89,7 @@ public class Admin {
      */
     @ApiModelProperty(value = "登录次数")
     @Excel(name = "登录次数")
-    private Object loginCount;
+    private Integer loginCount;
     /**
      * 最后登录时间
      */
@@ -185,4 +180,33 @@ public class Admin {
      */
     @TableField(exist = false)
     private List<String> photoList;
+    /**
+     * 所拥有的角色名
+     */
+    @TableField(exist = false)
+    private Role role;
+
+    /**
+     * 验证码
+     */
+    @TableField(exist = false)
+    private String validCode;
+
+    /**
+     * 已用网盘容量
+     */
+    @TableField(exist = false)
+    private Long storageSize;
+
+    /**
+     * 最大网盘容量
+     */
+    @TableField(exist = false)
+    private Long maxStorageSize;
+
+    /**
+     * 令牌UID【主要用于换取token令牌，防止token直接暴露到在线用户管理中】
+     */
+    @TableField(exist = false)
+    private String tokenUid;
 }

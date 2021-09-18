@@ -71,7 +71,7 @@
         from t_blog as a
         where a.level = #{level,jdbcType=INTEGER}
           and a.status = #{status,jdbcType=INTEGER}
-         and a.is_publish=#{isPublish,jdbcType=VARCHAR}
+          and a.is_publish = #{isPublish,jdbcType=VARCHAR}
         order by a.create_time
     </select>
 
@@ -127,5 +127,60 @@
         where a.is_publish = #{isPublish,jdbcType=VARCHAR}
           and a.status = #{status,jdbcType=INTEGER}
         order by a.create_time
+    </select>
+
+    <select id="getBlogList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.oid,
+               a.title,
+               a.summary,
+               a.content,
+               a.tag_uid,
+               a.click_count,
+               a.collect_count,
+               a.file_uid,
+               a.`status`,
+               a.create_time,
+               a.update_time,
+               a.admin_uid,
+               a.is_original,
+               a.author,
+               a.articles_part,
+               a.blog_sort_uid,
+               a.`level`,
+               a.is_publish,
+               a.sort,
+               a.open_comment,
+               a.`type`,
+               a.outside_link,
+               a.user_uid,
+               a.article_source
+        from t_blog a
+        <where>
+            a.status = '1'
+            <if test="blogVO.keyword != null and blogVO.keyword != ''">
+                <bind name="keywordTemp" value="'%' + blogVO.keyword + '%'"/>
+                and a.title like #{keywordTemp,jdbcType=VARCHAR}
+            </if>
+            <if test="blogVO.tagUid != null and blogVO.tagUid != ''">
+                and a.tag_uid = #{blogVO.tagUid,jdbcType=VARCHAR}
+            </if>
+            <if test="blogVO.blogSortUid != null and blogVO.blogSortUid != ''">
+                and a.blog_sort_uid = #{blogVO.blogSortUid,jdbcType=VARCHAR}
+            </if>
+            <if test="blogVO.keyword != null and blogVO.keyword != ''">
+                and a.level = #{blogVO.keyword,jdbcType=VARCHAR}
+            </if>
+            <if test="blogVO.isPublish != null and blogVO.isPublish != ''">
+                and a.is_publish = #{blogVO.isPublish,jdbcType=VARCHAR}
+            </if>
+            <if test="blogVO.isOriginal != null and blogVO.isOriginal != ''">
+                and a.is_original = #{blogVO.isOriginal,jdbcType=VARCHAR}
+            </if>
+            <if test="blogVO.type != null and blogVO.type != ''">
+                and a.type = #{blogVO.type,jdbcType=VARCHAR}
+            </if>
+            order by a.create_time
+        </where>
     </select>
 </mapper>

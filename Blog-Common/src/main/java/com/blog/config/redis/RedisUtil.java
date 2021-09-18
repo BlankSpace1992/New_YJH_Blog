@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,6 +123,16 @@ public class RedisUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * @param keys 多个key集合
+     * @return 对应信息
+     * @author yujunhong
+     * @date 2021/9/17 11:20
+     */
+    public List<Object> multiGet(Collection<Object> keys) {
+        return redisTemplate.opsForValue().multiGet(keys);
     }
 
     /**
@@ -646,7 +657,7 @@ public class RedisUtil {
      * @author yujunhong
      * @date 2021/4/25 15:19
      */
-    public Set keys(String pattern) {
+    public Set<Object> keys(String pattern) {
         return redisTemplate.keys(pattern);
     }
 

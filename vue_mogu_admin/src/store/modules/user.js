@@ -1,5 +1,5 @@
-import { login, logout, getInfo, getMenu } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import {login, logout, getInfo, getMenu} from '@/api/login'
+import {getToken, setToken, removeToken} from '@/utils/auth'
 
 const user = {
   state: {
@@ -34,7 +34,7 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    Login({commit}, userInfo) {
       const username = userInfo.username.trim()
       const password = userInfo.password.trim()
       const isRememberMe = userInfo.isRememberMe
@@ -44,7 +44,8 @@ const user = {
         params.append('password', password)
         params.append('isRememberMe', isRememberMe)
         login(params).then(response => {
-          const data = response.data
+          const data = response.result
+          console.log("登录信息", data)
           // 向cookie中设置token
           setToken(data.token)
           // 向store中设置cookie
@@ -57,14 +58,15 @@ const user = {
     },
 
     // 获取菜单列表
-    GetMenu({ commit }) {
+    GetMenu({commit}) {
       return new Promise((resolve, reject) => {
         getMenu().then(response => {
-          const data = response.data
+          const data = response.result
+          console.log("菜单信息", data);
           // 这里对按钮进行一些处理
           let buttonList = data.buttonList
           let map = new Map();
-          for(let a=0; a<buttonList.length; a++) {
+          for (let a = 0; a < buttonList.length; a++) {
             map.set(buttonList[a].url, buttonList[a])
           }
           commit('SET_BUTTON_MAP', map)
@@ -77,10 +79,11 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({commit, state}) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          const data = response.data
+          console.log("用户信息",response);
+          const data = response.result
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', data.roles)
           } else {
@@ -96,7 +99,7 @@ const user = {
     },
 
     // 登出
-    LogOut({ commit, state }) {
+    LogOut({commit, state}) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
@@ -110,7 +113,7 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut({commit}) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()

@@ -100,6 +100,11 @@
             <artifactId>mail</artifactId>
             <version>${javax.mail.version}</version>
         </dependency>
+        <!--jwt-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
         <!--工具包-->
         <dependency>
             <groupId>com.cloud.blog</groupId>
