@@ -24,7 +24,8 @@ public class BaseSysConf {
     public static final String TO_TEXT = "to_text";
     public static final String TO_NICKNAME = "to_nickname";
     public static final String USER = "user";
-
+    public final static String CONTRIBUTE_DATE = "contributeDate";
+    public final static String BLOG_CONTRIBUTE_COUNT = "blogContributeCount";
     public static final  String DEFAULT_UID = "uid00000000000000000000000000000";
     public static final  String LIMIT_ONE = "LIMIT 1";
     public static final  String OID = "oid";

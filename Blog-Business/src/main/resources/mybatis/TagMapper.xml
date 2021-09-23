@@ -22,4 +22,22 @@
         from t_tag
         where status = #{status,jdbcType=INTEGER}
     </select>
+
+    <select id="getPageList" resultMap="BaseResultMap">
+        select `uid`, content, `status`, click_count, create_time, update_time, sort
+        from t_tag
+        <where>
+            status=1
+            <if test="tagVO.keyword != null and tagVO.keyword != ''">
+                <bind name="contentTemp" value="'%' + tagVO.keyword + '%'"/>
+                and content like #{contentTemp,jdbcType=VARCHAR}
+            </if>
+        </where>
+        <if test="tagVO.orderByAscColumn != null and tagVO.orderByAscColumn != ''">
+            order by ${tagVO.orderByAscColumn}
+        </if>
+        <if test="tagVO.orderByDescColumn != null and tagVO.orderByDescColumn != ''">
+            order by ${tagVO.orderByDescColumn} desc
+        </if>
+    </select>
 </mapper>

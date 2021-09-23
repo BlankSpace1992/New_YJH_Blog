@@ -51,16 +51,16 @@
           if(response.code == this.$ECode.SUCCESS) {
             switch (level) {
               case 1: {
-                this.list1 = response.data.records;
+                this.list1 = response.result.records;
               } break;
               case 2: {
-                this.list2 = response.data.records;
+                this.list2 = response.result.records;
               } break;
               case 3: {
-                this.list3 = response.data.records;
+                this.list3 = response.result.records;
               } break;
               case 4: {
-                this.list4 = response.data.records;
+                this.list4 = response.result.records;
               } break;
             }
           }

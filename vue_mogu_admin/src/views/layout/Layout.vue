@@ -52,8 +52,8 @@ export default {
     var that = this;
     this.$store.dispatch("GetMenu").then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        var parentList = response.data.parentList;
-        var sonList = response.data.sonList;
+        var parentList = response.result.parentList;
+        var sonList = response.result.sonList;
         var items = [];
         if (
           parentList &&
@@ -66,7 +66,7 @@ export default {
             var sonItem = [];
 
             for (var index1 = 0; index1 < sonList.length; index1++) {
-              if (sonList[index1].parentUid == parentList[index].uid) {
+              if (sonList[index1].parentUid === parentList[index].uid) {
                 sonItem.push(sonList[index1]);
               }
             }

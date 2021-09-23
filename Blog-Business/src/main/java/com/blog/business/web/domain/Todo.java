@@ -1,9 +1,7 @@
 package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,7 +29,7 @@ public class Todo {
      */
     @ApiModelProperty(value = "唯一uid")
     @Excel(name = "唯一uid")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 管理员uid
@@ -50,23 +48,25 @@ public class Todo {
      */
     @ApiModelProperty(value = "表示事项是否完成（0：未完成 1：已完成）")
     @Excel(name = "表示事项是否完成（0：未完成 1：已完成）")
-    private Object done;
+    private Boolean done;
     /**
      * 状态
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 }

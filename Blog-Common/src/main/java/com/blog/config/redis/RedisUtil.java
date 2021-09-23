@@ -93,6 +93,20 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 删除缓存
+     *
+     * @param keys redis key 集合
+     * @author yujunhong
+     * @date 2021/4/25 14:28
+     */
+    @SuppressWarnings("unchecked")
+    public void delete(Collection<Object> keys) {
+        if (StringUtils.isNotNull(keys) && keys.size() > 0) {
+            redisTemplate.delete(keys);
+        }
+    }
+
     //============================String=============================//
 
     /**

@@ -638,4 +638,95 @@ public class DateUtils extends DateUtil {
         return calendar.get(Calendar.YEAR);
 
     }
+
+    /**
+     *
+     *
+
+     */
+
+    /**
+     * 获取几天之后的日期
+     *
+     * @param date yyyy-MM-dd HH:mm:ss
+     * @param day  加减的天数
+     * @return 日期
+     * @author yujunhong
+     * @date 2021/9/22 17:00
+     */
+    public static Date getDate(String date, int day) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        try {
+            Date beforeDate = format.parse(date);
+            cal.setTime(beforeDate);
+            cal.add(Calendar.DAY_OF_MONTH, day);
+            return cal.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取过去指定天内的日期数组
+     *
+     * @param intervals intervals天内
+     * @param formatStr 格式化字符串   yyyy-MM-dd
+     * @return 日期数组
+     * @author yujunhong
+     * @date 2021/9/22 17:03
+     */
+    public static ArrayList<String> getDaysByArray(int intervals, String formatStr) {
+        ArrayList<String> pastDaysList = new ArrayList<>();
+        for (int i = intervals - 1; i >= 0; i--) {
+            pastDaysList.add(getPastDate(i, formatStr));
+        }
+        return pastDaysList;
+    }
+
+    /**
+     * 获取过去第几天的日期
+     *
+     * @param past      指定前移天数
+     * @param formatStr 日期格式
+     * @return 日期字符串
+     * @author yujunhong
+     * @date 2021/9/22 17:04
+     */
+    public static String getPastDate(int past, String formatStr) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(formatStr);
+        return format.format(today);
+    }
+
+    /**
+     * 获取某个时间段内所有日期
+     *
+     * @param beginDate 开始时间
+     * @param endDate   结束时间
+     * @return 获取某个时间段内所有日期
+     * @author yujunhong
+     * @date 2021/9/23 10:30
+     */
+    public static List<String> getDayBetweenDates(Date beginDate, Date endDate) {
+        List<String> lDate = new ArrayList<>();
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+        lDate.add(sd.format(beginDate));
+        Calendar calBegin = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        calBegin.setTime(beginDate);
+        Calendar calEnd = Calendar.getInstance();
+        // 使用给定的 Date 设置此 Calendar 的时间
+        calEnd.setTime(endDate);
+        // 测试此日期是否在指定日期之后
+        while (endDate.after(calBegin.getTime())) {
+            // 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+            calBegin.add(Calendar.DAY_OF_MONTH, 1);
+            lDate.add(sd.format(calBegin.getTime()));
+        }
+        return lDate;
+    }
 }

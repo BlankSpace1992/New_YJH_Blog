@@ -183,4 +183,31 @@
             order by a.create_time
         </where>
     </select>
+
+    <select id="getBlogCountByTag" resultType="java.util.Map">
+        select substring_index(substring_index(a.tag_uid, ',', b.help_topic_id + 1), ',', -1)        as tagUid,
+               c.content                                                                             as name,
+               count(a.uid) as value
+        from t_blog a
+                     left join mysql.help_topic b
+                on help_topic_id &lt; LENGTH(a.tag_uid) - LENGTH(REPLACE(a.tag_uid, ',', '')) + 1
+                     left join t_tag c
+                on substring_index(substring_index(a.tag_uid, ',', b.help_topic_id + 1), ',', -1) = c.uid
+        group by substring_index(substring_index(a.tag_uid, ',', b.help_topic_id + 1), ',', -1), c.content
+    </select>
+
+    <select id="getBlogCountByBlogSort" resultType="java.util.Map">
+        select a.blog_sort_uid, count(a.uid)
+        from t_blog a
+        group by a.blog_sort_uid
+    </select>
+
+    <select id="getBlogContributeCount" resultType="java.util.Map">
+        select date_format(a.create_time, '%Y-%m-%d') as `date`,
+               count(uid)                             as count
+        from t_blog a
+        where a.create_time >= #{startDate,jdbcType=TIMESTAMP}
+          and a.create_time &lt;= #{nowDate,jdbcType=TIMESTAMP}
+        group by date_format(a.create_time, '%Y-%m-%d')
+    </select>
 </mapper>

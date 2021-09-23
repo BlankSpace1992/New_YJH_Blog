@@ -84,4 +84,14 @@ public interface UserService extends IService<User> {
      * @date 2021/9/14 15:15
      */
     ResultBody activeUser(String token);
+
+    /**
+     * 获取用户数量
+     *
+     * @param enableFlag 可用标志
+     * @return 用户数量
+     * @author yujunhong
+     * @date 2021/9/22 16:38
+     */
+    Integer getUserCount(int enableFlag);
 }

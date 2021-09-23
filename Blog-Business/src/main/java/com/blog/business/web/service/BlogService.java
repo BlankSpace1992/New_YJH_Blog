@@ -247,4 +247,41 @@ public interface BlogService extends IService<Blog> {
      */
     ResultBody deleteBatch(List<BlogVO> blogVoList);
 
+    /**
+     * 获取博客数量
+     *
+     * @param enableFlag 可用标志
+     * @return 获取博客数量
+     * @author yujunhong
+     * @date 2021/9/22 16:33
+     */
+    Integer getBlogCount(int enableFlag);
+
+    /**
+     * 获取每个标签下文章数目
+     *
+     * @return 获取每个标签下文章数目
+     * @author yujunhong
+     * @date 2021/9/22 17:29
+     */
+    List<Map<String, Object>> getBlogCountByTag();
+
+    /**
+     * 获取每个分类下文章数量
+     *
+     * @return 每个分类下文章数量
+     * @author yujunhong
+     * @date 2021/9/22 17:29
+     */
+    List<Map<String, Object>> getBlogCountByBlogSort();
+
+    /**
+     * 获取一年内的文章贡献数
+     *
+     * @return 一年内的文章贡献数
+     * @author yujunhong
+     * @date 2021/9/22 17:29
+     */
+ Map<String, Object> getBlogContributeCount();
+
 }

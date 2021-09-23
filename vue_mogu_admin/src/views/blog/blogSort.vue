@@ -10,16 +10,23 @@
         v-model="keyword"
         placeholder="请输入分类名"
       ></el-input>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFind" v-permission="'/blogSort/getList'">查找</el-button>
-      <el-button class="filter-item" type="primary" @click="handleAdd" icon="el-icon-edit" v-permission="'/blogSort/add'">添加分类</el-button>
-      <el-button class="filter-item" type="danger" @click="handleDeleteBatch" icon="el-icon-delete" v-permission="'/blogSort/deleteBatch'">删除选中</el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFind"
+                 v-permission="'/blogSort/getList'">查找
+      </el-button>
+      <el-button class="filter-item" type="primary" @click="handleAdd" icon="el-icon-edit"
+                 v-permission="'/blogSort/add'">添加分类
+      </el-button>
+      <el-button class="filter-item" type="danger" @click="handleDeleteBatch" icon="el-icon-delete"
+                 v-permission="'/blogSort/deleteBatch'">删除选中
+      </el-button>
       <el-button
         class="filter-item"
         type="info"
         @click="handleBlogSortByClickCount"
         icon="el-icon-document"
         v-permission="'/blogSort/blogSortByClickCount'"
-      >点击量排序</el-button>
+      >点击量排序
+      </el-button>
 
       <el-button
         class="filter-item"
@@ -27,7 +34,8 @@
         @click="handleBlogSortByCite"
         icon="el-icon-document"
         v-permission="'/blogSort/blogSortByCite'"
-      >引用量排序</el-button>
+      >引用量排序
+      </el-button>
     </div>
 
     <el-table :data="tableData"
@@ -54,7 +62,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="点击数" width="100" align="center" prop="clickCount" sortable="custom" :sort-by="['clickCount']">
+      <el-table-column label="点击数" width="100" align="center" prop="clickCount" sortable="custom"
+                       :sort-by="['clickCount']">
         <template slot-scope="scope">
           <span>{{ scope.row.clickCount }}</span>
         </template>
@@ -66,9 +75,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="创建时间" width="160" align="center" prop="createTime" sortable="custom" :sort-orders="['ascending', 'descending']">
+      <el-table-column label="创建时间" width="160" align="center" prop="createTime" sortable="custom"
+                       :sort-orders="['ascending', 'descending']">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.createTime) }}</span>
         </template>
       </el-table-column>
 
@@ -88,9 +98,12 @@
 
       <el-table-column label="操作" fixed="right" min-width="230">
         <template slot-scope="scope">
-          <el-button @click="handleStick(scope.row)" type="warning" size="small" v-permission="'/blogSort/stick'">置顶</el-button>
-          <el-button @click="handleEdit(scope.row)" type="primary" size="small" v-permission="'/blogSort/edit'">编辑</el-button>
-          <el-button @click="handleDelete(scope.row)" type="danger" size="small" v-permission="'/blogSort/delete'">删除</el-button>
+          <el-button @click="handleStick(scope.row)" type="warning" size="small" v-permission="'/blogSort/stick'">置顶
+          </el-button>
+          <el-button @click="handleEdit(scope.row)" type="primary" size="small" v-permission="'/blogSort/edit'">编辑
+          </el-button>
+          <el-button @click="handleDelete(scope.row)" type="danger" size="small" v-permission="'/blogSort/delete'">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -131,263 +144,283 @@
 </template>
 
 <script>
-import {
-  getBlogSortList,
-  addBlogSort,
-  editBlogSort,
-  deleteBatchBlogSort,
-  stickBlogSort,
-  blogSortByClickCount,
-  blogSortByCite
-} from "@/api/blogSort";
-import { formatData } from "@/utils/webUtils";
-export default {
-  data() {
-    return {
-      multipleSelection: [], //多选，用于批量删除
-      tableData: [],
-      keyword: "",
-      currentPage: 1,
-      pageSize: 10,
-      total: 0, //总数量
-      title: "增加分类",
-      dialogFormVisible: false, //控制弹出框
-      formLabelWidth: "120px",
-      isEditForm: false,
-      orderByDescColumn: "",
-      orderByAscColumn: "",
-      form: {
-        uid: null,
-        content: "",
-        sortName: ""
-      },
-      rules: {
-        sortName: [
-          {required: true, message: '分类名称不能为空', trigger: 'blur'},
-          {min: 1, max: 10, message: '长度在1到10个字符'},
-        ],
-        sort: [
-          {required: true, message: '排序字段不能为空', trigger: 'blur'},
-          {pattern: /^[0-9]\d*$/, message: '排序字段只能为自然数'},
-        ]
-      }
-    };
-  },
-  created() {
-    this.blogSortList();
-  },
-  methods: {
-    // 从后台获取数据,重新排序
-    changeSort (val) {
-      // 根据当前排序重新获取后台数据,一般后台会需要一个排序的参数
-      if(val.order == "ascending") {
-        this.orderByAscColumn = val.prop
-        this.orderByDescColumn = ""
-      } else {
-        this.orderByAscColumn = ""
-        this.orderByDescColumn = val.prop
-      }
-      this.blogSortList()
-    },
-    blogSortList: function() {
-      var params = {};
-      params.keyword = this.keyword;
-      params.currentPage = this.currentPage;
-      params.pageSize = this.pageSize;
-      params.orderByDescColumn = this.orderByDescColumn
-      params.orderByAscColumn = this.orderByAscColumn
-      getBlogSortList(params).then(response => {
-        this.tableData = response.data.records;
-        this.currentPage = response.data.current;
-        this.pageSize = response.data.size;
-        this.total = response.data.total;
-      });
-    },
-    getFormObject: function() {
-      var formObject = {
-        uid: null,
-        content: null,
-        sortName: null,
-        sort: 0
+  import {
+    getBlogSortList,
+    addBlogSort,
+    editBlogSort,
+    deleteBatchBlogSort,
+    stickBlogSort,
+    blogSortByClickCount,
+    blogSortByCite
+  } from "@/api/blogSort";
+  export default {
+    data() {
+      return {
+        multipleSelection: [], //多选，用于批量删除
+        tableData: [],
+        keyword: "",
+        currentPage: 1,
+        pageSize: 10,
+        total: 0, //总数量
+        title: "增加分类",
+        dialogFormVisible: false, //控制弹出框
+        formLabelWidth: "120px",
+        isEditForm: false,
+        orderByDescColumn: "",
+        orderByAscColumn: "",
+        form: {
+          uid: null,
+          content: "",
+          sortName: ""
+        },
+        rules: {
+          sortName: [
+            {required: true, message: '分类名称不能为空', trigger: 'blur'},
+            {min: 1, max: 10, message: '长度在1到10个字符'},
+          ],
+          sort: [
+            {required: true, message: '排序字段不能为空', trigger: 'blur'},
+            {pattern: /^[0-9]\d*$/, message: '排序字段只能为自然数'},
+          ]
+        }
       };
-      return formObject;
     },
-    handleFind: function() {
+    created() {
       this.blogSortList();
     },
-    handleAdd: function() {
-      this.title = "增加分类"
-      this.dialogFormVisible = true;
-      this.form = this.getFormObject();
-      this.isEditForm = false;
-    },
-    // 通过点击量排序
-    handleBlogSortByClickCount: function() {
-      this.$confirm(
-        "此操作将根据点击量对所有的标签进行降序排序, 是否继续?",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      )
-        .then(() => {
-          blogSortByClickCount().then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
-              this.$commonUtil.message.success(response.message)
-              this.blogSortList();
-            } else {
-              this.$commonUtil.message.error(response.message)
-            }
-          });
-        })
-        .catch(() => {
-          this.$commonUtil.message.info("已取消批量排序")
-        });
-    },
-    // 通过点击量排序
-    handleBlogSortByCite: function() {
-      this.$confirm(
-        "此操作将根据博客引用量对所有的标签进行降序排序, 是否继续?",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      )
-        .then(() => {
-          blogSortByCite().then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
-              this.$commonUtil.message.success(response.message)
-              this.blogSortList();
-            } else {
-              this.$commonUtil.message.error(response.message)
-            }
-          });
-        })
-        .catch(() => {
-          this.$commonUtil.message.info("已取消批量排序")
-        });
-    },
-    handleEdit: function(row) {
-      this.title = "编辑分类"
-      this.dialogFormVisible = true;
-      this.isEditForm = true;
-      this.form = row;
-    },
-    handleStick: function(row) {
-      this.$confirm("此操作将会把该标签放到首位, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          var params = {};
-          params.uid = row.uid;
-          stickBlogSort(params).then(response => {
-            if (response.code == this.$ECode.SUCCESS) {
-              this.$commonUtil.message.success(response.message)
-              this.blogSortList();
-            } else {
-              this.$commonUtil.message.error(response.message)
-            }
-          });
-        })
-        .catch(() => {
-          this.$commonUtil.message.info("已取消置顶")
-        });
-    },
-    handleDelete: function(row) {
-      var that = this;
-      this.$confirm("此操作将把分类删除, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          var params = [];
-          params.push(row);
-          deleteBatchBlogSort(params).then(response => {
-            if(response.code == this.$ECode.SUCCESS) {
-              this.$commonUtil.message.success(response.message)
-            } else {
-              this.$commonUtil.message.error(response.message)
-            }
-            that.blogSortList();
-          });
-        })
-        .catch(() => {
-          this.$commonUtil.message.info("已取消删除")
-        });
-    },
-    handleDeleteBatch: function() {
-      var that = this;
-      if(that.multipleSelection.length <= 0 ) {
-        this.$commonUtil.message.error("请先选中需要删除的内容!")
-        return;
-      }
-      this.$confirm("此操作将把选中的分类删除, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          deleteBatchBlogSort(that.multipleSelection).then(response => {
-            if(response.code == this.$ECode.SUCCESS) {
-              this.$commonUtil.message.success(response.message)
-            } else {
-              this.$commonUtil.message.error(response.message)
-            }
-            that.blogSortList();
-          });
-        })
-        .catch(() => {
-          this.$commonUtil.message.info("已取消删除！")
-        });
-    },
-    handleCurrentChange: function(val) {
-      this.currentPage = val;
-      this.blogSortList();
-    },
-    submitForm: function() {
-
-      this.$refs.form.validate((valid) => {
-        if(!valid) {
-          console.log('校验失败')
-          return;
+    methods: {
+      // 格式化日期
+      dateFormat(fmt,date){
+         const dateTime = new Date(date);
+        let ret;
+        const opt = {
+          "Y+": dateTime.getFullYear().toString(),        // 年
+          "m+": (dateTime.getMonth() + 1).toString(),     // 月
+          "d+": dateTime.getDate().toString(),            // 日
+          "H+": dateTime.getHours().toString(),           // 时
+          "M+": dateTime.getMinutes().toString(),         // 分
+          "S+": dateTime.getSeconds().toString()          // 秒
+          // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        };
+        for (let k in opt) {
+          ret = new RegExp("(" + k + ")").exec(fmt);
+          if (ret) {
+            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+          };
+        };
+        return fmt;
+      },
+      // 从后台获取数据,重新排序
+      changeSort(val) {
+        // 根据当前排序重新获取后台数据,一般后台会需要一个排序的参数
+        if (val.order == "ascending") {
+          this.orderByAscColumn = val.prop
+          this.orderByDescColumn = ""
         } else {
-          if (this.isEditForm) {
-            editBlogSort(this.form).then(response => {
-              console.log(response);
-              if (response.code == this.$ECode.SUCCESS) {
-                this.$commonUtil.message.success(response.message)
-                this.dialogFormVisible = false;
-                this.blogSortList();
-              } else {
-                this.$commonUtil.message.error(response.message)
-              }
-            });
-          } else {
-            addBlogSort(this.form).then(response => {
-              console.log(response);
-              if (response.code == this.$ECode.SUCCESS) {
-                this.$commonUtil.message.success(response.message)
-                this.dialogFormVisible = false;
-                this.blogSortList();
-              } else {
-                this.$commonUtil.message.error(response.message)
-              }
-            });
-          }
+          this.orderByAscColumn = ""
+          this.orderByDescColumn = val.prop
         }
-      })
-    },
-    // 改变多选
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
+        this.blogSortList()
+      },
+      blogSortList: function () {
+        var params = {};
+        params.keyword = this.keyword;
+        params.currentPage = this.currentPage;
+        params.pageSize = this.pageSize;
+        params.orderByDescColumn = this.orderByDescColumn
+        params.orderByAscColumn = this.orderByAscColumn
+        getBlogSortList(params).then(response => {
+          this.tableData = response.result.records;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
+          this.total = response.result.total;
+        });
+      },
+      getFormObject: function () {
+        var formObject = {
+          uid: null,
+          content: null,
+          sortName: null,
+          sort: 0
+        };
+        return formObject;
+      },
+      handleFind: function () {
+        this.blogSortList();
+      },
+      handleAdd: function () {
+        this.title = "增加分类"
+        this.dialogFormVisible = true;
+        this.form = this.getFormObject();
+        this.isEditForm = false;
+      },
+      // 通过点击量排序
+      handleBlogSortByClickCount: function () {
+        this.$confirm(
+          "此操作将根据点击量对所有的标签进行降序排序, 是否继续?",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        )
+          .then(() => {
+            blogSortByClickCount().then(response => {
+              if (response.code == this.$ECode.SUCCESS) {
+                this.$commonUtil.message.success(response.message)
+                this.blogSortList();
+              } else {
+                this.$commonUtil.message.error(response.message)
+              }
+            });
+          })
+          .catch(() => {
+            this.$commonUtil.message.info("已取消批量排序")
+          });
+      },
+      // 通过点击量排序
+      handleBlogSortByCite: function () {
+        this.$confirm(
+          "此操作将根据博客引用量对所有的标签进行降序排序, 是否继续?",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        )
+          .then(() => {
+            blogSortByCite().then(response => {
+              if (response.code == this.$ECode.SUCCESS) {
+                this.$commonUtil.message.success(response.message)
+                this.blogSortList();
+              } else {
+                this.$commonUtil.message.error(response.message)
+              }
+            });
+          })
+          .catch(() => {
+            this.$commonUtil.message.info("已取消批量排序")
+          });
+      },
+      handleEdit: function (row) {
+        this.title = "编辑分类"
+        this.dialogFormVisible = true;
+        this.isEditForm = true;
+        this.form = row;
+      },
+      handleStick: function (row) {
+        this.$confirm("此操作将会把该标签放到首位, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            var params = {};
+            params.uid = row.uid;
+            stickBlogSort(params).then(response => {
+              if (response.code == this.$ECode.SUCCESS) {
+                this.$commonUtil.message.success(response.message)
+                this.blogSortList();
+              } else {
+                this.$commonUtil.message.error(response.message)
+              }
+            });
+          })
+          .catch(() => {
+            this.$commonUtil.message.info("已取消置顶")
+          });
+      },
+      handleDelete: function (row) {
+        var that = this;
+        this.$confirm("此操作将把分类删除, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            var params = [];
+            params.push(row);
+            deleteBatchBlogSort(params).then(response => {
+              if (response.code == this.$ECode.SUCCESS) {
+                this.$commonUtil.message.success(response.message)
+              } else {
+                this.$commonUtil.message.error(response.message)
+              }
+              that.blogSortList();
+            });
+          })
+          .catch(() => {
+            this.$commonUtil.message.info("已取消删除")
+          });
+      },
+      handleDeleteBatch: function () {
+        var that = this;
+        if (that.multipleSelection.length <= 0) {
+          this.$commonUtil.message.error("请先选中需要删除的内容!")
+          return;
+        }
+        this.$confirm("此操作将把选中的分类删除, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            deleteBatchBlogSort(that.multipleSelection).then(response => {
+              if (response.code == this.$ECode.SUCCESS) {
+                this.$commonUtil.message.success(response.message)
+              } else {
+                this.$commonUtil.message.error(response.message)
+              }
+              that.blogSortList();
+            });
+          })
+          .catch(() => {
+            this.$commonUtil.message.info("已取消删除！")
+          });
+      },
+      handleCurrentChange: function (val) {
+        this.currentPage = val;
+        this.blogSortList();
+      },
+      submitForm: function () {
+
+        this.$refs.form.validate((valid) => {
+          if (!valid) {
+            console.log('校验失败')
+            return;
+          } else {
+            if (this.isEditForm) {
+              editBlogSort(this.form).then(response => {
+                console.log(response);
+                if (response.code == this.$ECode.SUCCESS) {
+                  this.$commonUtil.message.success(response.message)
+                  this.dialogFormVisible = false;
+                  this.blogSortList();
+                } else {
+                  this.$commonUtil.message.error(response.message)
+                }
+              });
+            } else {
+              addBlogSort(this.form).then(response => {
+                console.log(response);
+                if (response.code == this.$ECode.SUCCESS) {
+                  this.$commonUtil.message.success(response.message)
+                  this.dialogFormVisible = false;
+                  this.blogSortList();
+                } else {
+                  this.$commonUtil.message.error(response.message)
+                }
+              });
+            }
+          }
+        })
+      },
+      // 改变多选
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      }
     }
-  }
-};
+  };
 </script>

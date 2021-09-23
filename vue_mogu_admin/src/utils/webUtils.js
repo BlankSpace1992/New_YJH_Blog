@@ -11,7 +11,7 @@ export function formatData(arr) {
 }
 
 export function formatDataToJson(arr) {
-  var params = "["  
+  var params = "["
   for (var key in arr) {
     params = params + key + ":" + arr[key] + ","
   }
@@ -20,7 +20,7 @@ export function formatDataToJson(arr) {
 }
 
 export function formatDataToForm(arr) {
-  const params = new FormData() 
+  const params = new FormData()
   for (var key in arr) {
     console.log('"' + key + '"', arr[key])
     params.append('"' + key + '"', arr[key])

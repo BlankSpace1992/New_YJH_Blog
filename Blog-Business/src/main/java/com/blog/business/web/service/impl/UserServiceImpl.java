@@ -229,4 +229,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         this.updateById(user);
         return ResultBody.success();
     }
+
+    @Override
+    public Integer getUserCount(int enableFlag) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getStatus, enableFlag);
+        return this.count(wrapper);
+    }
 }

@@ -76,4 +76,15 @@ public interface CommentService extends IService<Comment> {
      * @date 2021/8/26 14:07
      */
     void delete(CommentParamVO commentVO);
+
+
+    /**
+     * 获取评论数量
+     *
+     * @param enableFlag 可用标志
+     * @return 评论数量
+     * @author yujunhong
+     * @date 2021/9/22 16:36
+     */
+    Integer getCommentCount(int enableFlag);
 }

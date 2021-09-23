@@ -473,6 +473,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
     }
 
+    @Override
+    public Integer getCommentCount(int enableFlag) {
+        LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Comment::getStatus, enableFlag);
+        return this.count(wrapper);
+    }
+
     /**
      * 获取评论所有回复
      *

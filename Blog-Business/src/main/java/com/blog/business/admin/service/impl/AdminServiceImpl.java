@@ -483,7 +483,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         }
         List<String> roleUid = new ArrayList<>();
         roleUid.add(admin.getRoleUid());
-        Collection<Role> roleList = roleService.listByIds(roleUid);
+        List<Role> roleList = roleService.listByIds(roleUid);
         map.put(BaseSysConf.ROLES, roleList);
         return ResultBody.success(map);
     }
@@ -520,8 +520,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 buttonList.add(item);
             }
         });
-        Collection<CategoryMenu> childCategoryMenuList = new ArrayList<>();
-        Collection<CategoryMenu> parentCategoryMenuList = new ArrayList<>();
+        List<CategoryMenu> childCategoryMenuList = new ArrayList<>();
+        List<CategoryMenu> parentCategoryMenuList = new ArrayList<>();
         List<String> parentCategoryMenuUidList = new ArrayList<>();
 
         if (secondMenuUidList.size() > 0) {
@@ -537,11 +537,13 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 }
             }
         });
-        List<CategoryMenu> list = new ArrayList<>(parentCategoryMenuList);
+        if (parentCategoryMenuUidList.size() > 0) {
+            parentCategoryMenuList = categoryMenuService.listByIds(parentCategoryMenuUidList);
+        }
         //对parent进行排序
         Map<String, Object> map = new HashMap<>(Constants.NUM_THREE);
-        Collections.sort(list);
-        map.put(BaseSysConf.PARENT_LIST, list);
+        Collections.sort(parentCategoryMenuList);
+        map.put(BaseSysConf.PARENT_LIST, parentCategoryMenuList);
         map.put(BaseSysConf.SON_LIST, childCategoryMenuList);
         map.put(BaseSysConf.BUTTON_LIST, buttonList);
         return ResultBody.success(map);

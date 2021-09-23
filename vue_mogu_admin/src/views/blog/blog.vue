@@ -213,7 +213,7 @@
 
       <el-table-column label="创建时间" width="160" align="center" prop="createTime" sortable="custom" :sort-orders="['ascending', 'descending']">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.createTime)}}</span>
         </template>
       </el-table-column>
 
@@ -620,6 +620,27 @@ export default {
     this.blogList()
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     // 从后台获取数据,重新排序
     changeSort (val) {
       // 根据当前排序重新获取后台数据,一般后台会需要一个排序的参数
@@ -655,8 +676,8 @@ export default {
       tagParams.pageSize = 500;
       tagParams.currentPage = 1;
       getTagList(tagParams).then(response => {
-        this.tagData = response.data.records;
-        this.tagOptions = response.data.records;
+        this.tagData = response.result.records;
+        this.tagOptions = response.result.records;
       });
     },
     blogSortList: function() {
@@ -665,8 +686,8 @@ export default {
       blogSortParams.currentPage = 1;
       getBlogSortList(blogSortParams).then(response => {
         if(response.code == this.$ECode.SUCCESS) {
-          this.blogSortData = response.data.records;
-          this.sortOptions = response.data.records;
+          this.blogSortData = response.result.records;
+          this.sortOptions = response.result.records;
         }
       });
     },
@@ -689,10 +710,11 @@ export default {
       params.orderByAscColumn = this.orderByAscColumn
       getBlogList(params).then(response => {
         if(response.code == this.$ECode.SUCCESS) {
-          this.tableData = response.data.records;
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
-          this.total = response.data.total;
+          console.log("博客信息", response.result);
+          this.tableData = response.result.records;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
+          this.total = response.result.total;
         }
       });
     },
@@ -705,7 +727,7 @@ export default {
 
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.blogOriginalDictList = dictMap.sys_original_status.list
           this.blogPublishDictList = dictMap.sys_publish_status.list
           this.blogLevelDictList = dictMap.sys_recommend_level.list

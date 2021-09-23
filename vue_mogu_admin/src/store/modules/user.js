@@ -62,7 +62,6 @@ const user = {
       return new Promise((resolve, reject) => {
         getMenu().then(response => {
           const data = response.result
-          console.log("菜单信息", data);
           // 这里对按钮进行一些处理
           let buttonList = data.buttonList
           let map = new Map();

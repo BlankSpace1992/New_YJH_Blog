@@ -174,16 +174,16 @@ export default {
     this.getSystemConfigData();
     init().then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        this.blogTotal = response.data.blogCount;
-        this.commentTotal = response.data.commentCount;
-        this.userTotal = response.data.userCount;
-        this.visitAddTotal = response.data.visitCount;
+        this.blogTotal = response.result.blogCount;
+        this.commentTotal = response.result.commentCount;
+        this.userTotal = response.result.userCount;
+        this.visitAddTotal = response.result.visitCount;
       }
     });
 
     getVisitByWeek().then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        var visitByWeek = response.data;
+        var visitByWeek = response.result;
         var lineChartData = {
           date: visitByWeek.date,
           expectedData: visitByWeek.pv,
@@ -197,7 +197,7 @@ export default {
     //通过标签获取博客数目
     getBlogCountByTag().then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        this.blogCountByTag = response.data;
+        this.blogCountByTag = response.result;
         var tagList = this.blogCountByTag;
         for (var a = 0; a < this.blogCountByTag.length; a++) {
           this.tagNameArray.push(tagList[a].name);
@@ -209,7 +209,7 @@ export default {
     //通过博客分类获取博客数目
     getBlogCountByBlogSort().then(response => {
       if (response.code == this.$ECode.SUCCESS) {
-        this.blogCountByBlogSort = response.data;
+        this.blogCountByBlogSort = response.result;
         let blogSortList = this.blogCountByBlogSort;
         for (var a = 0; a < this.blogCountByBlogSort.length; a++) {
           this.blogSortNameArray.push(blogSortList[a].name);
@@ -228,7 +228,7 @@ export default {
     getSystemConfigData: function () {
       getSystemConfig().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.systemConfig = response.data;
+          this.systemConfig = response.result;
         }
       });
     },

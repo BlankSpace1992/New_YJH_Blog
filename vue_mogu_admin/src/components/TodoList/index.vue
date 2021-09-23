@@ -94,7 +94,7 @@ export default {
       params.pageSize = 30;
       getList(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.todos = response.data.records;
+          this.todos = response.result.records;
         }
       });
     },

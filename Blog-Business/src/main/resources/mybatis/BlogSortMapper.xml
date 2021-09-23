@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blog.business.web.mapper.BlogSortMapper">
-  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.BlogSort">
-    <!--@mbg.generated-->
-    <!--@Table t_blog_sort-->
-    <id column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="sort_name" jdbcType="VARCHAR" property="sortName" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="status" jdbcType="BOOLEAN" property="status" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-    <result column="click_count" jdbcType="INTEGER" property="clickCount" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    `uid`, sort_name, content, create_time, update_time, `status`, sort, click_count
-  </sql>
+    <resultMap id="BaseResultMap" type="com.blog.business.web.domain.BlogSort">
+        <!--@mbg.generated-->
+        <!--@Table t_blog_sort-->
+        <id column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="sort_name" jdbcType="VARCHAR" property="sortName"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="status" jdbcType="BOOLEAN" property="status"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="click_count" jdbcType="INTEGER" property="clickCount"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        `uid`, sort_name, content, create_time, update_time, `status`, sort, click_count
+    </sql>
+
+    <select id="getList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.sort_name,
+               a.content,
+               a.create_time,
+               a.update_time,
+               a.`status`,
+               a.sort,
+               a.click_count
+        from t_blog_sort a
+        <where>
+            a.status = 1
+            <if test="blogSortVO.keyword != null and blogSortVO.keyword != ''">
+                <bind name="keywordTemp" value="'%' + blogSortVO.keyword + '%'"/>
+                and a.sort_name like #{keywordTemp,jdbcType=VARCHAR}
+            </if>
+        </where>
+        <if test="blogSortVO.orderByAscColumn != null and blogSortVO.orderByAscColumn != ''">
+            order by ${blogSortVO.orderByAscColumn}
+        </if>
+        <if test="blogSortVO.orderByDescColumn != null and blogSortVO.orderByDescColumn != ''">
+            order by ${blogSortVO.orderByDescColumn} desc
+        </if>
+    </select>
 </mapper>

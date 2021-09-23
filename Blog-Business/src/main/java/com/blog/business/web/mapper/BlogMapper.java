@@ -6,6 +6,10 @@ import com.blog.business.admin.domain.vo.BlogVO;
 import com.blog.business.web.domain.Blog;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author yujunhong
  * @date 2021/6/1 11:05
@@ -77,4 +81,34 @@ public interface BlogMapper extends BaseMapper<Blog> {
      * @date 2021/9/17 11:39
      */
     IPage<Blog> getBlogList(IPage<Blog> page, @Param("blogVO") BlogVO blogVO);
+
+    /**
+     * 获取每个标签下文章数目
+     *
+     * @return 获取每个标签下文章数目
+     * @author yujunhong
+     * @date 2021/9/22 17:29
+     */
+    List<Map<String, Object>> getBlogCountByTag();
+
+    /**
+     * 获取每个分类下文章数量
+     *
+     * @return 每个分类下文章数量
+     * @author yujunhong
+     * @date 2021/9/22 17:29
+     */
+    List<Map<String, Object>> getBlogCountByBlogSort();
+
+    /**
+     * 获取一年内的文章贡献数
+     *
+     * @param startDate 开始时间
+     * @param nowDate   当前时间
+     * @return 一年内的文章贡献数
+     * @author yujunhong
+     * @date 2021/9/22 17:29
+     */
+    List<Map<String, Object>> getBlogContributeCount(@Param("startDate") Date startDate,
+                                                     @Param("nowDate") Date nowDate);
 }

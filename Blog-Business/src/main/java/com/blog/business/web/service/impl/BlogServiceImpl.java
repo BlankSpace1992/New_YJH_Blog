@@ -25,6 +25,7 @@ import com.blog.exception.CommonErrorException;
 import com.blog.exception.ResultBody;
 import com.blog.feign.PictureFeignClient;
 import com.blog.holder.RequestHolder;
+import com.blog.utils.DateUtils;
 import com.blog.utils.FileUtils;
 import com.blog.utils.IpUtils;
 import com.blog.utils.StringUtils;
@@ -677,8 +678,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
                 sortUidList.add(item.getBlogSortUid());
             }
             if (StringUtils.isNotEmpty(item.getTagUid())) {
-                List<String> tagUidListTemp = StringUtils.stringToList(item.getTagUid(),
-                        BaseSysConf.FILE_SEGMENTATION);
+                List<String> tagUidListTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, item.getTagUid());
                 tagUidList.addAll(tagUidListTemp);
             }
         });
@@ -713,7 +713,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             }
             //获取标签
             if (StringUtils.isNotEmpty(item.getTagUid())) {
-                List<String> tagUidListTemp = StringUtils.stringToList(item.getTagUid(), BaseSysConf.FILE_SEGMENTATION);
+                List<String> tagUidListTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, item.getTagUid());
                 List<Tag> tagListTemp = new ArrayList<Tag>();
                 tagUidListTemp.forEach(tag -> {
                     tagListTemp.add(tagUidMap.get(tag).get(0));
@@ -722,8 +722,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             }
             //获取图片
             if (StringUtils.isNotEmpty(item.getFileUid())) {
-                List<String> pictureUidListTemp = StringUtils.stringToList(item.getFileUid(),
-                        BaseSysConf.FILE_SEGMENTATION);
+                List<String> pictureUidListTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,
+                        item.getFileUid()
+                );
                 List<String> pictureListTemp = new ArrayList<>();
                 pictureUidListTemp.forEach(picture -> {
                     pictureListTemp.add(pictureMap.get(picture));
@@ -1052,6 +1053,94 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         });
         this.updateBatchById(blogList);
         return ResultBody.success();
+    }
+
+    @Override
+    public Integer getBlogCount(int enableFlag) {
+        LambdaQueryWrapper<Blog> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Blog::getStatus, enableFlag);
+        return this.count(wrapper);
+    }
+
+    @Override
+    public List<Map<String, Object>> getBlogCountByTag() {
+        // 优先从redis中获取标签下包含的博客数量
+        String resultJson =
+                (String) redisUtil.get(BaseRedisConf.DASHBOARD + Constants.SYMBOL_COLON + BaseRedisConf.BLOG_COUNT_BY_TAG);
+        if (StringUtils.isNotEmpty(resultJson)) {
+            List<Object> list = JSON.parseArray(resultJson, Object.class);
+            List<Map<String, Object>> map = new ArrayList<>();
+            list.forEach(item -> map.add((Map<String, Object>) item));
+            return map;
+        }
+        List<Map<String, Object>> blogCountByTag = baseMapper.getBlogCountByTag();
+        // 将 每个标签下文章数目 存入到Redis【过期时间2小时】
+        if (blogCountByTag.size() > 0) {
+            redisUtil.set(BaseRedisConf.DASHBOARD + Constants.SYMBOL_COLON + BaseRedisConf.BLOG_COUNT_BY_TAG,
+                    JSON.toJSONString(blogCountByTag), 2 * 3600);
+        }
+        return blogCountByTag;
+    }
+
+    @Override
+    public List<Map<String, Object>> getBlogCountByBlogSort() {
+        // 优先从redis中获取标签下包含的博客数量
+        String resultJson =
+                (String) redisUtil.get(BaseRedisConf.DASHBOARD + Constants.SYMBOL_COLON + BaseRedisConf.BLOG_COUNT_BY_SORT);
+        if (StringUtils.isNotEmpty(resultJson)) {
+            List<Object> list = JSON.parseArray(resultJson, Object.class);
+            List<Map<String, Object>> map = new ArrayList<>();
+            list.forEach(item -> map.add((Map<String, Object>) item));
+            return map;
+        }
+        List<Map<String, Object>> blogCountByBlogSort = baseMapper.getBlogCountByBlogSort();
+        // 将 每个标签下文章数目 存入到Redis【过期时间2小时】
+        if (blogCountByBlogSort.size() > 0) {
+            redisUtil.set(BaseRedisConf.DASHBOARD + Constants.SYMBOL_COLON + BaseRedisConf.BLOG_COUNT_BY_SORT,
+                    JSON.toJSONString(blogCountByBlogSort), 2 * 3600);
+        }
+        return blogCountByBlogSort;
+    }
+
+    @Override
+    public Map<String, Object> getBlogContributeCount() {
+        // 从Redis中获取博客分类下包含的博客数量
+        String jsonMap =
+                (String) redisUtil.get(BaseRedisConf.DASHBOARD + Constants.SYMBOL_COLON + BaseRedisConf.BLOG_CONTRIBUTE_COUNT);
+        if (StringUtils.isNotEmpty(jsonMap)) {
+            return JSON.parseObject(jsonMap, new TypeReference<Map<String, Object>>() {
+            });
+        }
+        // 获取今天的日期
+        Date nowDate = DateUtils.getNowDate();
+        // 获取365天前的日期
+        Date startDate = DateUtils.getDate(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", nowDate), -365);
+        List<Map<String, Object>> blogContributeCount = baseMapper.getBlogContributeCount(startDate, nowDate);
+        // 获取一年内的天数
+        List<String> dayBetweenDates = DateUtils.getDayBetweenDates(startDate, nowDate);
+
+        Map<String, Object> dateMap = new HashMap<>();
+        for (Map<String, Object> itemMap : blogContributeCount) {
+            dateMap.put(itemMap.get("date").toString(), itemMap.get("count"));
+        }
+        List<List<Object>> resultList = new ArrayList<>();
+        for (String item : dayBetweenDates) {
+            int count = 0;
+            if (dateMap.get(item) != null) {
+                count = Integer.parseInt(dateMap.get(item).toString());
+            }
+            List<Object> objectList = new ArrayList<>();
+            objectList.add(item);
+            objectList.add(count);
+            resultList.add(objectList);
+        }
+        Map<String, Object> resultMap = new HashMap<>(Constants.NUM_TWO);
+        List<String> contributeDateList = new ArrayList<>();
+        contributeDateList.add(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", startDate));
+        contributeDateList.add(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss", nowDate));
+        resultMap.put(BaseSysConf.CONTRIBUTE_DATE, contributeDateList);
+        resultMap.put(BaseSysConf.BLOG_CONTRIBUTE_COUNT, resultList);
+        return resultMap;
     }
 
     /**
