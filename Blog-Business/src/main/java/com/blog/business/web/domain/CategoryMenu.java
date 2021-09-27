@@ -2,6 +2,7 @@ package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 管理员表
@@ -120,4 +122,16 @@ public class CategoryMenu implements Comparable<CategoryMenu>{
         }
         return 1;
     }
+
+    /**
+     * 父菜单
+     */
+    @TableField(exist = false)
+    private CategoryMenu parentCategoryMenu;
+
+    /**
+     * 子菜单
+     */
+    @TableField(exist = false)
+    private List<CategoryMenu> childCategoryMenu;
 }

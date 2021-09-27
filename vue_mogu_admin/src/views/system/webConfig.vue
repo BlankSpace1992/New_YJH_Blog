@@ -235,8 +235,8 @@
       <el-tab-pane label="友链申请模板" v-permission="'/webConfig/getWebConfig'">
         <span slot="label"><i class="el-icon-edit"></i> 友链申请模板</span>
         <div class="editor-container">
-          <CKEditor ref="editor" v-if="systemConfig.editorModel == '0'" :content="form.dashboardNotification" :height="500"></CKEditor>
-          <MarkdownEditor ref="editor" v-if="systemConfig.editorModel == '1'" :height="660" style="margin-top: 12px"></MarkdownEditor>
+<!--          <CKEditor ref="editor" v-if="systemConfig.editorModel == '0'" :content="form.dashboardNotification" :height="500"></CKEditor>-->
+          <MarkdownEditor ref="editor"  :height="660" style="margin-top: 12px"></MarkdownEditor>
         </div>
         <div style="margin-top: 5px; margin-left: 10px;" >
           <el-button type="primary" @click="submitForm()" v-permission="'/system/editMe'">保 存</el-button>
@@ -365,7 +365,7 @@ export default {
       params.dictType = 'sys_normal_disable';
       getListByDictType(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.openDictList = response.data.list;
+          this.openDictList = response.result.list;
         }
       });
     },
@@ -378,7 +378,7 @@ export default {
     getWebConfigFun: function() {
       getWebConfig().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          let data = response.data;
+          let data = response.result;
           if (data.showList) {
             let showList = JSON.parse(data.showList)
             let loginTypeList = JSON.parse(data.loginTypeList)
@@ -398,7 +398,7 @@ export default {
     getSystemConfigList: function() {
       getSystemConfig().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.systemConfig = response.data;
+          this.systemConfig = response.result;
         }
       });
     },

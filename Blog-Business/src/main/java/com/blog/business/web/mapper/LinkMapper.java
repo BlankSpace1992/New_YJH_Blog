@@ -2,6 +2,7 @@ package com.blog.business.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.blog.business.admin.domain.vo.LinkVO;
 import com.blog.business.web.domain.Link;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +25,15 @@ public interface LinkMapper extends BaseMapper<Link> {
     IPage<Link> getLink(IPage<Link> page,
                         @Param(value = "status") Integer status,
                         @Param(value = "linkStatus") String linkStatus);
+
+    /**
+     * 获取友链列表
+     *
+     * @param linkVO 查询条件
+     * @param page   分页参数
+     * @return 获取友链列表
+     * @author yujunhong
+     * @date 2021/9/27 15:02
+     */
+    IPage<Link> getLinkList(@Param("page") IPage<Link> page, @Param("linkVO") LinkVO linkVO);
 }

@@ -1,6 +1,7 @@
 package com.blog.business.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.business.web.domain.SysDictData;
@@ -82,5 +83,49 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
                     JSON.toJSON(result).toString(), 86400);
         });
         return map;
+    }
+
+    @Override
+    public Map<String, Object> getListByDictType(String dictType) {
+        //从Redis中获取内容
+        String jsonResult =
+                (String) redisUtil.get(BaseSysConf.REDIS_DICT_TYPE + BaseSysConf.REDIS_SEGMENTATION + dictType);
+        //判断redis中是否有字典
+        if (StringUtils.isNotEmpty(jsonResult)) {
+            return JSON.parseObject(jsonResult, new TypeReference<Map<String, Object>>() {
+            });
+        }
+        // 从数据库查询,判断当前字典类型是否存在
+        LambdaQueryWrapper<SysDictType> dictTypeWrapper = new LambdaQueryWrapper<>();
+        dictTypeWrapper.eq(SysDictType::getDictType, dictType);
+        dictTypeWrapper.eq(SysDictType::getStatus, EnumsStatus.ENABLE);
+        dictTypeWrapper.eq(SysDictType::getIsPublish, EnumsStatus.PUBLISH);
+        dictTypeWrapper.last(BaseSysConf.LIMIT_ONE);
+        SysDictType sysDictType = sysDictTypeService.getOne(dictTypeWrapper);
+        if (StringUtils.isNull(sysDictType)) {
+            return new HashMap<>();
+        }
+        // 查询字典数据
+        LambdaQueryWrapper<SysDictData> sysDictDataWrapper = new LambdaQueryWrapper<>();
+        sysDictDataWrapper.eq(SysDictData::getIsPublish, EnumsStatus.PUBLISH);
+        sysDictDataWrapper.eq(SysDictData::getStatus, EnumsStatus.ENABLE);
+        sysDictDataWrapper.eq(SysDictData::getDictTypeUid, sysDictType.getUid());
+        sysDictDataWrapper.orderByDesc(SysDictData::getSort, SysDictData::getCreateTime);
+        List<SysDictData> list = this.list(sysDictDataWrapper);
+        String defaultValue = null;
+        for (SysDictData sysDictData : list) {
+            // 获取默认值
+            if (sysDictData.getIsDefault() == BaseSysConf.ONE) {
+                defaultValue = sysDictData.getDictValue();
+                break;
+            }
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put(BaseSysConf.DEFAULT_VALUE, defaultValue);
+        result.put(BaseSysConf.LIST, list);
+        // 存入redis
+        redisUtil.set(BaseSysConf.REDIS_DICT_TYPE + BaseSysConf.REDIS_SEGMENTATION + dictType,
+                JSON.toJSONString(result), 24 * 60 * 60);
+        return result;
     }
 }

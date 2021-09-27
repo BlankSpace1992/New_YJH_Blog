@@ -21,6 +21,7 @@ public class BaseMessageConf {
     public static final String AUTHOR_IS_EMPTY = "作者不能为空";
 
     public static final String ENTITY_EXIST = "该实体已存在";
+    public static final String SYS_PARAMS_NOT_DELETED = "系统内置参数无法删除";
     public static final String USER_OR_EMAIL_EXIST = "用户名或邮箱已被注册";
     public static final String ENTITY_NOT_EXIST = "该实体不存在";
     public static final String SYSTEM_CONFIG_NOT_EXIST = "系统配置有误";

@@ -1,9 +1,7 @@
 package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 友情链接表
@@ -31,7 +30,7 @@ public class Link {
      */
     @ApiModelProperty(value = "唯一uid")
     @Excel(name = "唯一uid")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 友情链接标题
@@ -62,12 +61,14 @@ public class Link {
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
     /**
      * 状态
@@ -86,7 +87,7 @@ public class Link {
      */
     @ApiModelProperty(value = "友链状态： 0 申请中， 1：已上线，  2：已下架")
     @Excel(name = "友链状态： 0 申请中， 1：已上线，  2：已下架")
-    private Object linkStatus;
+    private Integer linkStatus;
     /**
      * 申请用户UID
      */
@@ -111,4 +112,10 @@ public class Link {
     @ApiModelProperty(value = "网站图标")
     @Excel(name = "网站图标")
     private String fileUid;
+
+    /**
+     * 网站图标URL 【该字段不存入数据库】
+     */
+    @TableField(exist = false)
+    private List<String> photoList;
 }

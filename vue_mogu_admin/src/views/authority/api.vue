@@ -328,7 +328,7 @@ export default {
     menuList: function() {
       getAllMenu().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          let tableData = response.data;
+          let tableData = response.result;
           let options = []
           for(let a=0; a<tableData.length; a++) {
             let parent = {}
@@ -358,7 +358,7 @@ export default {
       }
       getButtonAll(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.tableData = response.data;
+          this.tableData = response.result;
         }
       });
     },
@@ -370,7 +370,7 @@ export default {
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
 
-          var dictMap = response.data;
+          var dictMap = response.result;
 
           this.menuLevelDictList = dictMap.sys_menu_level.list
 

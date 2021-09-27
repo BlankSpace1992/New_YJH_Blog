@@ -380,7 +380,7 @@
 
         <el-form-item label="内容" :label-width="formLabelWidth" prop="content">
           <CKEditor v-if="systemConfig.editorModel == '0'" ref="editor" :content="form.content" @contentChange="contentChange" :height="360"></CKEditor>
-          <MarkdownEditor v-if="systemConfig.editorModel == '1'" :content="form.content" ref="editor" :height="465"></MarkdownEditor>
+          <MarkdownEditor  :content="form.content" ref="editor" :height="465"></MarkdownEditor>
         </el-form-item>
 
         <el-form-item style="float: right; margin-right: 20px;">
@@ -710,7 +710,6 @@ export default {
       params.orderByAscColumn = this.orderByAscColumn
       getBlogList(params).then(response => {
         if(response.code == this.$ECode.SUCCESS) {
-          console.log("博客信息", response.result);
           this.tableData = response.result.records;
           this.currentPage = response.result.current;
           this.pageSize = response.result.size;
@@ -1076,15 +1075,11 @@ export default {
     },
     // 内容改变，触发监听
     contentChange: function() {
-      console.log("内容改变")
       var that = this;
       if(that.changeCount > 1) {
         that.isChange = true;
         that.form.content = that.$refs.editor.getData(); //获取CKEditor中的内容
         that.form.tagUid = that.tagValue.join(",");
-        console.log("开始备份2", that.$refs.editor.getData())
-        console.log("开始备份2", that.tagValue)
-        console.log("开始备份3", that.form)
         // 将内容设置到 WebStorage中
         window.LS.set("form", JSON.stringify(that.form));
       }

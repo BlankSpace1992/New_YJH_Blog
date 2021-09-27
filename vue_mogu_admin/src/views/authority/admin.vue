@@ -77,7 +77,7 @@
 
       <el-table-column label="最后登录时间" width="160" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.lastLoginTime }}</span>
+          <span>{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.lastLoginTime) }}</span>
         </template>
       </el-table-column>
 
@@ -290,6 +290,27 @@ export default {
     this.roleList();
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     adminList: function() {
       var params = {}
       params.keyword = this.keyword
@@ -297,15 +318,15 @@ export default {
       params.pageSize = this.pageSize
       getAdminList(params).then(response => {
         if(response.code == this.$ECode.SUCCESS) {
-          let tableData = response.data.records;
+          let tableData = response.result.records;
           for(let a=0; a< tableData.length; a++) {
             tableData[a].maxStorageSize = tableData[a].maxStorageSize / 1024 / 1024
 
           }
           this.tableData = tableData
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
-          this.total = response.data.total;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
+          this.total = response.result.total;
         }
       });
     },
@@ -317,10 +338,10 @@ export default {
       params.dictType = 'sys_user_sex';
       getListByDictType(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.genderDictList = response.data.list;
+          this.genderDictList = response.result.list;
           // 设置默认值
           if(response.data.defaultValue) {
-            this.genderDefaultValue =response.data.defaultValue
+            this.genderDefaultValue =response.result.defaultValue
           }
         }
       });
@@ -331,7 +352,7 @@ export default {
       params.currentPage = 1;
       params.pageSize = 10;
       getRoleList(params).then(response => {
-        this.roleOptions = response.data.records;
+        this.roleOptions = response.result.records;
       });
 
     },

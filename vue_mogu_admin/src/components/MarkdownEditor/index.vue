@@ -104,11 +104,9 @@
         return this.vditor.getHTML();
       },
       setData: function(data) {
-        // console.log("将html转", this.vditor.html2md(data))
         var that = this;
         this.$nextTick(() => {
           //DOM现在更新了
-          let vditor = that.initVditor()
           let markdownText = that.$commonUtil.htmlToMarkdown(data)
           localStorage.setItem('vditorvditor', markdownText)
         });

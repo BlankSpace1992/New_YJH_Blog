@@ -185,10 +185,10 @@ export default {
       params.currentPage = this.currentPage;
       params.pageSize = this.pageSize;
       getSubjectList(params).then(response => {
-        this.tableData = response.data.records;
-        this.currentPage = response.data.current;
-        this.pageSize = response.data.size;
-        this.total = response.data.total;
+        this.tableData = response.result.records;
+        this.currentPage = response.result.current;
+        this.pageSize = response.result.size;
+        this.total = response.result.total;
       });
     },
     handleFind: function() {

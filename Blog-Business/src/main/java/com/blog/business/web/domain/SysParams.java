@@ -1,9 +1,7 @@
 package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,14 +29,14 @@ public class SysParams {
      */
     @ApiModelProperty(value = "主键")
     @Excel(name = "主键")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 配置类型 是否系统内置(1:，是 0:否)
      */
     @ApiModelProperty(value = "配置类型 是否系统内置(1:，是 0:否)")
     @Excel(name = "配置类型 是否系统内置(1:，是 0:否)")
-    private String paramsType;
+    private Integer paramsType;
     /**
      * 参数名称
      */
@@ -68,18 +66,20 @@ public class SysParams {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
     /**
      * 排序字段

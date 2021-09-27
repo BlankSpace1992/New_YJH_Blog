@@ -21,4 +21,14 @@ public interface SysDictDataService extends IService<SysDictData> {
      * @date 2021/6/2 16:16
      */
     Map<String, Map<String, Object>> getListByDictTypeList(List<String> dictTypeList);
+
+    /**
+     * 根据字典类型获取字典数据
+     *
+     * @param dictType 字典类型
+     * @return 字典数据
+     * @author yujunhong
+     * @date 2021/9/24 16:32
+     */
+    Map<String, Object> getListByDictType(String dictType);
 }

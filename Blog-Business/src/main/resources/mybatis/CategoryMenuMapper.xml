@@ -1,27 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blog.business.web.mapper.CategoryMenuMapper">
-  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.CategoryMenu">
-    <!--@mbg.generated-->
-    <!--@Table t_category_menu-->
-    <id column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="menu_level" jdbcType="BOOLEAN" property="menuLevel" />
-    <result column="summary" jdbcType="VARCHAR" property="summary" />
-    <result column="parent_uid" jdbcType="VARCHAR" property="parentUid" />
-    <result column="url" jdbcType="VARCHAR" property="url" />
-    <result column="icon" jdbcType="VARCHAR" property="icon" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-    <result column="status" jdbcType="BOOLEAN" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="is_show" jdbcType="BOOLEAN" property="isShow" />
-    <result column="menu_type" jdbcType="BOOLEAN" property="menuType" />
-    <result column="is_jump_external_url" jdbcType="BOOLEAN" property="isJumpExternalUrl" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    `uid`, `name`, menu_level, summary, parent_uid, url, icon, sort, `status`, create_time,
-    update_time, is_show, menu_type, is_jump_external_url
-  </sql>
+    <resultMap id="BaseResultMap" type="com.blog.business.web.domain.CategoryMenu">
+        <!--@mbg.generated-->
+        <!--@Table t_category_menu-->
+        <id column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="menu_level" jdbcType="BOOLEAN" property="menuLevel"/>
+        <result column="summary" jdbcType="VARCHAR" property="summary"/>
+        <result column="parent_uid" jdbcType="VARCHAR" property="parentUid"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+        <result column="status" jdbcType="BOOLEAN" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="is_show" jdbcType="BOOLEAN" property="isShow"/>
+        <result column="menu_type" jdbcType="BOOLEAN" property="menuType"/>
+        <result column="is_jump_external_url" jdbcType="BOOLEAN" property="isJumpExternalUrl"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        `uid`, `name`, menu_level, summary, parent_uid, url, icon, sort, `status`, create_time,
+        update_time, is_show, menu_type, is_jump_external_url
+    </sql>
+
+    <select id="getCategoryMenuList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.`name`,
+               a.menu_level,
+               a.summary,
+               a.parent_uid,
+               a.url,
+               a.icon,
+               a.sort,
+               a.`status`,
+               a.create_time,
+               a.update_time,
+               a.is_show,
+               a.menu_type,
+               a.is_jump_external_url
+        from t_category_menu a
+        <where>
+            a.status = 1
+            <if test="categoryMenuVO.keyword != null and categoryMenuVO.keyword != ''">
+                <bind name="nameTemp" value="'%' + categoryMenuVO.keyword + '%'"/>
+                and a.name like #{nameTemp,jdbcType=VARCHAR}
+            </if>
+            <if test="categoryMenuVO.menuLevel != null">
+                and a.menu_level = #{categoryMenuVO.menuLevel,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by a.sort
+    </select>
 </mapper>

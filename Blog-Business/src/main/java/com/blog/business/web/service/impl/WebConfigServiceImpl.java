@@ -3,6 +3,8 @@ package com.blog.business.web.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.admin.domain.vo.WebConfigVO;
+import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.WebConfig;
 import com.blog.business.web.mapper.WebConfigMapper;
 import com.blog.business.web.service.WebConfigService;
@@ -14,6 +16,7 @@ import com.blog.exception.CommonErrorException;
 import com.blog.exception.ResultBody;
 import com.blog.feign.PictureFeignClient;
 import com.blog.utils.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,8 @@ public class WebConfigServiceImpl extends ServiceImpl<WebConfigMapper, WebConfig
     private RedisUtil redisUtil;
     @Autowired
     private PictureFeignClient pictureFeignClient;
+    @Autowired
+    private WebUtils webUtils;
 
     @Override
     public WebConfig getWebConfigByShowList() {
@@ -188,6 +193,44 @@ public class WebConfigServiceImpl extends ServiceImpl<WebConfigMapper, WebConfig
         if (StringUtils.isNotEmpty(webConfig.getName())) {
             return ResultBody.success(webConfig.getName());
         }
+        return ResultBody.success();
+    }
+
+    @Override
+    public WebConfig getWebConfig() {
+        LambdaQueryWrapper<WebConfig> webConfigLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        webConfigLambdaQueryWrapper.orderByDesc(WebConfig::getCreateTime);
+        webConfigLambdaQueryWrapper.last(BaseSysConf.LIMIT_ONE);
+        WebConfig webConfig = this.getOne(webConfigLambdaQueryWrapper);
+        //获取图片
+        if (StringUtils.isNotNull(webConfig) && StringUtils.isNotEmpty(webConfig.getLogo())) {
+            List<Map<String, Object>> picture = this.pictureFeignClient.getPicture(webConfig.getLogo(),
+                    BaseSysConf.FILE_SEGMENTATION);
+            webConfig.setPhotoList(webUtils.getPicture(picture));
+        }
+        return webConfig;
+    }
+
+    @Override
+    public ResultBody editWebConfig(WebConfigVO webConfigVO) {
+        if (StringUtils.isEmpty(webConfigVO.getUid())) {
+            WebConfig webConfig = new WebConfig();
+            // 设置网站配置【使用Spring工具类提供的深拷贝】
+            BeanUtils.copyProperties(webConfigVO, webConfig, BaseSysConf.STATUS);
+            this.save(webConfig);
+
+        } else {
+            WebConfig webConfig = this.getById(webConfigVO.getUid());
+            // 更新网站配置【使用Spring工具类提供的深拷贝】
+            BeanUtils.copyProperties(webConfigVO, webConfig, BaseSysConf.STATUS, BaseSysConf.UID);
+            webConfig.setUpdateTime(new Date());
+            this.updateById(webConfig);
+        }
+        // 修改配置后，清空Redis中的 WEB_CONFIG
+        redisUtil.delete(BaseRedisConf.WEB_CONFIG);
+        // 同时清空Redis中的登录方式
+        Set<Object> keySet = redisUtil.keys(BaseRedisConf.LOGIN_TYPE + Constants.SYMBOL_STAR);
+        redisUtil.delete(keySet);
         return ResultBody.success();
     }
 }

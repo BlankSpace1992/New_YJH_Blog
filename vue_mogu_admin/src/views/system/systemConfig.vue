@@ -369,7 +369,7 @@ export default {
 
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.areaDictList = dictMap.sys_storage_region.list
           this.yesNoDictList = dictMap.sys_yes_no.list
           this.openDictList = dictMap.sys_normal_disable.list
@@ -388,8 +388,8 @@ export default {
     getSystemConfigList: function() {
       getSystemConfig().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          if (response.data) {
-            this.form = response.data;
+          if (response.result) {
+            this.form = response.result;
           }
         }
       });

@@ -146,7 +146,7 @@ public class SystemConfig {
      */
     @ApiModelProperty(value = "编辑器模式，(0：富文本编辑器CKEditor，1：markdown编辑器Veditor)")
     @Excel(name = "编辑器模式，(0：富文本编辑器CKEditor，1：markdown编辑器Veditor)")
-    private Object editorModel;
+    private String editorModel;
     /**
      * 主题颜色
      */
@@ -194,19 +194,19 @@ public class SystemConfig {
      */
     @ApiModelProperty(value = "是否开启仪表盘通知(0:否， 1:是)")
     @Excel(name = "是否开启仪表盘通知(0:否， 1:是)")
-    private Object openDashboardNotification;
+    private String openDashboardNotification;
     /**
      * 仪表盘通知【用于首次登录弹框】
      */
     @ApiModelProperty(value = "仪表盘通知【用于首次登录弹框】")
     @Excel(name = "仪表盘通知【用于首次登录弹框】")
-    private Object dashboardNotification;
+    private String dashboardNotification;
     /**
      * 博客详情图片显示优先级（ 0:本地  1: 七牛云 2: Minio）
      */
     @ApiModelProperty(value = "博客详情图片显示优先级（ 0:本地  1: 七牛云 2: Minio）")
     @Excel(name = "博客详情图片显示优先级（ 0:本地  1: 七牛云 2: Minio）")
-    private Object contentPicturePriority;
+    private String contentPicturePriority;
     /**
      * 是否开启用户邮件激活功能【0 关闭，1 开启】
      */

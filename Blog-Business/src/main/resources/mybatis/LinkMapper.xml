@@ -44,4 +44,38 @@
           and link_status = #{linkStatus,jdbcType=VARCHAR}
         order by sort
     </select>
+
+    <select id="getLinkList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.title,
+               a.summary,
+               a.url,
+               a.click_count,
+               a.create_time,
+               a.update_time,
+               a.`status`,
+               a.sort,
+               a.link_status,
+               a.user_uid,
+               a.admin_uid,
+               a.email,
+               a.file_uid
+        from t_link a
+        <where>
+            a.status = 1
+            <if test="linkVO.keyword != null and linkVO.keyword != ''">
+                <bind name="titleTemp" value="'%' + linkVO.keyword + '%'"/>
+                and a.title like #{linkVO.keyword,jdbcType=VARCHAR}
+            </if>
+            <if test="linkVO.linkStatus != null">
+                and a.link_status = #{linkVO.linkStatus,jdbcType=INTEGER}
+            </if>
+        </where>
+        <if test="linkVO.orderByAscColumn != null and linkVO.orderByAscColumn != ''">
+            order by ${linkVO.orderByAscColumn}
+        </if>
+        <if test="linkVO.orderByDescColumn != null and linkVO.orderByDescColumn != ''">
+            order by ${linkVO.orderByDescColumn} desc
+        </if>
+    </select>
 </mapper>

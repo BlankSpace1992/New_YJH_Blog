@@ -35,7 +35,7 @@
 
       <el-table-column label="创建时间" width="160" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.createTime) }}</span>
         </template>
       </el-table-column>
 
@@ -154,11 +154,31 @@ export default {
     }
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     allMenuList: function () {
       getAllMenu().then(response => {
-        console.log(response);
         if (response.code == this.$ECode.SUCCESS) {
-          let data = response.data;
+          let data = response.result;
           this.categoryMenuList = data;
         }
       });
@@ -173,7 +193,7 @@ export default {
       params.pageSize = this.pageSize;
       getRoleList(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var data = response.data.records;
+          var data = response.result.records;
           //初始化菜单UID
           for (let a = 0; a < data.length; a++) {
             if (data[a].categoryMenuUids) {
@@ -183,9 +203,9 @@ export default {
             }
           }
           this.tableData = data;
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
-          this.total = response.data.total;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
+          this.total = response.result.total;
         }
       });
     },

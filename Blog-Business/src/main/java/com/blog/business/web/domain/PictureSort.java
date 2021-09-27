@@ -2,6 +2,7 @@ package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 图片分类表
@@ -79,5 +81,11 @@ public class PictureSort {
      */
     @ApiModelProperty(value = "是否显示，1：是，0，否")
     @Excel(name = "是否显示，1：是，0，否")
-    private Object isShow;
+    private Integer isShow;
+
+    /**
+     * 分类图
+     */
+    @TableField(exist = false)
+    private List<String> photoList;
 }

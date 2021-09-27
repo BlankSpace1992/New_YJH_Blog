@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author yujunhong
@@ -73,7 +74,7 @@ public class WebConfig {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 创建时间
      */
@@ -163,19 +164,19 @@ public class WebConfig {
      */
     @ApiModelProperty(value = "是否开启移动端评论(0:否， 1:是)")
     @Excel(name = "是否开启移动端评论(0:否， 1:是)")
-    private Object openMobileComment;
+    private String openMobileComment;
     /**
      * 是否开启赞赏(0:否， 1:是)
      */
     @ApiModelProperty(value = "是否开启赞赏(0:否， 1:是)")
     @Excel(name = "是否开启赞赏(0:否， 1:是)")
-    private Object openAdmiration;
+    private String openAdmiration;
     /**
      * 是否开启移动端赞赏(0:否， 1:是)
      */
     @ApiModelProperty(value = "是否开启移动端赞赏(0:否， 1:是)")
     @Excel(name = "是否开启移动端赞赏(0:否， 1:是)")
-    private Object openMobileAdmiration;
+    private String openMobileAdmiration;
     /**
      * 友链申请模板, 添加友链申请模板格式
      */
@@ -201,4 +202,10 @@ public class WebConfig {
      */
     @TableField(exist = false)
     private String weixinPayPhoto;
+
+    /**
+     * 标题图
+     */
+    @TableField(exist = false)
+    private List<String> photoList;
 }

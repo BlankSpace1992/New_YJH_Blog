@@ -92,7 +92,7 @@
 
       <el-table-column label="创建时间" width="160" align="center" prop="createTime" sortable="custom" :sort-by="['createTime']">
         <template slot-scope="scope">
-          <span>{{ scope.row.createTime }}</span>
+          <span>{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.createTime) }}</span>
         </template>
       </el-table-column>
 
@@ -266,6 +266,27 @@ export default {
     this.linkList();
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     // 从后台获取数据,重新排序
     changeSort (val) {
       // 根据当前排序重新获取后台数据,一般后台会需要一个排序的参数
@@ -287,10 +308,10 @@ export default {
       params.orderByDescColumn = this.orderByDescColumn
       params.orderByAscColumn = this.orderByAscColumn
       getLinkList(params).then(response => {
-        this.tableData = response.data.records;
-        this.currentPage = response.data.current;
-        this.pageSize = response.data.size;
-        this.total = response.data.total;
+        this.tableData = response.result.records;
+        this.currentPage = response.result.current;
+        this.pageSize = response.result.size;
+        this.total = response.result.total;
       });
     },
     getFormObject: function() {
@@ -312,7 +333,7 @@ export default {
       var dictTypeList = ['sys_link_status']
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.linkStatusDictList = dictMap.sys_link_status.list
           if(dictMap.sys_link_status.defaultValue) {
             this.linkStatusDefault = parseInt(dictMap.sys_link_status.defaultValue);

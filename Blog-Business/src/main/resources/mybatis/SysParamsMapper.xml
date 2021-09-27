@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blog.business.web.mapper.SysParamsMapper">
-  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.SysParams">
-    <!--@mbg.generated-->
-    <!--@Table t_sys_params-->
-    <id column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="params_type" jdbcType="VARCHAR" property="paramsType" />
-    <result column="params_name" jdbcType="VARCHAR" property="paramsName" />
-    <result column="params_key" jdbcType="VARCHAR" property="paramsKey" />
-    <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="params_value" jdbcType="VARCHAR" property="paramsValue" />
-    <result column="status" jdbcType="BOOLEAN" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    `uid`, params_type, params_name, params_key, remark, params_value, `status`, create_time,
-    update_time, sort
-  </sql>
+    <resultMap id="BaseResultMap" type="com.blog.business.web.domain.SysParams">
+        <!--@mbg.generated-->
+        <!--@Table t_sys_params-->
+        <id column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="params_type" jdbcType="VARCHAR" property="paramsType"/>
+        <result column="params_name" jdbcType="VARCHAR" property="paramsName"/>
+        <result column="params_key" jdbcType="VARCHAR" property="paramsKey"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="params_value" jdbcType="VARCHAR" property="paramsValue"/>
+        <result column="status" jdbcType="BOOLEAN" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="sort" jdbcType="INTEGER" property="sort"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        `uid`, params_type, params_name, params_key, remark, params_value, `status`, create_time,
+        update_time, sort
+    </sql>
+
+    <select id="getSysParamsPageList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.params_type,
+               a.params_name,
+               a.params_key,
+               a.remark,
+               a.params_value,
+               a.`status`,
+               a.create_time,
+               a.update_time,
+               a.sort
+        from t_sys_params a
+        <where>
+            a.status = 1
+            <if test="sysParamsVO.paramsName != null and sysParamsVO.paramsName != ''">
+                <bind name="paramNameTemp" value="'%' + sysParamsVO.paramsName + '%'"/>
+                and a.params_name like #{paramNameTemp,jdbcType=VARCHAR}
+            </if>
+            <if test="sysParamsVO.paramsKey != null and sysParamsVO.paramsKey != ''">
+                <bind name="paramKeyTemp" value="'%' + sysParamsVO.paramsKey + '%'"/>
+                and a.params_key like #{paramKeyTemp,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by a.create_time
+    </select>
 </mapper>

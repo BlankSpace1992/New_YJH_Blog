@@ -1,6 +1,7 @@
 package com.blog.business.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blog.business.admin.domain.vo.WebConfigVO;
 import com.blog.business.web.domain.WebConfig;
 import com.blog.exception.ResultBody;
 
@@ -37,4 +38,23 @@ public interface WebConfigService extends IService<WebConfig> {
      * @date 2021/9/18 14:41
      */
     ResultBody getWebSiteName();
+
+    /**
+     * 获取网站配置
+     *
+     * @return 获取网站配置
+     * @author yujunhong
+     * @date 2021/9/27 11:33
+     */
+    WebConfig getWebConfig();
+
+    /**
+     * 修改网站配置
+     *
+     * @param webConfigVO 修改实体
+     * @return 修改网站配置
+     * @author yujunhong
+     * @date 2021/9/27 11:33
+     */
+    ResultBody editWebConfig(WebConfigVO webConfigVO);
 }

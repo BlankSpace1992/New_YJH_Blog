@@ -144,10 +144,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 });
                 item.setPhotoList(pictureListTemp);
             }
-
             // 设置已用容量大小和最大容量
-            Storage storage = storageMap.get(item.getUid()).get(0);
-            if (storage != null) {
+            if (storageMap.get(item.getUid()) != null && storageMap.get(item.getUid()).get(0) != null) {
+                Storage storage = storageMap.get(item.getUid()).get(0);
                 item.setStorageSize(storage.getStorageSize());
                 item.setMaxStorageSize(storage.getMaxStorageSize());
             } else {
@@ -156,7 +155,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 item.setMaxStorageSize(0L);
             }
         }
-        return ResultBody.success();
+        adminPage.setRecords(adminList);
+        return ResultBody.success(adminPage);
     }
 
     @Override
@@ -559,7 +559,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             return ResultBody.error(BaseMessageConf.OPERATION_FAIL);
         } else {
             // 获取在线用户信息
-            String adminJson = (String) redisUtil.get(BaseRedisConf.LOGIN_TOKEN_KEY + BaseRedisConf.SEGMENTATION + token);
+            String adminJson =
+                    (String) redisUtil.get(BaseRedisConf.LOGIN_TOKEN_KEY + BaseRedisConf.SEGMENTATION + token);
             if (StringUtils.isNotEmpty(adminJson)) {
                 OnlineAdmin onlineAdmin = JSON.parseObject(adminJson, OnlineAdmin.class);
                 String tokenUid = onlineAdmin.getTokenId();

@@ -218,10 +218,10 @@ export default {
       params.pageSize = this.pageSize;
 
       getSysParamsList(params).then(response => {
-        this.tableData = response.data.records;
-        this.currentPage = response.data.current;
-        this.pageSize = response.data.size;
-        this.total = response.data.total;
+        this.tableData = response.result.records;
+        this.currentPage = response.result.current;
+        this.pageSize = response.result.size;
+        this.total = response.result.total;
       });
     },
     getFormObject: function() {
@@ -244,7 +244,7 @@ export default {
 
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.paramsTypeDictList = dictMap.sys_params_type.list
           if(dictMap.sys_params_type.defaultValue) {
             this.paramsTypeDefault = parseInt(dictMap.sys_params_type.defaultValue);
