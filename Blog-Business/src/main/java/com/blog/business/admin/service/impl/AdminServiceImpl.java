@@ -29,6 +29,7 @@ import com.blog.holder.RequestHolder;
 import com.blog.utils.DateUtils;
 import com.blog.utils.IpUtils;
 import com.blog.utils.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -570,6 +571,60 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             // 移除Redis中的用户
             redisUtil.delete(BaseRedisConf.LOGIN_TOKEN_KEY + BaseRedisConf.SEGMENTATION + token);
             return ResultBody.success(BaseMessageConf.OPERATION_SUCCESS);
+        }
+    }
+
+    @Override
+    public Admin getMe() {
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "获取信息失败"));
+        if (StringUtils.isEmpty(request.getAttribute(BaseSysConf.ADMIN_UID).toString())) {
+            return new Admin();
+        }
+        Admin admin = this.getById(request.getAttribute(BaseSysConf.ADMIN_UID).toString());
+        //清空密码，防止泄露
+        admin.setPassWord(null);
+        //获取图片
+        if (StringUtils.isNotEmpty(admin.getAvatar())) {
+            List<Map<String, Object>> picture = this.pictureFeignClient.getPicture(admin.getAvatar(),
+                    Constants.SYMBOL_COMMA);
+            admin.setPhotoList(webUtils.getPicture(picture));
+        }
+        return admin;
+    }
+
+    @Override
+    public ResultBody editMe(AdminVO adminVO) {
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "获取信息失败"));
+        if (StringUtils.isEmpty(request.getAttribute(BaseSysConf.ADMIN_UID).toString())) {
+            ResultBody.error(BaseMessageConf.INVALID_TOKEN);
+        }
+        Admin admin = new Admin();
+        // 【使用Spring工具类提供的深拷贝，减少大量模板代码】
+        BeanUtils.copyProperties(adminVO, admin, BaseSysConf.STATUS);
+        admin.setUpdateTime(new Date());
+        this.updateById(admin);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody changePwd(String oldPwd, String newPwd) {
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "获取信息失败"));
+        if (StringUtils.isEmpty(request.getAttribute(BaseSysConf.ADMIN_UID).toString())) {
+            ResultBody.error(BaseMessageConf.INVALID_TOKEN);
+        }
+        Admin admin = this.getById(request.getAttribute(BaseSysConf.ADMIN_UID).toString());
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        boolean isPassword = encoder.matches(oldPwd, admin.getPassWord());
+        if (isPassword) {
+            admin.setPassWord(encoder.encode(newPwd));
+            admin.setUpdateTime(new Date());
+            this.updateById(admin);
+            return ResultBody.success();
+        } else {
+            return ResultBody.error(BaseMessageConf.ERROR_PASSWORD);
         }
     }
 

@@ -1,10 +1,12 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.SysLog;
 import com.blog.business.web.mapper.SysLogMapper;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
 import com.blog.business.web.service.SysLogService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 /**
  *
  * @author yujunhong
@@ -12,9 +14,7 @@ import com.blog.business.web.service.SysLogService;
  *
  */
 @Service
-public class SysLogServiceImpl implements SysLogService{
+public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> implements SysLogService{
 
-    @Resource
-    private SysLogMapper sysLogMapper;
 
 }

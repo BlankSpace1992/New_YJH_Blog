@@ -21,6 +21,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserVO {
     /**
+     * 唯一UID
+     */
+    private String uid;
+    /**
      * 当前页
      */
     @NotNull(message = "当前页数不允许为空")
@@ -139,5 +143,8 @@ public class UserVO {
      */
     private String orderByAscColumn;
 
-
+    /**
+     * 关键字
+     */
+    private String keyword;
 }

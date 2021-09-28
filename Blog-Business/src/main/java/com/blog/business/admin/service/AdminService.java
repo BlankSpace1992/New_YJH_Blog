@@ -158,5 +158,35 @@ public interface AdminService extends IService<Admin> {
      */
     ResultBody logout();
 
+
+    /**
+     * 获取我的信息
+     *
+     * @return 获取我的信息
+     * @author yujunhong
+     * @date 2021/9/28 14:07
+     */
+    Admin getMe();
+
+    /**
+     * 编辑我的信息
+     *
+     * @param adminVO 实体对象
+     * @return 编辑我的信息
+     * @author yujunhong
+     * @date 2021/9/28 14:11
+     */
+    ResultBody editMe(AdminVO adminVO);
+
+    /**
+     * 修改密码
+     *
+     * @param oldPwd 老密码
+     * @param newPwd 新密码
+     * @return 修改密码
+     * @author yujunhong
+     * @date 2021/9/28 14:16
+     */
+    ResultBody changePwd(String oldPwd, String newPwd);
 }
 

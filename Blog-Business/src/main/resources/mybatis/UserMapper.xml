@@ -44,9 +44,59 @@
     <select id="getUserListByIds" resultMap="BaseResultMap">
         select a.avatar, a.uid, a.nick_name, a.user_tag
         from t_user a
-        where a.uid in
+                where a.uid in
         <foreach collection="list" item="uid" open="(" separator="," close=")">
-           #{uid}
+            #{uid}
         </foreach>
+    </select>
+
+    <select id="getPageList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.user_name,
+               a.gender,
+               a.avatar,
+               a.email,
+               a.birthday,
+               a.mobile,
+               a.valid_code,
+               a.summary,
+               a.login_count,
+               a.last_login_time,
+               a.last_login_ip,
+               a.`status`,
+               a.create_time,
+               a.update_time,
+               a.nick_name,
+               a.`source`,
+               a.uuid,
+               a.qq_number,
+               a.we_chat,
+               a.occupation,
+               a.comment_status,
+               a.ip_source,
+               a.browser,
+               a.os,
+               a.start_email_notification,
+               a.user_tag
+        from t_user a
+        <where>
+            a.status = 1
+            <if test="userVO.keyword != null and userVO.keyword != ''">
+                <bind name="userNameTemp" value="'%' + userVO.keyword + '%'"/>
+                and a.user_name like #{userNameTemp,jdbcType=VARCHAR}
+            </if>
+            <if test="userVO.source != null and userVO.source != ''">
+                and a.source = #{userVO.source,jdbcType=VARCHAR}
+            </if>
+            <if test="userVO.commentStatus != null">
+                and a.comment_status = #{userVO.commentStatus,jdbcType=INTEGER}
+            </if>
+        </where>
+        <if test="userVO.orderByAscColumn != null and userVO.orderByAscColumn != ''">
+            order by ${userVO.orderByAscColumn}
+        </if>
+        <if test="userVO.orderByDescColumn != null and userVO.orderByDescColumn != ''">
+            order by ${userVO.orderByDescColumn} desc
+        </if>
     </select>
 </mapper>

@@ -2,6 +2,8 @@ package com.blog.business.web.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.business.admin.domain.SystemConfig;
 import com.blog.business.admin.service.SystemConfigService;
@@ -9,6 +11,7 @@ import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.User;
 import com.blog.business.web.domain.vo.UserVO;
 import com.blog.business.web.mapper.UserMapper;
+import com.blog.business.web.service.SysParamsService;
 import com.blog.business.web.service.UserService;
 import com.blog.config.rabbit_mq.RabbitMqUtils;
 import com.blog.config.redis.RedisUtil;
@@ -21,16 +24,14 @@ import com.blog.utils.IpUtils;
 import com.blog.utils.Md5Utils;
 import com.blog.utils.StringUtils;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author yujunhong
@@ -50,6 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private SystemConfigService systemConfigService;
     @Autowired
     private WebUtils webUtils;
+    @Autowired
+    private SysParamsService sysParamsService;
 
     @Override
     public List<User> getUserListByIds(List<String> userUidList) {
@@ -235,5 +238,112 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getStatus, enableFlag);
         return this.count(wrapper);
+    }
+
+    @Override
+    public IPage<User> getPageList(UserVO userVO) {
+        // 注入分页参数
+        IPage<User> page = new Page<>();
+        page.setSize(userVO.getPageSize());
+        page.setCurrent(userVO.getCurrentPage());
+        IPage<User> pageList = baseMapper.getPageList(page, userVO);
+        // 获取实际数据
+        List<User> userList = pageList.getRecords();
+        // 拼接头像
+        StringBuilder fileUidBuilder = new StringBuilder();
+        userList.forEach(item -> {
+            if (StringUtils.isNotEmpty(item.getAvatar())) {
+                fileUidBuilder.append(item.getAvatar()).append(BaseSysConf.FILE_SEGMENTATION);
+            }
+        });
+        List<Map<String, Object>> picture = new ArrayList<>();
+        if (StringUtils.isNotEmpty(fileUidBuilder)) {
+            picture = this.pictureFeignClient.getPicture(fileUidBuilder.toString(),
+                    BaseSysConf.FILE_SEGMENTATION);
+        }
+        Map<String, String> pictureMap = new HashMap<>();
+        picture = webUtils.getPictureMap(picture);
+        picture.forEach(item -> {
+            pictureMap.put(item.get(BaseSysConf.UID).toString(), item.get(BaseSysConf.URL).toString());
+        });
+
+        for (User item : userList) {
+            //获取图片
+            if (StringUtils.isNotEmpty(item.getAvatar())) {
+                List<String> pictureUidsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,
+                        item.getAvatar());
+                List<String> pictureListTemp = new ArrayList<>();
+                pictureUidsTemp.forEach(pictureTemp -> {
+                    if (pictureMap.get(pictureTemp) != null && pictureMap.get(pictureTemp) != "") {
+                        pictureListTemp.add(pictureMap.get(pictureTemp));
+                    }
+                });
+                if (pictureListTemp.size() > 0) {
+                    item.setPhotoUrl(pictureListTemp.get(0));
+                }
+            }
+        }
+        pageList.setRecords(userList);
+        return pageList;
+    }
+
+    @Override
+    public ResultBody add(UserVO userVO) {
+        User user = new User();
+        // 字段拷贝【将userVO中的内容拷贝至user】
+        BeanUtils.copyProperties(userVO, user, BaseSysConf.STATUS);
+        String defaultPassword = sysParamsService.getSysParamsValueByKey(BaseSysConf.SYS_DEFAULT_PASSWORD);
+        user.setPassWord(Md5Utils.stringToMd5(defaultPassword));
+        user.setSource("MOGU");
+        this.save(user);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody edit(UserVO userVO) {
+        User user = this.getById(userVO.getUid());
+        if (StringUtils.isNull(user)) {
+            return ResultBody.error(BaseMessageConf.ENTITY_NOT_EXIST);
+        }
+        user.setUserName(userVO.getUserName());
+        user.setEmail(userVO.getEmail());
+        user.setStartEmailNotification(userVO.getStartEmailNotification());
+        user.setOccupation(userVO.getOccupation());
+        user.setGender(userVO.getGender());
+        user.setQqNumber(userVO.getQqNumber());
+        user.setSummary(userVO.getSummary());
+        user.setBirthday(userVO.getBirthday());
+        user.setAvatar(userVO.getAvatar());
+        user.setNickName(userVO.getNickName());
+        user.setUserTag(userVO.getUserTag());
+        user.setCommentStatus(userVO.getCommentStatus());
+        user.setUpdateTime(new Date());
+        this.updateById(user);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody delete(UserVO userVO) {
+        User user = this.getById(userVO.getUid());
+        if (StringUtils.isNull(user)) {
+            return ResultBody.error(BaseMessageConf.ENTITY_NOT_EXIST);
+        }
+        user.setStatus(EnumsStatus.DISABLED);
+        user.setUpdateTime(new Date());
+        this.updateById(user);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody resetUserPassword(UserVO userVO) {
+        String defaultPassword = sysParamsService.getSysParamsValueByKey(BaseSysConf.SYS_DEFAULT_PASSWORD);
+        User user = this.getById(userVO.getUid());
+        if (StringUtils.isNull(user)) {
+            return ResultBody.error(BaseMessageConf.ENTITY_NOT_EXIST);
+        }
+        user.setPassWord(Md5Utils.stringToMd5(defaultPassword));
+        user.setUpdateTime(new Date());
+        this.updateById(user);
+        return ResultBody.success();
     }
 }

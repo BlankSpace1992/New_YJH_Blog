@@ -104,8 +104,8 @@
       <el-tab-pane label="个人履历" name="third">
         <span slot="label"><i class="el-icon-edit"></i> 个人履历</span>
         <div class="editor-container">
-          <CKEditor ref="editor" v-if="systemConfig.editorModel == '0'" :content="form.personResume" :height="500"></CKEditor>
-          <MarkdownEditor ref="editor" v-if="systemConfig.editorModel == '1'" :height="660" style="margin-top: 12px"></MarkdownEditor>
+<!--          <CKEditor ref="editor" v-if="systemConfig.editorModel == '0'" :content="form.personResume" :height="500"></CKEditor>-->
+          <MarkdownEditor ref="editor"  :height="660" style="margin-top: 12px"></MarkdownEditor>
         </div>
         <div style="margin-top: 5px; margin-left: 10px;" >
           <el-button type="primary" @click="submitForm('personResume')" v-permission="'/system/editMe'">保 存</el-button>
@@ -214,7 +214,7 @@ export default {
       var getMeParams = new URLSearchParams();
       getMe(getMeParams).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.form = response.data;
+          this.form = response.result;
           this.fileIds = this.form.avatar;
         }
       });
@@ -229,7 +229,7 @@ export default {
     getSystemConfigList: function() {
       getSystemConfig().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.systemConfig = response.data;
+          this.systemConfig = response.result;
         }
       });
     },
@@ -241,7 +241,7 @@ export default {
       params.dictType = 'sys_user_sex';
       getListByDictType(params).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.genderDictList = response.data.list;
+          this.genderDictList = response.result.list;
         }
       });
     },

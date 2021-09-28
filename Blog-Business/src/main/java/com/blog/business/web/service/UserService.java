@@ -1,5 +1,6 @@
 package com.blog.business.web.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.business.web.domain.User;
 import com.blog.business.web.domain.vo.UserVO;
@@ -94,4 +95,54 @@ public interface UserService extends IService<User> {
      * @date 2021/9/22 16:38
      */
     Integer getUserCount(int enableFlag);
+
+    /**
+     * 获取用户列表
+     *
+     * @param userVO 查询条件实体
+     * @return 获取用户列表
+     * @author yujunhong
+     * @date 2021/9/28 15:01
+     */
+    IPage<User> getPageList(UserVO userVO);
+
+    /**
+     * 新增用户
+     *
+     * @param userVO 新增实体
+     * @return 新增用户
+     * @author yujunhong
+     * @date 2021/9/28 15:20
+     */
+    ResultBody add(UserVO userVO);
+
+    /**
+     * 编辑用户
+     *
+     * @param userVO 编辑用户实体
+     * @return 编辑用户
+     * @author yujunhong
+     * @date 2021/9/28 15:20
+     */
+    ResultBody edit(UserVO userVO);
+
+    /**
+     * 删除用户
+     *
+     * @param userVO 删除用户实体
+     * @return 删除用户
+     * @author yujunhong
+     * @date 2021/9/28 15:20
+     */
+    ResultBody delete(UserVO userVO);
+
+    /**
+     * 删除用户
+     *
+     * @param userVO 删除用户实体
+     * @return 删除用户
+     * @author yujunhong
+     * @date 2021/9/28 15:20
+     */
+    ResultBody resetUserPassword(UserVO userVO);
 }

@@ -1,10 +1,10 @@
 package com.blog.business.web.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.web.domain.ExceptionLog;
 import com.blog.business.web.mapper.ExceptionLogMapper;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
 import com.blog.business.web.service.ExceptionLogService;
+import org.springframework.stereotype.Service;
 /**
  *
  * @author yujunhong
@@ -12,9 +12,7 @@ import com.blog.business.web.service.ExceptionLogService;
  *
  */
 @Service
-public class ExceptionLogServiceImpl implements ExceptionLogService{
+public class ExceptionLogServiceImpl extends ServiceImpl<ExceptionLogMapper, ExceptionLog> implements ExceptionLogService{
 
-    @Resource
-    private ExceptionLogMapper exceptionLogMapper;
 
 }

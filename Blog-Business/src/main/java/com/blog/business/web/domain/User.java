@@ -48,7 +48,7 @@ public class User {
      */
     @ApiModelProperty(value = "性别(1:男2:女)")
     @Excel(name = "性别(1:男2:女)")
-    private Object gender;
+    private String gender;
     /**
      * 个人头像
      */
@@ -66,7 +66,7 @@ public class User {
      */
     @ApiModelProperty(value = "出生年月日")
     @Excel(name = "出生年月日")
-    private Object birthday;
+    private Date birthday;
     /**
      * 手机
      */
