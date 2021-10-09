@@ -12,6 +12,10 @@ import lombok.ToString;
 @ToString
 @Data
 public class PictureVO {
+    /**
+     * 唯一UID
+     */
+    private String uid;
 
     /**
      * 图片UID

@@ -12,7 +12,7 @@ export default {
 
   data() {
     return {
-      searchSwaggerUrl: process.env.Search_API + "/swagger-ui/index.html",
+      searchSwaggerUrl: process.env.Search_API + "/swagger-ui/",
     }
   },
   mounted() {

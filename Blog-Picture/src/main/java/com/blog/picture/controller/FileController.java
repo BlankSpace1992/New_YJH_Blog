@@ -79,7 +79,7 @@ public class FileController {
      * sortName 传入的模块名， 如 admin，user ,等，不在数据库中记录的是不会上传的
      *
      * @param request   请求
-     * @param fileDatas 上传文件集合
+     * @param filedatas 上传文件集合
      * @return 成功信息
      * @author yujunhong
      * @date 2021/7/30 15:01
@@ -93,11 +93,11 @@ public class FileController {
             @ApiImplicitParam(name = "sortName", value = "模块名", required = false, dataType = "String")
     })
     @PostMapping(value = "/pictures")
-    public synchronized ResultBody uploadPicture(HttpServletRequest request, List<MultipartFile> fileDatas) {
+    public synchronized ResultBody uploadPicture(HttpServletRequest request, List<MultipartFile> filedatas) {
         // 获取系统配置文件
         SystemConfigCommon systemConfig = feignUtils.getSystemConfig();
-        fileService.batchUploadFile(request, fileDatas, systemConfig);
-        return ResultBody.success();
+        List<File> files = fileService.batchUploadFile(request, filedatas, systemConfig);
+        return ResultBody.success(files);
     }
 
     /**

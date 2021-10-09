@@ -230,7 +230,7 @@ export default {
         params.currentPage = 1;
         getPictureSortList(params).then(function(response) {
           if (response.code == that.$ECode.SUCCESS) {
-            var pictureSorts = response.data.records;
+            var pictureSorts = response.result.records;
             that.pictureSorts = pictureSorts;
             if (pictureSorts.length > 0) {
               // 判断是否通过图片分类跳转的
@@ -274,20 +274,20 @@ export default {
       params.pageSize = that.pageSize;
       getPictureList(params).then(function(response) {
         if (response.code == that.$ECode.SUCCESS) {
-          if (response.data.records.length > 0) {
+          if (response.result.records.length > 0) {
             var newObject = {
               pictureSortUid: pictureSortUid,
               name: name,
-              pictures: response.data.records,
-              pageSize: response.data.size,
-              currentPage: response.data.current,
-              total: response.data.total
+              pictures: response.result.records,
+              pageSize: response.result.size,
+              currentPage: response.result.current,
+              total: response.result.total
             };
-            that.pageSize = response.data.size
-            that.currentPage = response.data.current
-            that.total = response.data.total
+            that.pageSize = response.result.size
+            that.currentPage = response.result.current
+            that.total = response.result.total
             Vue.set(that.pictureSorts, index, newObject);
-            that.tableData = response.data.records
+            that.tableData = response.result.records
           }
         } else {
           this.$commonUtil.message.error(response.message)
@@ -306,15 +306,15 @@ export default {
           var newObject = {
             pictureSortUid: pictureSort.uid,
             name: pictureSort.name,
-            pictures: response.data.records,
-            pageSize: response.data.size,
-            currentPage: response.data.current,
-            total: response.data.total
+            pictures: response.result.records,
+            pageSize: response.result.size,
+            currentPage: response.result.current,
+            total: response.result.total
           };
-          that.pageSize = response.data.size
-          that.currentPage = response.data.current
-          that.total = response.data.total
-          that.tableData = response.data.records
+          that.pageSize = response.result.size
+          that.currentPage = response.result.current
+          that.total = response.result.total
+          that.tableData = response.result.records
           Vue.set(that.pictureSorts, that.activeName, newObject);
         } else {
           this.$commonUtil.message.error(response.message)
@@ -481,7 +481,7 @@ export default {
     fileSuccess: function(response, file, fileList) {
       var that = this;
       if (response.code == this.$ECode.SUCCESS) {
-        let file = response.data;
+        let file = response.result;
 
         for (let index = 0; index < file.length; index++) {
           let picture = {};

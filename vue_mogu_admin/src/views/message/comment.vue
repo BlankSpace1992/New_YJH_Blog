@@ -107,7 +107,7 @@
 
 	    <el-table-column label="创建时间" width="160" align="center">
 	      <template slot-scope="scope">
-	        <span >{{ scope.row.createTime }}</span>
+	        <span >{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.createTime) }}</span>
 	      </template>
 	    </el-table-column>
 
@@ -176,6 +176,27 @@ export default {
     this.getDictList()
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     // 跳转到用户中心
     goUser: function(user) {
       console.log("go user", user)
@@ -201,7 +222,7 @@ export default {
       var dictTypeList =  ['sys_comment_type', 'sys_comment_source']
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.commentTypeDictList = dictMap.sys_comment_type.list
           this.commentSourceDictList = dictMap.sys_comment_source.list
           if(dictMap.sys_comment_type.defaultValue) {
@@ -227,10 +248,10 @@ export default {
 
 			getCommentList(params).then(response => {
 			  if(response.code == this.$ECode.SUCCESS) {
-          this.tableData = response.data.records;
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
-          this.total = response.data.total;
+          this.tableData = response.result.records;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
+          this.total = response.result.total;
         }
 			});
 		},
@@ -283,6 +304,9 @@ export default {
         type: "warning"
       })
         .then(() => {
+          that.multipleSelection.forEach(item => {
+            item.type = null;
+          })
           deleteBatchComment(that.multipleSelection).then(response => {
             if(response.code == that.$ECode.SUCCESS) {
               that.$commonUtil.message.success(response.message)

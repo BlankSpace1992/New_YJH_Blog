@@ -104,7 +104,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 对于获取token的RestApi要允许匿名访问
                 .antMatchers("/auth/**",
                         "/creatCode/**",
-                        "/file/**"
+                        "/file/**",
+                        "/systemConfig/getSystemConfig"
                 )
                 .permitAll()
                 // 除上面外的所有请求全部需要鉴权认证

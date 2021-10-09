@@ -37,7 +37,7 @@ public class WebUtils {
      */
     public List<String> getPicture(List<Map<String, Object>> result) {
         // 获取配置信息
-        SystemConfig systemConfig = systemConfigService.getsSystemConfig();
+        SystemConfig systemConfig = systemConfigService.getSystemConfig();
         // 图片优先级
         String picturePriority = systemConfig.getPicturePriority();
         // 本地图片地址
@@ -72,7 +72,7 @@ public class WebUtils {
      */
     public List<Map<String, Object>> getPictureMap(List<Map<String, Object>> result) {
         // 获取配置信息
-        SystemConfig systemConfig = systemConfigService.getsSystemConfig();
+        SystemConfig systemConfig = systemConfigService.getSystemConfig();
         // 图片优先级
         String picturePriority = systemConfig.getPicturePriority();
         // 本地图片地址

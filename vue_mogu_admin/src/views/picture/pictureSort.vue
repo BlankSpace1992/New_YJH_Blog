@@ -42,13 +42,13 @@
 
       <el-table-column label="创建时间" width="160" align="center">
 	      <template slot-scope="scope">
-	        <span >{{ scope.row.createTime }}</span>
+	        <span >{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.createTime) }}</span>
 	      </template>
 	    </el-table-column>
 
       <el-table-column label="更新时间" width="160" align="center">
         <template slot-scope="scope">
-          <span >{{ scope.row.updateTime }}</span>
+          <span >{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.updateTime) }}</span>
         </template>
       </el-table-column>
 
@@ -187,16 +187,37 @@ export default {
     };
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     pictureSortList: function() {
       var params = {};
       params.keyword = this.keyword
       params.pageSize =  this.pageSize
       params.currentPage = this.currentPage
       getPictureSortList(params).then(response => {
-        this.tableData = response.data.records;
-        this.currentPage = response.data.current;
-        this.pageSize = response.data.size;
-        this.total = response.data.total;
+        this.tableData = response.result.records;
+        this.currentPage = response.result.current;
+        this.pageSize = response.result.size;
+        this.total = response.result.total;
       });
     },
     /**
@@ -206,7 +227,7 @@ export default {
       var dictTypeList =  ['sys_yes_no']
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.yesNoDictList = dictMap.sys_yes_no.list
           if(dictMap.sys_yes_no.defaultValue) {
             this.yesNoDefault = parseInt(dictMap.sys_yes_no.defaultValue);

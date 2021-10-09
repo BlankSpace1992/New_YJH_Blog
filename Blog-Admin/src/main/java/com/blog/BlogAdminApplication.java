@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 
 import java.util.TimeZone;
 
@@ -17,6 +18,7 @@ import java.util.TimeZone;
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @EnableFeignClients("com.blog.feign")
+@EnableOpenApi
 public class BlogAdminApplication {
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));

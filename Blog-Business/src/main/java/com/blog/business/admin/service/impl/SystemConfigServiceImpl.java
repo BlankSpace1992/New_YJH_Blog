@@ -28,7 +28,7 @@ public class SystemConfigServiceImpl extends ServiceImpl<SystemConfigMapper, Sys
     private RedisUtil redisUtil;
 
     @Override
-    public SystemConfig getsSystemConfig() {
+    public SystemConfig getSystemConfig() {
         // 优先从redis获取数据
         String result = (String) redisUtil.get(BaseRedisConf.SYSTEM_CONFIG);
         // 判断redis中是否存在资源

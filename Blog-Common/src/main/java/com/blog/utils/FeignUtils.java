@@ -14,12 +14,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-/**  Feign操作工具类
+/**
+ * Feign操作工具类
+ *
  * @author yujunhong
  * @date 2021/6/22 10:31
  */
@@ -56,18 +55,12 @@ public class FeignUtils {
             });
         } else {
             // 通过feign获取系统配置
-            String resultStr = adminFeignClient.getSystemConfig();
-            Map<String, String> resultTempMap = JSON.parseObject(resultStr, new TypeReference<Map<String, String>>() {
+            Object result = adminFeignClient.getSystemConfig().getResult();
+            resultMap = JSON.parseObject(JSON.toJSONString(result), new TypeReference<Map<String, String>>() {
+
             });
-            // 判断返回代码是否为成功
-            if (StringUtils.isNotNull(resultTempMap.get(BaseSysConf.CODE)) && BaseSysConf.SUCCESS.equals(resultTempMap.get(BaseSysConf.CODE))) {
-                // 获取数据
-                resultMap = JSON.parseObject(resultTempMap.get(BaseSysConf.DATA), new TypeReference<Map<String,
-                        String>>() {
-                });
-                // 将数据存储进redis 30分钟过期
-                redisUtil.set(BaseRedisConf.SYSTEM_CONFIG, JSON.toJSONString(resultMap), 1800);
-            }
+            // 将数据存储进redis 30分钟过期
+            redisUtil.set(BaseRedisConf.SYSTEM_CONFIG, JSON.toJSONString(resultMap), 1800);
         }
         return resultMap;
     }

@@ -30,6 +30,6 @@ public class SystemConfigController {
     @ApiOperation(value = "获取配置信息")
     @GetMapping(value = "/getSystemConfig")
     public ResultBody getSystemConfig() {
-        return ResultBody.success(systemConfigService.getsSystemConfig());
+        return ResultBody.success(systemConfigService.getSystemConfig());
     }
 }

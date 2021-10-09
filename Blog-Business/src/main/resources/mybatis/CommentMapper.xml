@@ -1,25 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blog.business.web.mapper.CommentMapper">
-  <resultMap id="BaseResultMap" type="com.blog.business.web.domain.Comment">
-    <!--@mbg.generated-->
-    <!--@Table t_comment-->
-    <id column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="user_uid" jdbcType="VARCHAR" property="userUid" />
-    <result column="to_uid" jdbcType="VARCHAR" property="toUid" />
-    <result column="to_user_uid" jdbcType="VARCHAR" property="toUserUid" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="blog_uid" jdbcType="VARCHAR" property="blogUid" />
-    <result column="status" jdbcType="BOOLEAN" property="status" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="source" jdbcType="VARCHAR" property="source" />
-    <result column="TYPE" jdbcType="BOOLEAN" property="type" />
-    <result column="first_comment_uid" jdbcType="VARCHAR" property="firstCommentUid" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    `uid`, user_uid, to_uid, to_user_uid, content, blog_uid, `status`, create_time, update_time,
-    `source`, `TYPE`, first_comment_uid
-  </sql>
+    <resultMap id="BaseResultMap" type="com.blog.business.web.domain.Comment">
+        <!--@mbg.generated-->
+        <!--@Table t_comment-->
+        <id column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="user_uid" jdbcType="VARCHAR" property="userUid"/>
+        <result column="to_uid" jdbcType="VARCHAR" property="toUid"/>
+        <result column="to_user_uid" jdbcType="VARCHAR" property="toUserUid"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="blog_uid" jdbcType="VARCHAR" property="blogUid"/>
+        <result column="status" jdbcType="BOOLEAN" property="status"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="source" jdbcType="VARCHAR" property="source"/>
+        <result column="TYPE" jdbcType="BOOLEAN" property="type"/>
+        <result column="first_comment_uid" jdbcType="VARCHAR" property="firstCommentUid"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        `uid`, user_uid, to_uid, to_user_uid, content, blog_uid, `status`, create_time, update_time,
+        `source`, `TYPE`, first_comment_uid
+    </sql>
+
+    <select id="getPageList" resultMap="BaseResultMap">
+        select a.`uid`,
+               a.user_uid,
+               a.to_uid,
+               a.to_user_uid,
+               a.content,
+               a.blog_uid,
+               a.`status`,
+               a.create_time,
+               a.update_time,
+               a.`source`,
+               a.`TYPE`,
+               a.first_comment_uid
+        from t_comment a
+                     left join t_user b on a.user_uid = b.uid
+        <where>
+            b.status = 1
+                    and a.status = 1
+            <if test="commentVO.keyword != null and commentVO.keyword != ''">
+                <bind name="contentTemp" value="'%' + commentVO.keyword + '%'"/>
+                and a.content like #{contentTemp,jdbcType=VARCHAR}
+            </if>
+            <if test="commentVO.type != null">
+                and a.TYPE = #{commentVO.type,jdbcType=INTEGER}
+            </if>
+            <if test="commentVO.source != null and commentVO.source != ''">
+                and a.source = #{commentVO.source,jdbcType=VARCHAR}
+            </if>
+            <if test="commentVO.userName != null and commentVO.userName != ''">
+                and b.user_name = #{commentVO.userName,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by a.create_time
+    </select>
 </mapper>

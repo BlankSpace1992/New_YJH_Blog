@@ -57,5 +57,8 @@ spring:
             - Path=/cloud-blog-admin/**
           filters:
             - StripPrefix=1
+          ignore:
+            urls:
+              - /systemConfig/getSystemConfig
 server:
   port: 8089

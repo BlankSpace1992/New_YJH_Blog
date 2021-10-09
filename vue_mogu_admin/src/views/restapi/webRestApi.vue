@@ -12,7 +12,7 @@ export default {
 
   data() {
     return {
-      webSwaggerUrl: process.env.WEB_API + "/swagger-ui/index.html",
+      webSwaggerUrl: process.env.WEB_API + "/swagger-ui/",
     }
   },
   mounted() {

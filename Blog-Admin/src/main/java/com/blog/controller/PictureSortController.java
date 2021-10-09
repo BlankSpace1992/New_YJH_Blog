@@ -40,4 +40,76 @@ public class PictureSortController {
                 pictureSortService.getPageList(pictureSortVO);
         return ResultBody.success(pageList);
     }
+
+    /**
+     * 增加图片分类
+     *
+     * @param pictureSortVO 增加图片分类实体
+     * @return 增加图片分类
+     * @author yujunhong
+     * @date 2021/10/8 16:22
+     */
+    @ApiOperation(value = "增加图片分类")
+    @PostMapping("/add")
+    public ResultBody add(@RequestBody PictureSortVO pictureSortVO) {
+        return pictureSortService.add(pictureSortVO);
+    }
+
+    /**
+     * 编辑图片分类
+     *
+     * @param pictureSortVO 编辑图片分类实体
+     * @return 编辑图片分类
+     * @author yujunhong
+     * @date 2021/10/8 16:22
+     */
+    @ApiOperation(value = "编辑图片分类")
+    @PostMapping("/edit")
+    public ResultBody edit(@RequestBody PictureSortVO pictureSortVO) {
+        return pictureSortService.edit(pictureSortVO);
+    }
+
+    /**
+     * 删除图片分类
+     *
+     * @param pictureSortVO 删除图片分类实体
+     * @return 删除图片分类
+     * @author yujunhong
+     * @date 2021/10/8 16:22
+     */
+    @ApiOperation(value = "删除图片分类")
+    @PostMapping("/delete")
+    public ResultBody delete(@RequestBody PictureSortVO pictureSortVO) {
+        return pictureSortService.delete(pictureSortVO);
+    }
+
+    /**
+     * 置顶分类
+     *
+     * @param pictureSortVO 置顶分类实体
+     * @return 置顶分类
+     * @author yujunhong
+     * @date 2021/10/8 16:22
+     */
+    @ApiOperation(value = "置顶分类")
+    @PostMapping("/stick")
+    public ResultBody stick(@RequestBody PictureSortVO pictureSortVO) {
+        return pictureSortService.stick(pictureSortVO);
+    }
+
+    /**
+     * 通过Uid获取分类
+     *
+     * @param pictureSortVO 通过Uid获取分类实体
+     * @return 通过Uid获取分类
+     * @author yujunhong
+     * @date 2021/10/8 16:22
+     */
+    @ApiOperation(value = "通过Uid获取分类")
+    @PostMapping("/getPictureSortByUid")
+    public ResultBody getPictureSortByUid(@RequestBody PictureSortVO pictureSortVO) {
+        return pictureSortService.getPictureSortByUid(pictureSortVO);
+    }
+
+
 }

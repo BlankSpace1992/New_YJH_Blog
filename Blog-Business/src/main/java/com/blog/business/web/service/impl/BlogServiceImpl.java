@@ -830,7 +830,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             return ResultBody.error("请选中需要上传的文件");
         }
         // 获取配置信息
-        SystemConfig systemConfig = systemConfigService.getsSystemConfig();
+        SystemConfig systemConfig = systemConfigService.getSystemConfig();
         if (systemConfig == null) {
             return ResultBody.error(BaseMessageConf.SYSTEM_CONFIG_NOT_EXIST);
         } else {

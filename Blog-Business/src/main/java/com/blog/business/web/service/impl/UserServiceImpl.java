@@ -192,7 +192,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setBrowser(osAndBrowserInfo.get(BaseSysConf.BROWSER));
         user.setOs(osAndBrowserInfo.get(BaseSysConf.OS));
         // 判断是否开启用户邮件激活状态
-        SystemConfig systemConfig = systemConfigService.getsSystemConfig();
+        SystemConfig systemConfig = systemConfigService.getSystemConfig();
         String openEmailActivate = systemConfig.isOpenEmailActivate() ? "1" : "0";
         String resultMessage = "注册成功";
         if (EnumsStatus.OPEN.equals(openEmailActivate)) {

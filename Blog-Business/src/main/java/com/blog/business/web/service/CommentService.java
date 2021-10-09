@@ -2,6 +2,7 @@ package com.blog.business.web.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blog.business.admin.domain.vo.CommentVO;
 import com.blog.business.web.domain.Comment;
 import com.blog.business.web.domain.vo.CommentParamVO;
 import com.blog.business.web.domain.vo.UserVO;
@@ -15,6 +16,15 @@ import java.util.Map;
  * @date 2021/6/1 11:05
  */
 public interface CommentService extends IService<Comment> {
+    /**
+     * 获取评论列表
+     *
+     * @param commentVO 查询条件
+     * @return 获取评论列表
+     * @author yujunhong
+     * @date 2021/10/8 14:15
+     */
+    IPage<Comment> getPageList(CommentVO commentVO);
 
     /**
      * 获取用户评论列表
@@ -87,4 +97,44 @@ public interface CommentService extends IService<Comment> {
      * @date 2021/9/22 16:36
      */
     Integer getCommentCount(int enableFlag);
+
+    /**
+     * 获取评论列表
+     *
+     * @param commentVO 查询条件
+     * @return 获取评论列表
+     * @author yujunhong
+     * @date 2021/10/8 14:32
+     */
+    ResultBody addComment(CommentVO commentVO);
+
+    /**
+     * 编辑评论
+     *
+     * @param commentVO 编辑评论实体
+     * @return 编辑评论
+     * @author yujunhong
+     * @date 2021/10/8 14:32
+     */
+    ResultBody editComment(CommentVO commentVO);
+
+    /**
+     * 删除评论
+     *
+     * @param commentVO 删除评论实体
+     * @return 编辑评论
+     * @author yujunhong
+     * @date 2021/10/8 14:32
+     */
+    ResultBody deleteComment(CommentVO commentVO);
+
+    /**
+     * 删除选中评论
+     *
+     * @param commentVOList 删除评论实体
+     * @return 删除选中评论
+     * @author yujunhong
+     * @date 2021/10/8 14:32
+     */
+    ResultBody deleteBatchComment(List<CommentVO> commentVOList);
 }

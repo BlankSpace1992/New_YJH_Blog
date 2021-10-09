@@ -87,4 +87,10 @@ public class Feedback {
     @ApiModelProperty(value = "管理员uid")
     @Excel(name = "管理员uid")
     private String adminUid;
+
+    /**
+     * 反馈用户
+     */
+    @TableField(exist = false)
+    private User user;
 }

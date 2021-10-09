@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.blog.business.admin.domain.SystemConfig;
+import com.blog.business.admin.domain.vo.CommentVO;
 import com.blog.business.admin.service.SystemConfigService;
 import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.*;
@@ -57,6 +58,90 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private String dataWebsiteUrl;
     @Autowired
     private RabbitMqUtils rabbitMqUtils;
+
+    @Override
+    public IPage<Comment> getPageList(CommentVO commentVO) {
+        // 注入分页参数
+        IPage<Comment> page = new Page<>();
+        page.setCurrent(commentVO.getCurrentPage());
+        page.setSize(commentVO.getPageSize());
+        IPage<Comment> pageList = baseMapper.getPageList(page, commentVO);
+        // 获取实际数据
+        List<Comment> commentList = pageList.getRecords();
+        // 获取对应用户以及博客uid
+        Set<String> userUidSet = new HashSet<>();
+        Set<String> blogUidSet = new HashSet<>();
+        commentList.forEach(item -> {
+            if (StringUtils.isNotEmpty(item.getUserUid())) {
+                userUidSet.add(item.getUserUid());
+            }
+            if (StringUtils.isNotEmpty(item.getToUserUid())) {
+                userUidSet.add(item.getToUserUid());
+            }
+            if (StringUtils.isNotEmpty(item.getBlogUid())) {
+                blogUidSet.add(item.getBlogUid());
+            }
+        });
+        // 获取博客
+        List<Blog> blogList = new ArrayList<>();
+        if (blogUidSet.size() > 0) {
+            blogList = blogService.listByIds(blogUidSet);
+        }
+        Map<String, Blog> blogMap = new HashMap<>();
+        blogList.forEach(item -> {
+            // 评论管理并不需要查看博客内容，因此将其排除
+            item.setContent("");
+            blogMap.put(item.getUid(), item);
+        });
+        // 获取用户
+        List<User> userCollection = new ArrayList<>();
+        if (userUidSet.size() > 0) {
+            userCollection = userService.listByIds(userUidSet);
+        }
+        // 获取头像
+        StringBuilder fileUidBuilder = new StringBuilder();
+        userCollection.forEach(item -> {
+            if (StringUtils.isNotEmpty(item.getAvatar())) {
+                fileUidBuilder.append(item.getAvatar()).append(BaseSysConf.FILE_SEGMENTATION);
+            }
+        });
+        List<Map<String, Object>> picture = this.pictureFeignClient.getPicture(fileUidBuilder.toString(),
+                BaseSysConf.FILE_SEGMENTATION);
+        Map<String, String> pictureMap = new HashMap<>();
+        picture = webUtils.getPictureMap(picture);
+        picture.forEach(item -> {
+            pictureMap.put(item.get(BaseSysConf.UID).toString(), item.get(BaseSysConf.URL).toString());
+        });
+        Map<String, User> userMap = new HashMap<>();
+        userCollection.forEach(item -> {
+            // 判断头像是否为空
+            if (pictureMap.get(item.getAvatar()) != null) {
+                item.setPhotoUrl(pictureMap.get(item.getAvatar()));
+            }
+            userMap.put(item.getUid(), item);
+        });
+        for (Comment item : commentList) {
+
+            try {
+                EnumCommentSource commentSource = EnumCommentSource.valueOf(item.getSource());
+                item.setSourceName(commentSource.getName());
+            } catch (Exception e) {
+                log.error("ECommentSource 转换异常");
+            }
+
+            if (StringUtils.isNotEmpty(item.getUserUid())) {
+                item.setUser(userMap.get(item.getUserUid()));
+            }
+            if (StringUtils.isNotEmpty(item.getToUserUid())) {
+                item.setToUser(userMap.get(item.getToUserUid()));
+            }
+            if (StringUtils.isNotEmpty(item.getBlogUid())) {
+                item.setBlog(blogMap.get(item.getBlogUid()));
+            }
+        }
+        pageList.setRecords(commentList);
+        return pageList;
+    }
 
     @Override
     public IPage<Comment> getCommentList(CommentParamVO commentParamVO) {
@@ -356,7 +441,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         } else {
             // 当该评论是一级评论的时候，说明是对 博客详情、留言板、关于我
             // 判断是否开启邮件通知
-            SystemConfig systemConfig = systemConfigService.getsSystemConfig();
+            SystemConfig systemConfig = systemConfigService.getSystemConfig();
             if (systemConfig != null && EnumsStatus.OPEN.equals(systemConfig.getStartEmailNotification())) {
                 if (StringUtils.isNotEmpty(systemConfig.getEmail())) {
                     log.info("发送评论邮件通知");
@@ -478,6 +563,67 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Comment::getStatus, enableFlag);
         return this.count(wrapper);
+    }
+
+    @Override
+    public ResultBody addComment(CommentVO commentVO) {
+        Comment comment = new Comment();
+        comment.setSource(commentVO.getSource());
+        comment.setBlogUid(commentVO.getBlogUid());
+        comment.setContent(commentVO.getContent());
+        comment.setUserUid(commentVO.getUserUid());
+        comment.setToUid(commentVO.getToUid());
+        comment.setToUserUid(commentVO.getToUserUid());
+        comment.setStatus(EnumsStatus.ENABLE);
+        comment.setUpdateTime(new Date());
+        this.save(comment);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody editComment(CommentVO commentVO) {
+        Comment comment = this.getById(commentVO.getUid());
+        if (StringUtils.isNull(comment)) {
+            return ResultBody.error("当前评论已不存在");
+        }
+        comment.setSource(commentVO.getSource());
+        comment.setBlogUid(commentVO.getBlogUid());
+        comment.setContent(commentVO.getContent());
+        comment.setUserUid(commentVO.getUserUid());
+        comment.setToUid(commentVO.getToUid());
+        comment.setToUserUid(commentVO.getToUserUid());
+        comment.setStatus(EnumsStatus.ENABLE);
+        comment.setUpdateTime(new Date());
+        this.updateById(comment);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody deleteComment(CommentVO commentVO) {
+        Comment comment = this.getById(commentVO.getUid());
+        if (StringUtils.isNull(comment)) {
+            return ResultBody.error("当前评论已不存在");
+        }
+        comment.setStatus(EnumsStatus.DISABLED);
+        comment.setUpdateTime(new Date());
+        this.updateById(comment);
+        return ResultBody.success();
+    }
+
+    @Override
+    public ResultBody deleteBatchComment(List<CommentVO> commentVOList) {
+        List<String> uidList = new ArrayList<>();
+        commentVOList.forEach(item -> {
+            uidList.add(item.getUid());
+        });
+        List<Comment> commentList = this.listByIds(uidList);
+
+        commentList.forEach(item -> {
+            item.setUpdateTime(new Date());
+            item.setStatus(EnumsStatus.DISABLED);
+        });
+        this.updateBatchById(commentList);
+        return ResultBody.success();
     }
 
     /**

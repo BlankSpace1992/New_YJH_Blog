@@ -16,5 +16,5 @@ public interface SystemConfigService extends IService<SystemConfig> {
      * @author yujunhong
      * @date 2021/6/3 14:26
      */
-    SystemConfig getsSystemConfig();
+    SystemConfig getSystemConfig();
 }

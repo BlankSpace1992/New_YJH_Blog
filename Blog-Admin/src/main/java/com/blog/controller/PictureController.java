@@ -5,6 +5,7 @@ import com.blog.business.admin.domain.vo.PictureVO;
 import com.blog.business.web.domain.Picture;
 import com.blog.business.web.service.PictureService;
 import com.blog.exception.ResultBody;
+import com.blog.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author yujunhong
@@ -39,5 +42,64 @@ public class PictureController {
         IPage<Picture> pageList =
                 pictureService.getPageList(pictureVO);
         return ResultBody.success(pageList);
+    }
+
+    /**
+     * 增加图片
+     *
+     * @param pictureVOList 增加图片集合
+     * @return 增加图片
+     * @author yujunhong
+     * @date 2021/10/8 16:38
+     */
+    @ApiOperation(value = "增加图片")
+    @PostMapping("/add")
+    public ResultBody add(@RequestBody List<PictureVO> pictureVOList) {
+        if (StringUtils.isEmpty(pictureVOList)) {
+            return ResultBody.error("请选择图片");
+        }
+        return pictureService.add(pictureVOList);
+    }
+
+    /**
+     * 编辑图片
+     *
+     * @param pictureVO 编辑图片实体
+     * @return 编辑图片
+     * @author yujunhong
+     * @date 2021/10/8 16:49
+     */
+    @ApiOperation(value = "编辑图片")
+    @PostMapping("/edit")
+    public ResultBody edit(@RequestBody PictureVO pictureVO) {
+        return pictureService.edit(pictureVO);
+    }
+
+    /**
+     * 删除图片
+     *
+     * @param pictureVO 删除图片实体
+     * @return 删除图片
+     * @author yujunhong
+     * @date 2021/10/8 16:49
+     */
+    @ApiOperation(value = "删除图片")
+    @PostMapping("/delete")
+    public ResultBody delete(@RequestBody PictureVO pictureVO) {
+        return pictureService.delete(pictureVO);
+    }
+
+    /**
+     * 通过图片Uid将图片设为封面
+     *
+     * @param pictureVO 通过图片Uid将图片设为封面实体
+     * @return 通过图片Uid将图片设为封面
+     * @author yujunhong
+     * @date 2021/10/8 16:49
+     */
+    @ApiOperation(value = "通过图片Uid将图片设为封面")
+    @PostMapping("/setCover")
+    public ResultBody setCover(@RequestBody PictureVO pictureVO) {
+        return pictureService.setCover(pictureVO);
     }
 }
