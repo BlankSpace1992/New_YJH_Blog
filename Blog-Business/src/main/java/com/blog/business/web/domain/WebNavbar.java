@@ -1,8 +1,7 @@
 package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -29,6 +28,7 @@ public class WebNavbar {
      */
     @ApiModelProperty(value = "标识id")
     @Excel(name = "标识id")
+    @TableId(value = "uid",type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 名称
@@ -71,13 +71,13 @@ public class WebNavbar {
      */
     @ApiModelProperty(value = "是否展示")
     @Excel(name = "是否展示")
-    private Object isShow;
+    private Integer isShow;
     /**
      * 是否跳转
      */
     @ApiModelProperty(value = "是否跳转")
     @Excel(name = "是否跳转")
-    private Object isJumpExternalUrl;
+    private Integer isJumpExternalUrl;
     /**
      * 排序
      */
@@ -89,18 +89,20 @@ public class WebNavbar {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**

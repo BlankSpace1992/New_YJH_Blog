@@ -178,4 +178,36 @@ public class IpUtils {
         Matcher matcher = p.matcher(ip);
         return matcher.find();
     }
+
+    /**
+     * 获取IP
+     *
+     * @return 获取IP
+     * @author yujunhong
+     * @date 2021/10/11 17:08
+     */
+    public static String getHostIp() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException ignored) {
+            ignored.printStackTrace();
+        }
+        return "127.0.0.1";
+    }
+
+    /**
+     * 获取主机名
+     *
+     * @return 获取主机名
+     * @author yujunhong
+     * @date 2021/10/11 17:09
+     */
+    public static String getHostName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return "未知";
+    }
 }

@@ -1,14 +1,19 @@
 package com.blog.picture.controller;
 
+import com.blog.business.picture.domain.NetworkDisk;
 import com.blog.business.picture.service.StorageService;
 import com.blog.exception.ResultBody;
+import com.blog.holder.RequestHolder;
+import com.blog.utils.FileUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -73,4 +78,39 @@ public class StorageController {
 
         return storageService.getStorageByAdminUid(adminUidList);
     }
+
+    /**
+     * 上传文件
+     *
+     * @param request     请求
+     * @param networkDisk 存储实体
+     * @return 上传文件
+     * @author yujunhong
+     * @date 2021/10/11 15:02
+     */
+    @PostMapping(value = "/uploadFile")
+    @ApiOperation(value = "上传文件")
+    public ResultBody uploadFile(HttpServletRequest request, NetworkDisk networkDisk) {
+        // 检查是否登录
+        RequestHolder.checkLogin();
+        // 从请求中获取文件
+        List<MultipartFile> multipartFiles = FileUtils.getMultipartFiles(request);
+        return storageService.uploadFile(request, networkDisk, multipartFiles);
+    }
+
+    /**
+     * 查询当前用户存储信息
+     *
+     * @return 查询当前用户存储信息
+     * @author yujunhong
+     * @date 2021/10/11 15:13
+     */
+    @GetMapping(value = "/getStorage")
+    @ApiOperation(value = "查询当前用户存储信息")
+    public ResultBody getStorage() {
+        // 检查是否登录
+        RequestHolder.checkLogin();
+        return ResultBody.success(storageService.getStorageByAdmin());
+    }
+
 }

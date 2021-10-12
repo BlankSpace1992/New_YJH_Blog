@@ -147,7 +147,7 @@
           <el-input v-model="form.name" auto-complete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="导航栏等级" :label-width="formLabelWidth" prop="menuLevel">
+        <el-form-item label="导航栏等级" :label-width="formLabelWidth" prop="navbarLevel">
           <el-select v-model="form.navbarLevel" placeholder="请选择">
             <el-option
               v-for="item in menuLevelDictList"
@@ -311,8 +311,8 @@ export default {
       console.log("获取全部")
       getWebNavbarAllList().then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          this.tableData = response.data;
-          this.menuOptions = response.data;
+          this.tableData = response.result;
+          this.menuOptions = response.result;
         }
       });
     },
@@ -331,7 +331,7 @@ export default {
       var dictTypeList =  ['sys_menu_level', 'sys_yes_no', 'sys_jump_external']
       getListByDictTypeList(dictTypeList).then(response => {
         if (response.code == this.$ECode.SUCCESS) {
-          var dictMap = response.data;
+          var dictMap = response.result;
           this.menuLevelDictList = dictMap.sys_menu_level.list
           this.yesNoDictList = dictMap.sys_yes_no.list
           this.jumpExternalDictList = dictMap.sys_jump_external.list

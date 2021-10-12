@@ -18,6 +18,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SubjectVO {
     /**
+     * 唯一UID
+     */
+    private String uid;
+    /**
      * 专题名
      */
     @ApiModelProperty(value = "专题名")
@@ -45,13 +49,13 @@ public class SubjectVO {
      * 专题点击数
      */
     @ApiModelProperty(value = "专题点击数")
-    private String clickCount;
+    private Integer clickCount;
 
     /**
      * 专题收藏数
      */
     @ApiModelProperty(value = "专题收藏数")
-    private String collectCount;
+    private Integer collectCount;
 
     /**
      * 关键字

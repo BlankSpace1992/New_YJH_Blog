@@ -20,7 +20,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         }
         // Linux或者mac
         else {
-            registry.addResourceHandler("/blog/**").addResourceLocations("file:/mogu_blog/data/blog/");
+            registry.addResourceHandler("/blog/**").addResourceLocations("file:/tmp/mogu_blog/data/blog/");
         }
     }
 }

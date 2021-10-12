@@ -1,9 +1,7 @@
 package com.blog.business.picture.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,7 +29,7 @@ public class NetworkDisk {
      */
     @ApiModelProperty(value = "唯一uid")
     @Excel(name = "唯一uid")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 管理员uid
@@ -80,12 +78,14 @@ public class NetworkDisk {
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
     /**
      * 本地文件URL
@@ -111,4 +111,38 @@ public class NetworkDisk {
     @ApiModelProperty(value = "Minio文件URL")
     @Excel(name = "Minio文件URL")
     private String minioUrl;
+
+    /**
+     * 以下字段不存入数据库
+     */
+
+    /**
+     * 旧文件名
+     */
+    @TableField(exist = false)
+    private String oldFilePath;
+
+    /**
+     * 新文件目录
+     */
+    @TableField(exist = false)
+    private String newFilePath;
+
+    /**
+     * 文件
+     */
+    @TableField(exist = false)
+    private String files;
+
+    /**
+     * 文件类型
+     */
+    @TableField(exist = false)
+    private int fileType;
+
+    /**
+     * 文件URL
+     */
+    @TableField(exist = false)
+    private String fileUrl;
 }

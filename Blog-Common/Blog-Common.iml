@@ -235,6 +235,9 @@
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.lionsoul:ip2region:1.7.2" level="project" />
+    <orderEntry type="library" name="Maven: com.github.oshi:oshi-core:3.9.1" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna-platform:4.5.2" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-json:2.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.2" level="project" />

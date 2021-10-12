@@ -192,7 +192,7 @@
       /** 查询服务器信息 */
       getList() {
         getServerInfo().then(response => {
-          this.server = response.data;
+          this.server = response.result;
           this.loading.close();
         });
       },
