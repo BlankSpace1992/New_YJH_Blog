@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/storage")
-@Api(value = "´æ´¢·şÎñÏà¹Ø½Ó¿Ú", tags = {"´æ´¢·şÎñÏà¹Ø½Ó¿Ú"})
+@Api(value = "å­˜å‚¨æœåŠ¡ç›¸å…³æ¥å£", tags = {"å­˜å‚¨æœåŠ¡ç›¸å…³æ¥å£"})
 public class StorageController {
     @Value(value = "${file.upload.path}")
     String path;
@@ -30,85 +30,85 @@ public class StorageController {
     private StorageService storageService;
 
     /**
-     * ³õÊ¼»¯ÈİÁ¿´óĞ¡
+     * åˆå§‹åŒ–å®¹é‡å¤§å°
      *
-     * @param adminUid       ¹ÜÀíÔ±uid
-     * @param maxStorageSize ×î´óÍøÅÌÈİÁ¿
-     * @return ³õÊ¼»¯ÈİÁ¿´óĞ¡
+     * @param adminUid       ç®¡ç†å‘˜uid
+     * @param maxStorageSize æœ€å¤§ç½‘ç›˜å®¹é‡
+     * @return åˆå§‹åŒ–å®¹é‡å¤§å°
      * @author yujunhong
      * @date 2021/9/16 15:15
      */
     @PostMapping(value = "/initStorageSize")
-    @ApiOperation(value = "³õÊ¼»¯ÈİÁ¿´óĞ¡")
-    public ResultBody initStorageSize(@ApiParam(name = "adminUid", value = "¹ÜÀíÔ±uid") @RequestParam("adminUid") String adminUid,
-                                      @ApiParam(name = "maxStorageSize", value = "×î´óÍøÅÌÈİÁ¿ ") @RequestParam(value =
+    @ApiOperation(value = "åˆå§‹åŒ–å®¹é‡å¤§å°")
+    public ResultBody initStorageSize(@ApiParam(name = "adminUid", value = "ç®¡ç†å‘˜uid") @RequestParam("adminUid") String adminUid,
+                                      @ApiParam(name = "maxStorageSize", value = "æœ€å¤§ç½‘ç›˜å®¹é‡ ") @RequestParam(value =
                                               "maxStorageSize", defaultValue = "0") Long maxStorageSize) {
         return storageService.initStorageSize(adminUid, maxStorageSize);
     }
 
     /**
-     * ±à¼­ÈİÁ¿´óĞ¡
+     * ç¼–è¾‘å®¹é‡å¤§å°
      *
-     * @param adminUid       ¹ÜÀíÔ±uid
-     * @param maxStorageSize ×î´óÍøÅÌÈİÁ¿
-     * @return ±à¼­ÈİÁ¿´óĞ¡
+     * @param adminUid       ç®¡ç†å‘˜uid
+     * @param maxStorageSize æœ€å¤§ç½‘ç›˜å®¹é‡
+     * @return ç¼–è¾‘å®¹é‡å¤§å°
      * @author yujunhong
      * @date 2021/9/16 15:23
      */
     @PostMapping(value = "/editStorageSize")
-    @ApiOperation(value = "±à¼­ÈİÁ¿´óĞ¡")
-    public ResultBody editStorageSize(@ApiParam(name = "adminUid", value = "¹ÜÀíÔ±uid") @RequestParam("adminUid") String adminUid,
-                                      @ApiParam(name = "maxStorageSize", value = "×î´óÍøÅÌÈİÁ¿ ") @RequestParam(value =
+    @ApiOperation(value = "ç¼–è¾‘å®¹é‡å¤§å°")
+    public ResultBody editStorageSize(@ApiParam(name = "adminUid", value = "ç®¡ç†å‘˜uid") @RequestParam("adminUid") String adminUid,
+                                      @ApiParam(name = "maxStorageSize", value = "æœ€å¤§ç½‘ç›˜å®¹é‡ ") @RequestParam(value =
                                               "maxStorageSize", defaultValue = "0") Long maxStorageSize) {
 
         return storageService.editStorageSize(adminUid, maxStorageSize);
     }
 
     /**
-     * Í¨¹ı¹ÜÀíÔ±uid£¬»ñÈ¡´æ´¢ĞÅÏ¢
+     * é€šè¿‡ç®¡ç†å‘˜uidï¼Œè·å–å­˜å‚¨ä¿¡æ¯
      *
-     * @param adminUidList ÓÃ»§id¼¯ºÏ
-     * @return ´æ´¢ĞÅÏ¢
+     * @param adminUidList ç”¨æˆ·idé›†åˆ
+     * @return å­˜å‚¨ä¿¡æ¯
      * @author yujunhong
      * @date 2021/9/16 15:28
      */
     @GetMapping(value = "/getStorageByAdminUid")
-    @ApiOperation(value = "Í¨¹ı¹ÜÀíÔ±uid£¬»ñÈ¡´æ´¢ĞÅÏ¢")
+    @ApiOperation(value = "é€šè¿‡ç®¡ç†å‘˜uidï¼Œè·å–å­˜å‚¨ä¿¡æ¯")
     public ResultBody getStorageByAdminUid(@RequestParam("adminUidList") List<String> adminUidList) {
 
         return storageService.getStorageByAdminUid(adminUidList);
     }
 
     /**
-     * ÉÏ´«ÎÄ¼ş
+     * ä¸Šä¼ æ–‡ä»¶
      *
-     * @param request     ÇëÇó
-     * @param networkDisk ´æ´¢ÊµÌå
-     * @return ÉÏ´«ÎÄ¼ş
+     * @param request     è¯·æ±‚
+     * @param networkDisk å­˜å‚¨å®ä½“
+     * @return ä¸Šä¼ æ–‡ä»¶
      * @author yujunhong
      * @date 2021/10/11 15:02
      */
     @PostMapping(value = "/uploadFile")
-    @ApiOperation(value = "ÉÏ´«ÎÄ¼ş")
+    @ApiOperation(value = "ä¸Šä¼ æ–‡ä»¶")
     public ResultBody uploadFile(HttpServletRequest request, NetworkDisk networkDisk) {
-        // ¼ì²éÊÇ·ñµÇÂ¼
+        // æ£€æŸ¥æ˜¯å¦ç™»å½•
         RequestHolder.checkLogin();
-        // ´ÓÇëÇóÖĞ»ñÈ¡ÎÄ¼ş
+        // ä»è¯·æ±‚ä¸­è·å–æ–‡ä»¶
         List<MultipartFile> multipartFiles = FileUtils.getMultipartFiles(request);
         return storageService.uploadFile(request, networkDisk, multipartFiles);
     }
 
     /**
-     * ²éÑ¯µ±Ç°ÓÃ»§´æ´¢ĞÅÏ¢
+     * æŸ¥è¯¢å½“å‰ç”¨æˆ·å­˜å‚¨ä¿¡æ¯
      *
-     * @return ²éÑ¯µ±Ç°ÓÃ»§´æ´¢ĞÅÏ¢
+     * @return æŸ¥è¯¢å½“å‰ç”¨æˆ·å­˜å‚¨ä¿¡æ¯
      * @author yujunhong
      * @date 2021/10/11 15:13
      */
     @GetMapping(value = "/getStorage")
-    @ApiOperation(value = "²éÑ¯µ±Ç°ÓÃ»§´æ´¢ĞÅÏ¢")
+    @ApiOperation(value = "æŸ¥è¯¢å½“å‰ç”¨æˆ·å­˜å‚¨ä¿¡æ¯")
     public ResultBody getStorage() {
-        // ¼ì²éÊÇ·ñµÇÂ¼
+        // æ£€æŸ¥æ˜¯å¦ç™»å½•
         RequestHolder.checkLogin();
         return ResultBody.success(storageService.getStorageByAdmin());
     }

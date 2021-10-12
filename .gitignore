@@ -37,3 +37,4 @@
 /Blog-RabbitMq/target/classes/com/blog/rabbitmq/listener/MailListener.class
 /Blog-RabbitMq/target/classes/com/blog/rabbitmq/config/RabbitMqConfig.class
 /Blog-Picture/target/classes/com/blog/picture/controller/StorageController.class
+/Blog-Picture/target/classes/com/blog/picture/controller/NetworkController.class

@@ -44,11 +44,11 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     public ResultBody initStorageSize(String adminUid, Long maxStorageSize) {
-        // ²éÑ¯µ±Ç°ÓÃ»§ÊÇ·ñÒÑ¾­³õÊ¼»¯
+        // æŸ¥è¯¢å½“å‰ç”¨æˆ·æ˜¯å¦å·²ç»åˆå§‹åŒ–
         LambdaQueryWrapper<Storage> storageWrapper = new LambdaQueryWrapper<>();
         storageWrapper.eq(Storage::getAdminUid, adminUid);
         Storage storage = this.getOne(storageWrapper);
-        // Èç¹û²»Îª¿Õ
+        // å¦‚æœä¸ä¸ºç©º
         if (StringUtils.isNotNull(storage)) {
             return ResultBody.error(BaseMessageConf.ENTITY_EXIST);
         }
@@ -61,16 +61,16 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
 
     @Override
     public ResultBody editStorageSize(String adminUid, Long maxStorageSize) {
-        // ²éÑ¯µ±Ç°ÓÃ»§ÊÇ·ñÒÑ¾­³õÊ¼»¯
+        // æŸ¥è¯¢å½“å‰ç”¨æˆ·æ˜¯å¦å·²ç»åˆå§‹åŒ–
         LambdaQueryWrapper<Storage> storageWrapper = new LambdaQueryWrapper<>();
         storageWrapper.eq(Storage::getAdminUid, adminUid);
         Storage storage = this.getOne(storageWrapper);
-        // Èç¹û²»Îª¿Õ
+        // å¦‚æœä¸ä¸ºç©º
         if (StringUtils.isNull(storage)) {
             return this.initStorageSize(adminUid, maxStorageSize);
         }
         if (maxStorageSize < storage.getStorageSize()) {
-            return ResultBody.error("ÍøÅÌÈİÁ¿²»ÄÜĞ¡ÓÚµ±Ç°ÒÑÓÃ¿Õ¼ä");
+            return ResultBody.error("ç½‘ç›˜å®¹é‡ä¸èƒ½å°äºå½“å‰å·²ç”¨ç©ºé—´");
         }
         storage.setMaxStorageSize(maxStorageSize);
         this.updateById(storage);
@@ -88,7 +88,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
     @Override
     public Storage getStorageByAdmin() {
         HttpServletRequest request =
-                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "»ñÈ¡ÓÃ»§´æ´¢ĞÅÏ¢Ê§°Ü"));
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "è·å–ç”¨æˆ·å­˜å‚¨ä¿¡æ¯å¤±è´¥"));
         String adminUid = request.getAttribute(BaseSysConf.ADMIN_UID).toString();
         if (StringUtils.isNotEmpty(adminUid)) {
             LambdaQueryWrapper<Storage> storageWrapper = new LambdaQueryWrapper<>();
@@ -107,7 +107,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         if (StringUtils.isNull(systemConfig)) {
             return ResultBody.error(BaseMessageConf.SYSTEM_CONFIG_NOT_EXIST);
         }
-        // ¼ÆËãÎÄ¼ş´óĞ¡
+        // è®¡ç®—æ–‡ä»¶å¤§å°
         long newStorageSize = 0L;
         long storageSize = 0L;
         for (MultipartFile fileData : multipartFiles) {
@@ -116,16 +116,16 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         Storage storage = getStorageByAdmin();
         if (StringUtils.isNotNull(storage)) {
             storageSize = storage.getStorageSize() + newStorageSize;
-            // ÅĞ¶ÏÉÏ´«µÄÎÄ¼şÊÇ·ñ³¬¹ıÁËÊ£Óà¿Õ¼ä
+            // åˆ¤æ–­ä¸Šä¼ çš„æ–‡ä»¶æ˜¯å¦è¶…è¿‡äº†å‰©ä½™ç©ºé—´
             if (storage.getMaxStorageSize() < storageSize) {
-                return ResultBody.error("ÉÏ´«Ê§°Ü£¬Äú¿ÉÓÃµÄ¿Õ¼äÒÑ¾­²»×ã£¡");
+                return ResultBody.error("ä¸Šä¼ å¤±è´¥ï¼Œæ‚¨å¯ç”¨çš„ç©ºé—´å·²ç»ä¸è¶³ï¼");
             } else {
                 storage.setStorageSize(storageSize);
             }
         } else {
-            return ResultBody.error("ÉÏ´«Ê§°Ü£¬ÄúÃ»ÓĞ·ÖÅä¿ÉÓÃµÄÉÏ´«¿Õ¼ä£¡");
+            return ResultBody.error("ä¸Šä¼ å¤±è´¥ï¼Œæ‚¨æ²¡æœ‰åˆ†é…å¯ç”¨çš„ä¸Šä¼ ç©ºé—´ï¼");
         }
-        // ÉÏ´«ÎÄ¼ş
+        // ä¸Šä¼ æ–‡ä»¶
         List<File> fileList = fileService.batchUploadFile(request, multipartFiles, systemConfig);
         List<NetworkDisk> networkDiskList = new ArrayList<>();
 
@@ -143,9 +143,9 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
             saveNetworkDisk.setCreateTime(new Date());
             networkDiskList.add(saveNetworkDisk);
         }
-        // ÉÏ´«ÎÄ¼ş
+        // ä¸Šä¼ æ–‡ä»¶
         networkDiskService.saveBatch(networkDiskList);
-        // ¸üĞÂÈİÁ¿´óĞ¡
+        // æ›´æ–°å®¹é‡å¤§å°
         this.updateById(storage);
         return ResultBody.success();
     }

@@ -15,53 +15,53 @@ import java.util.List;
  */
 public interface StorageService extends IService<Storage> {
     /**
-     * ³õÊ¼»¯ÈİÁ¿´óĞ¡
+     * åˆå§‹åŒ–å®¹é‡å¤§å°
      *
-     * @param adminUid       ¹ÜÀíÔ±uid
-     * @param maxStorageSize ×î´óÍøÅÌÈİÁ¿
-     * @return ³õÊ¼»¯ÈİÁ¿´óĞ¡
+     * @param adminUid       ç®¡ç†å‘˜uid
+     * @param maxStorageSize æœ€å¤§ç½‘ç›˜å®¹é‡
+     * @return åˆå§‹åŒ–å®¹é‡å¤§å°
      * @author yujunhong
      * @date 2021/9/16 15:17
      */
     ResultBody initStorageSize(String adminUid, Long maxStorageSize);
 
     /**
-     * ±à¼­ÈİÁ¿´óĞ¡
+     * ç¼–è¾‘å®¹é‡å¤§å°
      *
-     * @param adminUid       ¹ÜÀíÔ±uid
-     * @param maxStorageSize ×î´óÍøÅÌÈİÁ¿
-     * @return ³õÊ¼»¯ÈİÁ¿´óĞ¡
+     * @param adminUid       ç®¡ç†å‘˜uid
+     * @param maxStorageSize æœ€å¤§ç½‘ç›˜å®¹é‡
+     * @return åˆå§‹åŒ–å®¹é‡å¤§å°
      * @author yujunhong
      * @date 2021/9/16 15:17
      */
     ResultBody editStorageSize(String adminUid, Long maxStorageSize);
 
     /**
-     * Í¨¹ı¹ÜÀíÔ±uid£¬»ñÈ¡´æ´¢ĞÅÏ¢
+     * é€šè¿‡ç®¡ç†å‘˜uidï¼Œè·å–å­˜å‚¨ä¿¡æ¯
      *
-     * @param adminUidList ÓÃ»§id¼¯ºÏ
-     * @return ´æ´¢ĞÅÏ¢
+     * @param adminUidList ç”¨æˆ·idé›†åˆ
+     * @return å­˜å‚¨ä¿¡æ¯
      * @author yujunhong
      * @date 2021/9/16 15:29
      */
     ResultBody getStorageByAdminUid(List<String> adminUidList);
 
     /**
-     * ²éÑ¯µ±Ç°ÓÃ»§´æ´¢ĞÅÏ¢
+     * æŸ¥è¯¢å½“å‰ç”¨æˆ·å­˜å‚¨ä¿¡æ¯
      *
-     * @return ´æ´¢ĞÅÏ¢
+     * @return å­˜å‚¨ä¿¡æ¯
      * @author yujunhong
      * @date 2021/10/11 14:34
      */
     Storage getStorageByAdmin();
 
     /**
-     * ÉÏ´«ÎÄ¼ş
+     * ä¸Šä¼ æ–‡ä»¶
      *
-     * @param multipartFiles ÎÄ¼ş¼¯ºÏÊµÌå
-     * @param networkDisk    ´æ´¢ÊµÌå
-     * @param request        ÇëÇó
-     * @return ÉÏ´«ÎÄ¼ş
+     * @param multipartFiles æ–‡ä»¶é›†åˆå®ä½“
+     * @param networkDisk    å­˜å‚¨å®ä½“
+     * @param request        è¯·æ±‚
+     * @return ä¸Šä¼ æ–‡ä»¶
      * @author yujunhong
      * @date 2021/10/11 15:04
      */
