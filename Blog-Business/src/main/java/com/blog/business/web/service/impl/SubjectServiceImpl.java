@@ -66,8 +66,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
         for (Subject item : subjectList) {
             //获取图片
             if (StringUtils.isNotEmpty(item.getFileUid())) {
-                List<String> pictureUidTemp = StringUtils.stringToList(item.getFileUid(),
-                        BaseSysConf.FILE_SEGMENTATION);
+                List<String> pictureUidTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,item.getFileUid());
                 List<String> pictureListTemp = new ArrayList<>();
                 pictureUidTemp.forEach(picture -> {
                     pictureListTemp.add(pictureMap.get(picture));

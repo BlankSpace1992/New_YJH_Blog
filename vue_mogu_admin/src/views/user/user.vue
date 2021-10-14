@@ -435,7 +435,7 @@
       cropSuccess(resData) {
         this.imagecropperShow = false
         this.imagecropperKey = this.imagecropperKey + 1
-        this.form.photoUrl = resData[0].url;
+        this.form.photoUrl = resData[0].picUrl;
         this.form.avatar = resData[0].uid
       },
       close() {
