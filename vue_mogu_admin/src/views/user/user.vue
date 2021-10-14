@@ -33,7 +33,9 @@
                  v-permission="'/user/getList'">查找
       </el-button>
 
-      <el-button class="filter-item" type="primary" @click="handleAdd" icon="el-icon-edit" v-permission="'/user/add'">添加用户</el-button>
+      <el-button class="filter-item" type="primary" @click="handleAdd" icon="el-icon-edit" v-permission="'/user/add'">
+        添加用户
+      </el-button>
     </div>
 
     <el-table :data="tableData"
@@ -94,7 +96,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="登录次数" width="100" prop="loginCount" sortable="custom" :sort-by="['loginCount']">
+      <el-table-column align="center" label="登录次数" width="100" prop="loginCount" sortable="custom"
+                       :sort-by="['loginCount']">
         <template slot-scope="scope">
           <span>{{ scope.row.loginCount }}</span>
         </template>
@@ -118,7 +121,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="最后登录时间" width="160" prop="lastLoginTime" sortable="custom" :sort-by="['lastLoginTime']">
+      <el-table-column align="center" label="最后登录时间" width="160" prop="lastLoginTime" sortable="custom"
+                       :sort-by="['lastLoginTime']">
         <template slot-scope="scope">
           <span>{{ dateFormat("YYYY-mm-dd HH:MM:SS",scope.row.lastLoginTime) }}</span>
         </template>
@@ -136,7 +140,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="创建时间" width="160" align="center" prop="createTime" sortable="custom" :sort-by="['createTime']">
+      <el-table-column label="创建时间" width="160" align="center" prop="createTime" sortable="custom"
+                       :sort-by="['createTime']">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
@@ -256,7 +261,7 @@
 
           <el-col :span="9">
             <el-form-item label="用户标签" :label-width="formLabelWidth" prop="userTag">
-              <el-select placeholder="请选择"  style="width:205px" v-model="form.userTag">
+              <el-select placeholder="请选择" style="width:205px" v-model="form.userTag">
                 <el-option
                   :key="item.uid"
                   :label="item.dictLabel"
@@ -313,6 +318,7 @@
         imagecropperShow: false,
         imagecropperKey: 0,
         url: process.env.PICTURE_API + "/file/cropperPicture",
+        baseWebApi: process.env.WEB_API,
         tableData: [],
         keyword: "",
         accountSourceKeyword: "",
@@ -380,7 +386,7 @@
     },
     methods: {
       // 格式化日期
-      dateFormat(fmt,date){
+      dateFormat(fmt, date) {
         const dateTime = new Date(date);
         let ret;
         const opt = {
@@ -396,14 +402,16 @@
           ret = new RegExp("(" + k + ")").exec(fmt);
           if (ret) {
             fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-          };
-        };
+          }
+          ;
+        }
+        ;
         return fmt;
       },
       // 从后台获取数据,重新排序
-      changeSort (val) {
+      changeSort(val) {
         // 根据当前排序重新获取后台数据,一般后台会需要一个排序的参数
-        if(val.order == "ascending") {
+        if (val.order == "ascending") {
           this.orderByAscColumn = val.prop
           this.orderByDescColumn = ""
         } else {
@@ -498,7 +506,7 @@
             var params = {};
             params.uid = row.uid;
             deleteUser(params).then(response => {
-              if(response.code == this.$ECode.SUCCESS) {
+              if (response.code == this.$ECode.SUCCESS) {
                 this.$commonUtil.message.success(response.message)
                 that.userList();
               } else {
@@ -521,7 +529,7 @@
             var params = {};
             params.uid = row.uid;
             resetUserPassword(params).then(response => {
-              if(response.code == this.$ECode.SUCCESS) {
+              if (response.code == this.$ECode.SUCCESS) {
                 this.$commonUtil.message.success(response.message)
                 that.userList();
               } else {
@@ -542,7 +550,7 @@
           if (!valid) {
             console.log("校验出错")
           } else {
-            if(this.isEditForm) {
+            if (this.isEditForm) {
               editUser(this.form).then(response => {
                 if (response.code == this.$ECode.SUCCESS) {
                   this.$notify({
