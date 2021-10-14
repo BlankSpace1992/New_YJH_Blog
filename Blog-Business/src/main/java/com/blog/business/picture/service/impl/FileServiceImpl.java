@@ -147,7 +147,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
                     // 判断是否能够上传至本地
                     if (OpenStatus.OPEN.equals(uploadLocal)) {
-                        localUrl = localFileService.uploadFile(filedata, fileSort);
+                        localUrl = systemConfig.getLocalPictureBaseUrl() + localFileService.uploadFile(filedata,
+                                fileSort);
                     }
                 } catch (Exception e) {
                     log.info("上传文件异常: {}", e.getMessage());

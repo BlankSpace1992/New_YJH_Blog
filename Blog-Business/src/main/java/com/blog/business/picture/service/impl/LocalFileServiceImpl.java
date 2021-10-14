@@ -157,7 +157,7 @@ public class LocalFileServiceImpl implements LocalFileService {
         File saveFile = new File(saveUrl);
         // 序列化文件到本地
         saveFile.createNewFile();
-        multipartFile.transferTo(saveFile);
+        multipartFile.transferTo(saveFile.getAbsoluteFile());
         return picurl;
     }
 }

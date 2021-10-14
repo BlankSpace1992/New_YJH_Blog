@@ -75,13 +75,15 @@ public class BlogSortServiceImpl extends ServiceImpl<BlogSortMapper, BlogSort> i
         if (StringUtils.isNull(blogSort)) {
             return ResultBody.error(BaseMessageConf.ENTITY_NOT_EXIST);
         }
-        // 判断当前分类名称是否已经存在
-        LambdaQueryWrapper<BlogSort> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(BlogSort::getSortName, blogSortVO.getSortName());
-        lambdaQueryWrapper.eq(BlogSort::getStatus, EnumsStatus.ENABLE);
-        int count = this.count(lambdaQueryWrapper);
-        if (count > 0) {
-            return ResultBody.error(BaseMessageConf.ENTITY_EXIST);
+        if (!blogSortVO.getSortName().equals(blogSort.getSortName())) {
+            // 判断当前分类名称是否已经存在
+            LambdaQueryWrapper<BlogSort> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(BlogSort::getSortName, blogSortVO.getSortName());
+            lambdaQueryWrapper.eq(BlogSort::getStatus, EnumsStatus.ENABLE);
+            int count = this.count(lambdaQueryWrapper);
+            if (count > 0) {
+                return ResultBody.error(BaseMessageConf.ENTITY_EXIST);
+            }
         }
         blogSort.setContent(blogSortVO.getContent());
         blogSort.setSortName(blogSortVO.getSortName());
