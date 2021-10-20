@@ -14,6 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubjectItemVO {
     /**
+     * 唯一UID
+     */
+    private String uid;
+    /**
      * 专题UID
      */
     @ApiModelProperty(value = "专题UID")

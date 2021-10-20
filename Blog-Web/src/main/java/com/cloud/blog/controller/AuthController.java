@@ -81,7 +81,7 @@ public class AuthController {
     private PictureFeignClient pictureFeignClient;
     @Value(value = "${data.web.url}")
     private String blogUrl;
-    @Value(value = "${data.webSite.url}")
+    @Value(value = "${data.website.url}")
     private String webSiteUrl;
     @Value(value = "${data.web.project_name_en}")
     private String projectNameEn;

@@ -1,10 +1,7 @@
 package com.blog.business.web.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -32,7 +29,7 @@ public class SubjectItem {
      */
     @ApiModelProperty(value = "主键")
     @Excel(name = "主键")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 专题uid
@@ -51,7 +48,7 @@ public class SubjectItem {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 排序字段
      */
@@ -63,12 +60,14 @@ public class SubjectItem {
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**

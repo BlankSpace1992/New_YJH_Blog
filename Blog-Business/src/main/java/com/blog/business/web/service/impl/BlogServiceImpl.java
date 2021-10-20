@@ -688,6 +688,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             pictureList = this.pictureFeignClient.getPicture(fileUid.toString(),
                     BaseSysConf.FILE_SEGMENTATION);
         }
+        pictureList = webUtils.getPictureMap(pictureList);
         // 获取对应标签和分类信息
         List<BlogSort> sortList = new ArrayList<>();
         List<Tag> tagList = new ArrayList<>();
@@ -1175,6 +1176,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             pictureList = this.pictureFeignClient.getPicture(fileIds.toString(),
                     BaseSysConf.FILE_SEGMENTATION);
         }
+        pictureList = webUtils.getPictureMap(pictureList);
         // 获取对应分类信息
         List<BlogSort> blogSortList = new ArrayList<>();
         if (StringUtils.isNotEmpty(sortIdList)) {

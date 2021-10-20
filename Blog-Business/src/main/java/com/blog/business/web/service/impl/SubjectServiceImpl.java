@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.blog.business.utils.WebUtils;
 import com.blog.business.web.domain.Subject;
 import com.blog.business.web.domain.SubjectItem;
 import com.blog.business.web.domain.vo.SubjectVO;
@@ -32,6 +33,9 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
     private PictureFeignClient pictureFeignClient;
     @Autowired
     private SubjectItemService subjectItemService;
+    @Autowired
+    private WebUtils webUtils;
+
 
     @Override
     public IPage<Subject> getList(SubjectVO subjectVO) {
@@ -58,7 +62,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
         });
         List<Map<String, Object>> pictureListMap = this.pictureFeignClient.getPicture(fileUids.toString(),
                 BaseSysConf.FILE_SEGMENTATION);
-
+        pictureListMap = webUtils.getPictureMap(pictureListMap);
         Map<String, String> pictureMap = new HashMap<>();
         pictureListMap.forEach(item -> {
             pictureMap.put(item.get(BaseSysConf.UID).toString(), item.get(BaseSysConf.URL).toString());
@@ -66,7 +70,8 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
         for (Subject item : subjectList) {
             //获取图片
             if (StringUtils.isNotEmpty(item.getFileUid())) {
-                List<String> pictureUidTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,item.getFileUid());
+                List<String> pictureUidTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION,
+                        item.getFileUid());
                 List<String> pictureListTemp = new ArrayList<>();
                 pictureUidTemp.forEach(picture -> {
                     pictureListTemp.add(pictureMap.get(picture));

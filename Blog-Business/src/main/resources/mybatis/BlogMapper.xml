@@ -76,11 +76,31 @@
     </select>
 
     <select id="getHotBlog" resultMap="BaseResultMap">
-        select a.title,
+        select a.uid,
+               a.title,
                a.summary,
-               a.uid,
+               a.content,
                a.tag_uid,
+               a.click_count,
+               a.collect_count,
+               a.file_uid,
+               a.status,
+               a.create_time,
+               a.update_time,
+               a.admin_uid,
+               a.is_original,
+               a.author,
+               a.articles_part,
                a.blog_sort_uid,
+               a.level,
+               a.is_publish,
+               a.sort,
+               a.open_comment,
+               a.type,
+               a.outside_link,
+               a.oid,
+               a.user_uid,
+               a.article_source,
                b.uid,
                b.sort_name,
                b.sort_name as blogSortName
@@ -185,9 +205,9 @@
     </select>
 
     <select id="getBlogCountByTag" resultType="java.util.Map">
-        select substring_index(substring_index(a.tag_uid, ',', b.help_topic_id + 1), ',', -1)        as tagUid,
-               c.content                                                                             as name,
-               count(a.uid) as value
+        select substring_index(substring_index(a.tag_uid, ',', b.help_topic_id + 1), ',', -1) as tagUid,
+               c.content                                                                      as name,
+               count(a.uid)                                                                   as value
         from t_blog a
                      left join mysql.help_topic b
                 on help_topic_id &lt; LENGTH(a.tag_uid) - LENGTH(REPLACE(a.tag_uid, ',', '')) + 1
