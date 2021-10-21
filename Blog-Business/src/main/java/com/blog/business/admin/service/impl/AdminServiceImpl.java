@@ -135,8 +135,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
             //获取图片
             if (StringUtils.isNotEmpty(item.getAvatar())) {
-                List<String> pictureIdsTemp = StringUtils.stringToList(item.getAvatar(),
-                        BaseSysConf.FILE_SEGMENTATION);
+                List<String> pictureIdsTemp = StringUtils.stringToList(BaseSysConf.FILE_SEGMENTATION, item.getAvatar()
+                );
                 List<String> pictureListTemp = new ArrayList<>();
                 pictureIdsTemp.forEach(pictureItem -> {
                     if (StringUtils.isNotEmpty(pictureMap.get(pictureItem))) {

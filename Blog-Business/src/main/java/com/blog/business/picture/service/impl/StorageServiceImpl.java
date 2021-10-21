@@ -56,6 +56,7 @@ public class StorageServiceImpl extends ServiceImpl<StorageMapper, Storage> impl
         saveStorage.setAdminUid(adminUid);
         saveStorage.setStorageSize(0L);
         saveStorage.setMaxStorageSize(maxStorageSize);
+        this.save(saveStorage);
         return ResultBody.success();
     }
 
