@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 
     public static final String BLOG_QUEUE_NAME = "blog.email";
-    public static final String EXCHANGE_DIRECT = "blog.exchange";
-    public static final String ROUTING_KEY_EMAIL = "blog.email";
+    public static final String EXCHANGE_DIRECT = "cloud_blog_direct";
+    public static final String ROUTING_KEY_EMAIL = "cloud_blog_key";
 
 
     /**
