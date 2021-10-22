@@ -476,6 +476,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if (StringUtils.isNotEmpty(admin.getAvatar())) {
             List<Map<String, Object>> picture = this.pictureFeignClient.getPicture(admin.getAvatar(),
                     BaseSysConf.FILE_SEGMENTATION);
+            picture = webUtils.getPictureMap(picture);
             if (picture.size() > 0) {
                 map.put(BaseSysConf.AVATAR, picture.get(0).get(BaseSysConf.URL));
             } else {

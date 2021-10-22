@@ -108,10 +108,10 @@ export default {
       getSubjectList(params).then(response => {
         console.log("得到的专题列表", response)
         if (response.code == this.$ECode.SUCCESS) {
-          this.tableData = response.data.records;
-          this.currentPage = response.data.current;
-          this.pageSize = response.data.size;
-          this.total = response.data.total;
+          this.tableData = response.result.records;
+          this.currentPage = response.result.current;
+          this.pageSize = response.result.size;
+          this.total = response.result.total;
         } else {
           this.$message({
             type: "error",

@@ -250,6 +250,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         Map<String, List<BlogSort>> blogSortMap =
                 blogSortList.stream().collect(Collectors.groupingBy(BlogSort::getUid));
         Map<String, List<Tag>> tagMap = tagList.stream().collect(Collectors.groupingBy(Tag::getUid));
+        picList = webUtils.getPictureMap(picList);
         picList.forEach(item -> {
             pictureMap.put(item.get(BaseSysConf.UID).toString(), item.get(BaseSysConf.URL).toString());
         });

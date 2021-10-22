@@ -173,8 +173,8 @@
         params.currentPage = 1;
         getSubjectItemList(params).then(response => {
           if(response.code == this.$ECode.SUCCESS) {
-            this.list = response.data.records
-            this.total = response.total
+            this.list = response.result.records
+            this.total = response.result.total
             this.$nextTick(() => {
               this.setSort()
             })

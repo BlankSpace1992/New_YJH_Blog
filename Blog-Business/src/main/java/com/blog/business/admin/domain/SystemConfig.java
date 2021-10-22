@@ -1,9 +1,7 @@
 package com.blog.business.admin.domain;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -31,7 +29,7 @@ public class SystemConfig {
      */
     @ApiModelProperty(value = "主键")
     @Excel(name = "主键")
-    @TableId(value = "uid", type = IdType.AUTO)
+    @TableId(value = "uid", type = IdType.ASSIGN_UUID)
     private String uid;
     /**
      * 七牛云公钥
@@ -80,18 +78,20 @@ public class SystemConfig {
      */
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态")
-    private Object status;
+    private Integer status;
     /**
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")
     @Excel(name = "创建时间")
+    @TableField(value = "create_time",fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新时间
      */
     @ApiModelProperty(value = "更新时间")
     @Excel(name = "更新时间")
+    @TableField(value = "update_time",fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
     /**
      * 七牛云上传空间
@@ -182,7 +182,7 @@ public class SystemConfig {
      */
     @ApiModelProperty(value = "图片是否上传Minio (0:否， 1：是)")
     @Excel(name = "图片是否上传Minio (0:否， 1：是)")
-    private Object uploadMinio;
+    private String uploadMinio;
     /**
      * Minio服务器文件域名前缀
      */

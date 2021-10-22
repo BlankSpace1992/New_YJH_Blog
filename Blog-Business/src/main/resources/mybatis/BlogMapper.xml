@@ -188,8 +188,8 @@
             <if test="blogVO.blogSortUid != null and blogVO.blogSortUid != ''">
                 and a.blog_sort_uid = #{blogVO.blogSortUid,jdbcType=VARCHAR}
             </if>
-            <if test="blogVO.keyword != null and blogVO.keyword != ''">
-                and a.level = #{blogVO.keyword,jdbcType=VARCHAR}
+            <if test="blogVO.levelKeyword != null and blogVO.levelKeyword != ''">
+                and a.level = #{blogVO.levelKeyword,jdbcType=VARCHAR}
             </if>
             <if test="blogVO.isPublish != null and blogVO.isPublish != ''">
                 and a.is_publish = #{blogVO.isPublish,jdbcType=VARCHAR}
