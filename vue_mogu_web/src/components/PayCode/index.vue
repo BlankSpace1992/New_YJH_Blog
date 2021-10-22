@@ -115,18 +115,18 @@ export default {
       var params = new URLSearchParams();
       params.append("uid", uid);
       praiseBlogByUid(params).then(response => {
-        if (response.code == this.$ECode.SUCCESS) {
+        if (response.data.code == this.$ECode.SUCCESS) {
           this.$notify({
             title: '成功',
             message: "点赞成功",
             type: 'success',
             offset: 100
           });
-          this.$emit('update:praiseCount',response.result);
+          this.$emit('update:praiseCount',response.data.result);
         } else {
           this.$notify.error({
             title: '错误',
-            message: response.message,
+            message: response.data.message,
             offset: 100
           });
         }

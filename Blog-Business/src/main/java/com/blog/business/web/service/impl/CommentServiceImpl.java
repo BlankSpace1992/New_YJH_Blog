@@ -276,6 +276,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         });
         List<Map<String, Object>> pictureList = pictureFeignClient.getPicture(avatarString.toString(),
                 BaseSysConf.FILE_SEGMENTATION);
+        pictureList = webUtils.getPictureMap(pictureList);
         // 拆分图片
         Map<String, String> pictureMap = new HashMap<>();
         pictureList.forEach(item -> pictureMap.put(item.get(BaseSQLConf.UID).toString(),

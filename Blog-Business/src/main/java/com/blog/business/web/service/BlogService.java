@@ -282,6 +282,25 @@ public interface BlogService extends IService<Blog> {
      * @author yujunhong
      * @date 2021/9/22 17:29
      */
- Map<String, Object> getBlogContributeCount();
+    Map<String, Object> getBlogContributeCount();
 
+    /**
+     * 通过Uid给博客点赞
+     *
+     * @param uid 博客UID
+     * @return 通过Uid给博客点赞
+     * @author yujunhong
+     * @date 2021/10/22 16:03
+     */
+    ResultBody praiseBlogByUid(String uid);
+
+    /**
+     * 通过Uid获取博客点赞数
+     *
+     * @param uid 博客UID
+     * @return 通过Uid获取博客点赞数
+     * @author yujunhong
+     * @date 2021/10/22 16:24
+     */
+    Integer getBlogPraiseCountByUid(String uid);
 }

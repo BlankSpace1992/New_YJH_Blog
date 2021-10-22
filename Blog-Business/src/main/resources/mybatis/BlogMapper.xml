@@ -111,21 +111,32 @@
     </select>
 
     <select id="getNewBlog" resultMap="BaseResultMap">
-        select a.title,
+        select a.uid,
+               a.title,
                a.summary,
-               a.uid,
+               a.content,
                a.tag_uid,
-               a.create_time,
                a.click_count,
                a.collect_count,
+               a.file_uid,
+               a.status,
+               a.create_time,
+               a.update_time,
+               a.admin_uid,
+               a.is_original,
+               a.author,
+               a.articles_part,
                a.blog_sort_uid,
-               b.uid,
-               b.sort_name,
-               b.sort_name as blogSortName,
+               a.level,
+               a.is_publish,
+               a.sort,
+               a.open_comment,
                a.type,
-               a.oid,
                a.outside_link,
-               a.author
+               a.oid,
+               a.user_uid,
+               a.article_source,
+               b.sort_name as blogSortName
         from t_blog as a
                      left join t_blog_sort b on a.blog_sort_uid = b.uid
         where a.is_publish = #{isPublish,jdbcType=VARCHAR}

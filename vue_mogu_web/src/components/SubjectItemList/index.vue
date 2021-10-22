@@ -93,7 +93,7 @@
         };
       },
       created() {
-        // this.getList()
+       this.getList();
       },
       mounted() {
         // 获取宽高
@@ -112,11 +112,12 @@
           params.currentPage = this.currentPage;
           this.loading = true
           getSubjectItemList(params).then(response => {
-            if(response.code == this.$ECode.SUCCESS) {
-              let itemList = response.result.records
+            console.log("专辑主题", response);
+            if(response.data.code == this.$ECode.SUCCESS) {
+              let itemList = response.data.result.records
               let oldItemList = this.subjectItemlist
-              this.currentPage = response.result.current
-              this.total = response.result.total
+              this.currentPage = response.data.result.current
+              this.total = response.data.result.total
               this.subjectItemlist = oldItemList.concat(itemList);
             }
             this.loading = false

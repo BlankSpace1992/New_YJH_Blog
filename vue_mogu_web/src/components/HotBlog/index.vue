@@ -9,7 +9,7 @@
         <li v-for="(item, index) in sideNews" v-if="index != 0" :key="item.uid">
           <i><img style="cursor:pointer"  v-if="item.photoList" :src="item.photoList[0]" @click="goToInfo(item)"></i>
           <p><a href="javascript:void(0);" @click="goToInfo(item)">{{item.title}}</a></p>
-          <span>{{item.createTime}}</span>
+          <span>{{dateFormat("YYYY-mm-dd HH:MM:SS",item.createTime)}}</span>
         </li>
       </ul>
     </div>
@@ -41,6 +41,27 @@ export default {
     }
   },
   methods: {
+    // 格式化日期
+    dateFormat(fmt,date){
+      const dateTime = new Date(date);
+      let ret;
+      const opt = {
+        "Y+": dateTime.getFullYear().toString(),        // 年
+        "m+": (dateTime.getMonth() + 1).toString(),     // 月
+        "d+": dateTime.getDate().toString(),            // 日
+        "H+": dateTime.getHours().toString(),           // 时
+        "M+": dateTime.getMinutes().toString(),         // 分
+        "S+": dateTime.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+      };
+      for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+          fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+      };
+      return fmt;
+    },
     //跳转到文章详情【或推广链接】
     goToInfo(blog) {
       if(blog.type == "0") {

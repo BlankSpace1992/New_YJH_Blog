@@ -66,4 +66,37 @@ public class BlogContentController {
         IPage<Blog> sameBlogByBlogUid = blogService.getSameBlogByBlogUid(blogUid);
         return ResultBody.success(sameBlogByBlogUid);
     }
+
+
+    /**
+     * 通过Uid给博客点赞
+     *
+     * @param uid 博客UID
+     * @return 通过Uid给博客点赞
+     * @author yujunhong
+     * @date 2021/10/22 16:00
+     */
+    @ApiOperation(value = "通过Uid给博客点赞")
+    @GetMapping("/praiseBlogByUid")
+    public ResultBody praiseBlogByUid(@ApiParam(name = "uid", value = "博客UID", required = false) @RequestParam(name =
+            "uid", required = false) String uid) {
+        if (StringUtils.isEmpty(uid)) {
+            return ResultBody.error(BaseMessageConf.PARAM_INCORRECT);
+        }
+        return blogService.praiseBlogByUid(uid);
+    }
+
+    /**
+     * 通过Uid获取博客点赞数
+     *
+     * @param uid 博客UID
+     * @return 通过Uid获取博客点赞数
+     * @author yujunhong
+     * @date 2021/10/22 16:22
+     */
+    @ApiOperation(value = "通过Uid获取博客点赞数")
+    @GetMapping("/getBlogPraiseCountByUid")
+    public ResultBody getBlogPraiseCountByUid(@ApiParam(name = "uid", value = "博客UID", required = false) @RequestParam(name = "uid", required = false) String uid) {
+        return ResultBody.success(blogService.getBlogPraiseCountByUid(uid));
+    }
 }

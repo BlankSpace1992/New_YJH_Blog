@@ -183,7 +183,7 @@
               <el-card>
                 <div class="commentList">
                 <span class="left p1">
-                  <img v-if="comment.user" :src="webApi+comment.user.photoUrl ? webApi+comment.user.photoUrl:defaultAvatar"
+                  <img v-if="comment.user" :src="comment.user.photoUrl ? comment.user.photoUrl:defaultAvatar"
                        onerror="onerror=null;src=defaultAvatar"/>
                   <img v-else :src="defaultAvatar"/>
                 </span>
@@ -222,7 +222,7 @@
               <el-card>
                 <div class="commentList">
                   <span class="left p1">
-                    <img v-if="reply.user" :src="webApi+reply.user.photoUrl ? webApi+reply.user.photoUrl:defaultAvatar"
+                    <img v-if="reply.user" :src="reply.user.photoUrl ? reply.user.photoUrl:defaultAvatar"
                          onerror="onerror=null;src=defaultAvatar"/>
                     <img v-else :src="defaultAvatar"/>
                   </span>

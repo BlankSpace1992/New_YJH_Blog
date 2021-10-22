@@ -13,14 +13,12 @@ import com.blog.business.admin.domain.vo.BlogVO;
 import com.blog.business.admin.service.AdminService;
 import com.blog.business.admin.service.SystemConfigService;
 import com.blog.business.utils.WebUtils;
-import com.blog.business.web.domain.Blog;
-import com.blog.business.web.domain.BlogSort;
-import com.blog.business.web.domain.Picture;
-import com.blog.business.web.domain.Tag;
+import com.blog.business.web.domain.*;
 import com.blog.business.web.mapper.BlogMapper;
 import com.blog.business.web.service.*;
 import com.blog.config.redis.RedisUtil;
 import com.blog.constants.*;
+import com.blog.enums.EnumCommentSource;
 import com.blog.exception.CommonErrorException;
 import com.blog.exception.ResultBody;
 import com.blog.feign.PictureFeignClient;
@@ -66,6 +64,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     private PictureService pictureService;
     @Autowired
     private BlogSortService blogSortService;
+    @Autowired
+    private CommentService commentService;
     @Value(value = "${BLOG.ORIGINAL_TEMPLATE}")
     private String originalTemplate;
     @Value(value = "${BLOG.REPRINTED_TEMPLATE}")
@@ -162,7 +162,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @Override
     public IPage<Blog> getNewBlog(Integer currentPage) {
         // 获取系统参数中最新博客数量
-        Integer newBlogCount = Integer.valueOf(sysParamsService.getSysParamsValueByKey(BaseSysConf.BLOG_NEW_COUNT));
+        int newBlogCount = Integer.parseInt(sysParamsService.getSysParamsValueByKey(BaseSysConf.BLOG_NEW_COUNT));
         IPage<Blog> page = new Page<>();
         // 设置当前页数
         page.setCurrent(currentPage);
@@ -1143,6 +1143,66 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         resultMap.put(BaseSysConf.CONTRIBUTE_DATE, contributeDateList);
         resultMap.put(BaseSysConf.BLOG_CONTRIBUTE_COUNT, resultList);
         return resultMap;
+    }
+
+    @Override
+    public ResultBody praiseBlogByUid(String uid) {
+        // 获取请求
+        HttpServletRequest request =
+                Optional.ofNullable(RequestHolder.getRequest()).orElseThrow(() -> new CommonErrorException(BaseSysConf.ERROR, "点赞失败"));
+        // 获取用户uid
+        String userId = request.getAttribute(BaseSysConf.USER_UID).toString();
+        if (StringUtils.isEmpty(userId)) {
+            return ResultBody.error(BaseMessageConf.PLEASE_LOGIN_TO_PRISE);
+        }
+        LambdaQueryWrapper<Comment> commentWrapper = new LambdaQueryWrapper<>();
+        commentWrapper.eq(Comment::getUserUid, userId);
+        commentWrapper.eq(Comment::getBlogUid, uid);
+        commentWrapper.eq(Comment::getType, EnumsStatus.PRAISE);
+        commentWrapper.last(BaseSysConf.LIMIT_ONE);
+        Comment comment = commentService.getOne(commentWrapper);
+        if (StringUtils.isNotNull(comment)) {
+            return ResultBody.error(BaseMessageConf.YOU_HAVE_BEEN_PRISE);
+        }
+        // 获取当前博客信息
+        Blog blog = this.getById(uid);
+        if (StringUtils.isNull(blog)) {
+            return ResultBody.error(BaseMessageConf.ENTITY_NOT_EXIST);
+        }
+        // 优先从redis获取点赞信息
+        String praiseJsonResult = (String) redisUtil.get(BaseRedisConf.BLOG_PRAISE + BaseRedisConf.SEGMENTATION + uid);
+        int praiseCount = 1;
+        // 不属于首次点赞
+        if (StringUtils.isNotEmpty(praiseJsonResult)) {
+            praiseCount = blog.getCollectCount() + 1;
+        }
+        //给该博客点赞 +1
+        redisUtil.set(BaseRedisConf.BLOG_PRAISE + BaseRedisConf.SEGMENTATION + uid, String.valueOf(praiseCount));
+        blog.setCollectCount(praiseCount);
+        this.updateById(blog);
+        // 向评论表添加记录
+        Comment newComment = new Comment();
+        newComment.setUserUid(userId);
+        newComment.setBlogUid(uid);
+        newComment.setSource(EnumCommentSource.BLOG_INFO.getCode());
+        newComment.setType(EnumsStatus.PRAISE);
+        commentService.save(newComment);
+        return ResultBody.success(praiseCount);
+    }
+
+    @Override
+    public Integer getBlogPraiseCountByUid(String uid) {
+        // 默认点赞数为0
+        int praiseCount = 0;
+        if (StringUtils.isEmpty(uid)) {
+            return praiseCount;
+        }
+        //从Redis取出用户点赞数据
+        String praiseJsonResult = (String) redisUtil.get(BaseRedisConf.BLOG_PRAISE + BaseRedisConf.SEGMENTATION + uid);
+        if (!StringUtils.isEmpty(praiseJsonResult)) {
+            praiseCount = Integer.parseInt(praiseJsonResult);
+        }
+        return praiseCount;
     }
 
     /**

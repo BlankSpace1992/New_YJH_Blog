@@ -30,7 +30,7 @@
             </li>
             <li class="createTime">
               <span class="iconfont">&#xe606;</span>
-              {{blogData.createTime}}
+              {{dateFormat('YYYY-mm-dd HH:MM:SS',blogData.createTime)}}
             </li>
             <li class="view">
               <span class="iconfont">&#xe8c7;</span>
@@ -299,6 +299,29 @@
       this.showSidebar = document.body.clientWidth > 950
     },
     methods: {
+      // 格式化日期
+      dateFormat(fmt, date) {
+        const dateTime = new Date(date);
+        let ret;
+        const opt = {
+          "Y+": dateTime.getFullYear().toString(),        // 年
+          "m+": (dateTime.getMonth() + 1).toString(),     // 月
+          "d+": dateTime.getDate().toString(),            // 日
+          "H+": dateTime.getHours().toString(),           // 时
+          "M+": dateTime.getMinutes().toString(),         // 分
+          "S+": dateTime.getSeconds().toString()          // 秒
+          // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        };
+        for (let k in opt) {
+          ret = new RegExp("(" + k + ")").exec(fmt);
+          if (ret) {
+            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+          }
+          ;
+        }
+        ;
+        return fmt;
+      },
       //拿到vuex中的写的两个方法
       ...mapMutations(["setCommentList", "setWebConfigData"]),
       handleCurrentChange: function (val) {
