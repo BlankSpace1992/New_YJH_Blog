@@ -41,9 +41,9 @@ export default {
         toolbar: 'toolbar_Full',
         codeSnippet_theme: 'zenburn',
         customConfig: '/static/ckeditor/config.js',
-        filebrowserImageUploadUrl: process.env.PICTURE_API + '/file/ckeditorUploadFile?token=' + getToken(),
-        filebrowserUploadUrl: process.env.PICTURE_API + '/file/ckeditorUploadFile?token=' + getToken(),
-        pasteUploadFileApi: process.env.PICTURE_API + '/file/ckeditorUploadCopyFile?token=' + getToken(),
+        filebrowserImageUploadUrl: process.env.PICTURE_API + '/file/ckEditorUploadFile?token=' + getToken(),
+        filebrowserUploadUrl: process.env.PICTURE_API + '/file/ckEditorUploadFile?token=' + getToken(),
+        pasteUploadFileApi: process.env.PICTURE_API + '/file/ckEditorUploadCopyFile?token=' + getToken(),
         extraPlugins: 'codesnippet,panelbutton,floatpanel,colorbutton,markdown,colordialog,dialog,dialogui,smiley,widget,lineutils,eqneditor,justify,tableresize,wordcount,notification,video,fakeobjects,liststyle,pasteUploadImage'
       });
 
