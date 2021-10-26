@@ -283,7 +283,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     }
 
     @Override
-    public void ckEditorUploadFile(HttpServletRequest request) {
+    public Map<String, Object> ckEditorUploadFile(HttpServletRequest request) {
         // 获取token
         String token = request.getParameter(BaseSysConf.TOKEN);
         // 获取配置文件
@@ -292,6 +292,8 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
         // 取得request中的所有文件名
         Iterator<String> iter = multiRequest.getFileNames();
+        // 获取文件信息
+        File saveFile = null;
         while (iter.hasNext()) {
             // 获取文件对象
             MultipartFile file = multiRequest.getFile(iter.next());
@@ -316,9 +318,18 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
                 request.setAttribute(BaseSysConf.SORT_NAME, BaseSysConf.ADMIN);
                 List<MultipartFile> fileData = new ArrayList<>();
                 fileData.add(file);
-                this.batchUploadFile(request, fileData, systemConfig);
+                saveFile = this.batchUploadFile(request, fileData, systemConfig).get(0);
             }
         }
+        Map<String, Object> map = new HashMap<>();
+        // 设置回显数据
+        map.put(BaseSysConf.UPLOADED, 1);
+        map.put(BaseSysConf.FILE_NAME, saveFile.getPicName());
+        String localPictureBaseUrl = systemConfig.getLocalPictureBaseUrl();
+        // 设置图片服务根域名
+        String url = localPictureBaseUrl + saveFile.getPicUrl();
+        map.put(BaseSysConf.URL, url);
+        return map;
     }
 
     @Override

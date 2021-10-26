@@ -67,8 +67,9 @@ public interface FileService extends IService<File> {
      * @param request 请求
      * @author yujunhong
      * @date 2021/7/30 15:56
+     * @return
      */
-    void ckEditorUploadFile(HttpServletRequest request);
+    Map<String, Object> ckEditorUploadFile(HttpServletRequest request);
 
     /**
      * 复制得图片上传

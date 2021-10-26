@@ -217,11 +217,11 @@ public class FeignUtils {
 
         // 判断七牛云的参数是否存在异常
         if (OpenStatus.OPEN.equals(uploadQiNiu)
-                && StringUtils.isEmpty(qiNiuPictureBaseUrl)
+                && (StringUtils.isEmpty(qiNiuPictureBaseUrl)
                 || StringUtils.isEmpty(qiNiuAccessKey)
                 || StringUtils.isEmpty(qiNiuSecretKey)
                 || StringUtils.isEmpty(qiNiuBucket)
-                || StringUtils.isEmpty(qiNiuArea)) {
+                || StringUtils.isEmpty(qiNiuArea))) {
             throw new CommonErrorException(ErrorCode.PLEASE_SET_QI_NIU, BaseMessageConf.PLEASE_SET_QI_NIU);
         }
         // 判断本地服务参数是否存在异常

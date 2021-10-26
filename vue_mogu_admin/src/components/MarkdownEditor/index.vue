@@ -75,7 +75,6 @@
       },
       onloadCallback(oEvent) {
         const currentTarget = oEvent.currentTarget
-        console.log("返回的结果", currentTarget)
         if (currentTarget.status !== 200) {
           return this.$message({
             type: 'error',
@@ -84,13 +83,13 @@
         }
         let resp = JSON.parse(currentTarget.response)
         let imgMdStr = ''
-        if (resp.uploaded !== 1) {
+        if (resp.result.uploaded !== 1) {
           return this.$message({
             type: 'error',
-            message: resp.error.message
+            message: resp.message
           })
         }
-        if (resp.uploaded === 1) {
+        if (resp.result.uploaded === 1) {
           imgMdStr = `![${resp.fileName}](${resp.url})`
         }
         this.vditor.insertValue(imgMdStr)

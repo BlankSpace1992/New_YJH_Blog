@@ -126,8 +126,8 @@ public class FileController {
     @ApiOperation(value = "ckEditor 文本编辑器 图片上传")
     @PostMapping(value = "/ckEditorUploadFile")
     public ResultBody ckEditorUploadFile(HttpServletRequest request) {
-        fileService.ckEditorUploadFile(request);
-        return ResultBody.success();
+        Map<String, Object> map = fileService.ckEditorUploadFile(request);
+        return ResultBody.success(map);
     }
 
     /**
