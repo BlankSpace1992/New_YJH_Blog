@@ -90,7 +90,7 @@
           })
         }
         if (resp.result.uploaded === 1) {
-          imgMdStr = `![${resp.fileName}](${resp.url})`
+          imgMdStr = `![${resp.result.fileName}](${resp.result.url})`
         }
         this.vditor.insertValue(imgMdStr)
       },
