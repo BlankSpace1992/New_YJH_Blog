@@ -1306,7 +1306,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         } else {
             String reprintedTemplate = printedTemplate;
             String[] variable = {blog.getArticlesPart(), blog.getAuthor()};
-            String str = String.format(reprintedTemplate, (Object) variable);
+            String str = String.format(reprintedTemplate, variable[0],variable[1]);
             blog.setCopyright(str);
         }
     }
