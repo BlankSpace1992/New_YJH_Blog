@@ -1116,9 +1116,9 @@ export default {
             }
           })
           .catch(() => {
-            this.title = "编辑博客";
-            this.form = row;
-            this.$nextTick(() => {
+            that.title = "编辑博客";
+            that.form = row;
+            that.$nextTick(() => {
               //DOM现在更新了
               that.$refs.editor.setData(that.form.content); //设置富文本内容
             });
@@ -1136,9 +1136,9 @@ export default {
             window.LS.remove("form")
           });
       } else {
-        this.title = "编辑博客";
-        this.form = row;
-        this.$nextTick(() => {
+        that.title = "编辑博客";
+        that.form = row;
+        that.$nextTick(() => {
           //DOM现在更新了
           that.$refs.editor.setData(that.form.content); //设置富文本内容
         });
