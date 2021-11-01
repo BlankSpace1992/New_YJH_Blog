@@ -12,6 +12,7 @@
         <module>Blog-Gateway</module>
         <module>Blog-Picture</module>
         <module>Blog-RabbitMq</module>
+        <module>Blog-ElasticSearch</module>
     </modules>
     <groupId>com.cloud.blog</groupId>
     <artifactId>spring-cloud-blog</artifactId>

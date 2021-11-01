@@ -1,5 +1,6 @@
 package com.cloud.blog.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.blog.business.web.domain.*;
 import com.blog.business.web.service.*;
@@ -107,7 +108,7 @@ public class IndexController {
                                       @ApiParam(name = "currentPage", value = "当前页数", required = false) @RequestParam(name = "currentPage", required = false, defaultValue = "1") Long currentPage,
                                       @ApiParam(name = "pageSize", value = "每页显示数目", required = false) @RequestParam(name = "pageSize", required = false, defaultValue = "10") Long pageSize) {
         List<Blog> blogBySearch = blogService.getBlogBySearch(currentPage, null);
-        return ResultBody.success(blogBySearch);
+        return ResultBody.success(JSON.toJSONString(blogBySearch));
     }
 
     /**
