@@ -325,9 +325,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         //从Redis中获取IP来源
         String jsonResult = (String) redisUtil.get(BaseRedisConf.IP_SOURCE + Constants.SYMBOL_COLON + ip);
         if (StringUtils.isEmpty(jsonResult)) {
-            // // TODO: 2021/9/17 获取ip登陆地址
-//            String addresses = IpUtils.getAddresses(BaseSysConf.IP + BaseSysConf.EQUAL_TO + ip, BaseSysConf.UTF_8);
-            String addresses = StringUtils.EMPTY;
+          String addresses = IpUtils.getAddresses(BaseSysConf.IP + BaseSysConf.EQUAL_TO + ip, BaseSysConf.UTF_8);
             if (StringUtils.isNotEmpty(addresses)) {
                 onlineAdmin.setLoginLocation(addresses);
                 redisUtil.set(BaseRedisConf.IP_SOURCE + Constants.SYMBOL_COLON + ip, addresses, 24 * 60 * 60);

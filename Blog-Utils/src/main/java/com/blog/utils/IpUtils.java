@@ -1,9 +1,16 @@
 package com.blog.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lionsoul.ip2region.DataBlock;
+import org.lionsoul.ip2region.DbConfig;
+import org.lionsoul.ip2region.DbSearcher;
+import org.lionsoul.ip2region.Util;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -104,15 +111,15 @@ public class IpUtils {
         String browser = "";
 
         //=================OS Info=======================
-        if (userAgent.toLowerCase().indexOf("windows") >= 0) {
+        if (userAgent.toLowerCase().contains("windows")) {
             os = "Windows";
-        } else if (userAgent.toLowerCase().indexOf("mac") >= 0) {
+        } else if (userAgent.toLowerCase().contains("mac")) {
             os = "Mac";
-        } else if (userAgent.toLowerCase().indexOf("x11") >= 0) {
+        } else if (userAgent.toLowerCase().contains("x11")) {
             os = "Unix";
-        } else if (userAgent.toLowerCase().indexOf("android") >= 0) {
+        } else if (userAgent.toLowerCase().contains("android")) {
             os = "Android";
-        } else if (userAgent.toLowerCase().indexOf("iphone") >= 0) {
+        } else if (userAgent.toLowerCase().contains("iphone")) {
             os = "IPhone";
         } else {
             os = "UnKnown, More-Info: " + userAgent;
@@ -209,5 +216,132 @@ public class IpUtils {
             e.printStackTrace();
         }
         return "未知";
+    }
+
+    /**
+     * 获取ip地址来源
+     *
+     * @param content        请求的参数 格式为：name=xxx&pwd=xxx
+     * @param encodingString 服务器端请求编码。如GBK,UTF-8等
+     * @return ip地址来源
+     * @author yujunhong
+     * @date 2021/11/1 16:03
+     */
+    public static String getAddresses(String content, String encodingString) {
+
+        String ip = content.substring(3);
+
+        if (!Util.isIpAddress(ip)) {
+            log.info("IP地址为空");
+            return null;
+        }
+        // 淘宝IP宕机，目前使用Ip2region：https://github.com/lionsoul2014/ip2region
+        log.info("返回的IP信息：{}", getCityInfo(ip));
+        return getCityInfo(ip);
+    }
+
+
+    /**
+     * 根据ip地址获取城市信息
+     *
+     * @param ip ip地址
+     * @return 获取城市信息
+     * @author yujunhong
+     * @date 2021/11/1 16:05
+     */
+    public static String getCityInfo(String ip) {
+
+        String dbPath = createFtlFileByFtlArray() + "ip2region.db";
+        File file = new File(dbPath);
+        if (file.exists() == false) {
+            System.out.println("Error: Invalid ip2region.db file");
+        }
+        int algorithm = DbSearcher.BTREE_ALGORITHM;
+        try {
+            DbConfig config = new DbConfig();
+            DbSearcher searcher = new DbSearcher(config, dbPath);
+
+            //define the method
+            Method method = null;
+            switch (algorithm) {
+                case DbSearcher.BTREE_ALGORITHM:
+                    method = searcher.getClass().getMethod("btreeSearch", String.class);
+                    break;
+                case DbSearcher.BINARY_ALGORITHM:
+                    method = searcher.getClass().getMethod("binarySearch", String.class);
+                    break;
+                case DbSearcher.MEMORY_ALGORITYM:
+                    method = searcher.getClass().getMethod("memorySearch", String.class);
+                    break;
+                default:
+            }
+
+            DataBlock dataBlock = null;
+            if (Util.isIpAddress(ip) == false) {
+                System.out.println("Error: Invalid ip address");
+            }
+
+            dataBlock = (DataBlock) method.invoke(searcher, ip);
+            String ipInfo = dataBlock.getRegion();
+            if (!StringUtils.isEmpty(ipInfo)) {
+                ipInfo = ipInfo.replace("|0", "");
+                ipInfo = ipInfo.replace("0|", "");
+            }
+            return ipInfo;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 创建ip2region文件
+     *
+     * @return 文件地址路径
+     * @author yujunhong
+     * @date 2021/11/1 16:07
+     */
+    public static String createFtlFileByFtlArray() {
+        String ftlPath = "city/";
+        return createFtlFile(ftlPath, "ip2region.db");
+    }
+
+    /** 创建文件
+     * @param ftlName 文件名称
+     * @param ftlPath 文件路径
+     * @return 文件路径
+     * @author yujunhong
+     * @date 2021/11/1 16:16
+     */
+    private static String createFtlFile(String ftlPath, String ftlName) {
+        InputStream certStream = null;
+        try {
+            //获取当前项目所在的绝对路径
+            String proFilePath = System.getProperty("user.dir");
+
+            //获取模板下的路径，然后存放在temp目录下　
+            String newFilePath = proFilePath + File.separator + "temp" + File.separator + ftlPath;
+            newFilePath = newFilePath.replace("/", File.separator);
+            //检查项目运行时的src下的对应路径
+            File newFile = new File(newFilePath + ftlName);
+            if (newFile.isFile() && newFile.exists()) {
+                return newFilePath;
+            }
+            //当项目打成jar包会运行下面的代码，并且复制一份到src路径下（具体结构看下面图片）
+            certStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(ftlPath + ftlName);
+            byte[] certData = org.apache.commons.io.IOUtils.toByteArray(certStream);
+            org.apache.commons.io.FileUtils.writeByteArrayToFile(newFile, certData);
+            return newFilePath;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            try {
+                certStream.close();
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+        return null;
     }
 }
