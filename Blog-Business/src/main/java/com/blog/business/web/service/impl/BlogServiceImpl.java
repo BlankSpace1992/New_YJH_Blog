@@ -163,9 +163,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     public IPage<Blog> getNewBlog(Integer currentPage) {
+        // 优先从redis中获取博客信息
+        String result = (String) redisUtil.get(BaseRedisConf.NEW_BLOG);
+        IPage<Blog> page = new Page<>();
+        // 判断redis中是否缓存数据
+        if (StringUtils.isNotEmpty(result)) {
+            List<Blog> blogs = JSON.parseArray(result, Blog.class);
+            page.setRecords(blogs);
+            return page;
+        }
         // 获取系统参数中最新博客数量
         int newBlogCount = Integer.parseInt(sysParamsService.getSysParamsValueByKey(BaseSysConf.BLOG_NEW_COUNT));
-        IPage<Blog> page = new Page<>();
         // 设置当前页数
         page.setCurrent(currentPage);
         // 设置查询条数
@@ -176,6 +184,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         List<Blog> blogList = page.getRecords();
         setBlog(blogList);
         page.setRecords(blogList);
+        // 将数据缓存金redis
+        if (StringUtils.isNotEmpty(blogList)) {
+            redisUtil.set(BaseRedisConf.NEW_BLOG, JSON.toJSONString(blogList), 3600);
+        }
         return page;
     }
 
