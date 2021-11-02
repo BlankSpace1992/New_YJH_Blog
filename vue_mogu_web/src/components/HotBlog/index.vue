@@ -6,7 +6,7 @@
         <p><a href="javascript:void(0);" @click="goToInfo(hotBlogData[0])">{{hotBlogData[0].title}}</a></p>
       </ul>
       <ul class="sidenews">
-        <li v-for="(item, index) in sideNews" v-if="index != 0" :key="item.uid">
+        <li v-for="(item, index) in sideNews"  :key="item.uid">
           <i><img style="cursor:pointer"  v-if="item.photoList" :src="item.photoList[0]" @click="goToInfo(item)"></i>
           <p><a href="javascript:void(0);" @click="goToInfo(item)">{{item.title}}</a></p>
           <span>{{dateFormat("YYYY-mm-dd HH:MM:SS",item.createTime)}}</span>
@@ -36,7 +36,7 @@ export default {
     //添加一个计算属性用于简单过滤掉数组中第一个数据
     sideNews() {
       return this.hotBlogData.filter(blog =>
-        this.hotBlogData.indexOf(blog) != 0
+        this.hotBlogData.indexOf(blog) !== 0
       )
     }
   },
