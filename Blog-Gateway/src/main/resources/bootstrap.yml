@@ -60,5 +60,11 @@ spring:
           ignore:
             urls:
               - /systemConfig/getSystemConfig
+        - id: cloud-blog-search
+          uri: lb://cloud-blog-search
+          predicates:
+            - Path=/cloud-blog-search/**
+          filters:
+            - StripPrefix=1
 server:
   port: 8089

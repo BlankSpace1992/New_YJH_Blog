@@ -27,6 +27,8 @@ import com.blog.utils.DateUtils;
 import com.blog.utils.FileUtils;
 import com.blog.utils.IpUtils;
 import com.blog.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +48,7 @@ import java.util.stream.Collectors;
  * @date 2021/6/1 11:05
  */
 @Service
+@Slf4j
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements BlogService {
     @Autowired
     private RedisUtil redisUtil;
@@ -130,6 +134,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     public IPage<Blog> getHotBlog() {
+        StopWatch stopWatch = StopWatch.createStarted();
         // 优先从redis中获取博客信息
         String result = (String) redisUtil.get(BaseRedisConf.HOT_BLOG);
         IPage<Blog> page = new Page<>();
@@ -156,6 +161,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             redisUtil.set(BaseRedisConf.HOT_BLOG, JSON.toJSONString(blogList), 3600);
         }
         page.setRecords(blogList);
+        stopWatch.stop();
+        log.info("==============执行时间============="+stopWatch.getTime(TimeUnit.SECONDS));
         return page;
     }
 
