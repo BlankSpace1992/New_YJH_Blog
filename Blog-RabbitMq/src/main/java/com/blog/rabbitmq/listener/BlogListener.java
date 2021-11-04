@@ -1,6 +1,7 @@
 package com.blog.rabbitmq.listener;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.blog.config.redis.RedisUtil;
 import com.blog.constants.BaseRedisConf;
 import com.blog.constants.BaseSysConf;
@@ -34,12 +35,14 @@ public class BlogListener {
     /**
      * 在这里同时需要对Redis和ElasticSearch进行操作，同时利用MQ来保证数据一致性
      *
-     * @param map 数据信息
+     * @param result 数据信息
      * @author yujunhong
      * @date 2021/11/4 14:23
      */
     @RabbitListener(queues = BaseSysConf.CLOUD_BLOG)
-    public void updateRedisAndElasticSearch(Map<String, Object> map) {
+    public void updateRedisAndElasticSearch(String result) {
+        Map<String, Object> map = JSON.parseObject(result, new TypeReference<Map<String, Object>>() {
+        });
         if (StringUtils.isNotNull(map)) {
             String command = (String) map.get(BaseSysConf.COMMAND);
             String uid = (String) map.get(BaseSysConf.BLOG_UID);

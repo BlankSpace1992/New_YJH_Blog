@@ -61,3 +61,5 @@
 /Blog-ElasticSearch/target/classes/com/blog/search/config/MyMetaObjectHandler.class
 /Blog-ElasticSearch/target/classes/com/blog/search/config/Swagger3Config.class
 /Blog-ElasticSearch/target/classes/com/blog/search/config/WebSecurityConfig.class
+/Blog-RabbitMq/target/classes/com/blog/rabbitmq/listener/BlogListener.class
+/Blog-RabbitMq/target/classes/com/blog/rabbitmq/listener/BlogListener$1.class

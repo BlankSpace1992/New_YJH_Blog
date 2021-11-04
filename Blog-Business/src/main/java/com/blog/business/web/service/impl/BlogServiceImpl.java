@@ -1470,6 +1470,6 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         else if (EnumsStatus.NO_PUBLISH.equals(blog.getIsPublish())) {
             map.put(BaseSysConf.COMMAND, BaseSysConf.EDIT);
         }
-        rabbitTemplate.convertAndSend(BaseSysConf.EXCHANGE_DIRECT, BaseSysConf.CLOUD_BLOG, map);
+        rabbitTemplate.convertAndSend(BaseSysConf.EXCHANGE_DIRECT, BaseSysConf.CLOUD_BLOG, JSON.toJSONString(map));
     }
 }
