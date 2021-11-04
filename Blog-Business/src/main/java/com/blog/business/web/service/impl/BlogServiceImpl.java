@@ -384,11 +384,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         blogWrapper.eq(Blog::getStatus, EnumsStatus.ENABLE);
         blogWrapper.eq(Blog::getIsPublish, EnumsStatus.PUBLISH);
         blogWrapper.orderByDesc(Blog::getCreateTime);
-        Page<Blog> blogPage = this.page(page, blogWrapper);
-        // 获取数据
-        List<Blog> blogList = blogPage.getRecords();
-        this.setBlog(blogList);
-        return blogList;
+        List<Blog> blogPage = this.list(blogWrapper);
+        this.setBlog(blogPage);
+        return blogPage;
     }
 
     @Override
