@@ -627,6 +627,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         return ResultBody.success();
     }
 
+    @Override
+    public void batchDeleteCommentByBlogUid(List<String> blogUid) {
+        LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(Comment::getBlogUid, blogUid);
+        List<Comment> commentList = this.list(wrapper);
+        commentList.forEach(item -> item.setStatus(EnumsStatus.DISABLED));
+        this.updateBatchById(commentList);
+    }
+
     /**
      * 获取评论所有回复
      *

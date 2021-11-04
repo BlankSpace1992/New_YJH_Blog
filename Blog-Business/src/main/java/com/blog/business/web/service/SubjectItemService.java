@@ -66,4 +66,14 @@ public interface SubjectItemService extends IService<SubjectItem> {
      * @date 2021/10/18 11:05
      */
     ResultBody sortByCreateTime(String subjectUid, Boolean isDesc);
+
+
+    /**
+     * 删除当前博客所在主题item
+     *
+     * @param blogUid 博客uid集合
+     * @author yujunhong
+     * @date 2021/11/4 15:13
+     */
+    void deleteBatchSubjectItemByBlogUid(List<String> blogUid);
 }

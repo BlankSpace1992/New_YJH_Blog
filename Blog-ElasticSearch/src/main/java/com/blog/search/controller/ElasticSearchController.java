@@ -126,8 +126,8 @@ public class ElasticSearchController {
     @ApiOperation(value = "ElasticSearch通过博客Uid添加索引", notes = "添加博客", response = String.class)
     @PostMapping("/addElasticSearchIndexByUid")
     public ResultBody addElasticSearchIndexByUid(@RequestParam(required = true) String uid) {
-        String result = (String) webFeignClient.getBlogByUid(uid).getResult();
-        Blog blogEntity = JSON.parseObject(result, Blog.class);
+        Object result = webFeignClient.getBlogByUid(uid).getResult();
+        Blog blogEntity = JSON.parseObject(JSON.toJSONString(result), Blog.class);
         if (StringUtils.isNull(blogEntity)) {
             return ResultBody.error(BaseMessageConf.INSERT_FAIL);
         }

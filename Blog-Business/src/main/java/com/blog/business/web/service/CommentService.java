@@ -137,4 +137,11 @@ public interface CommentService extends IService<Comment> {
      * @date 2021/10/8 14:32
      */
     ResultBody deleteBatchComment(List<CommentVO> commentVOList);
+
+    /**移除该文章下所有评论
+     * @param blogUid 博客uid集合
+     * @author yujunhong
+     * @date 2021/11/4 15:19
+     */
+    void batchDeleteCommentByBlogUid(List<String> blogUid);
 }

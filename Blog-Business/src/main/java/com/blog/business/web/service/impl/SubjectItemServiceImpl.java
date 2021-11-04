@@ -191,4 +191,13 @@ public class SubjectItemServiceImpl extends ServiceImpl<SubjectItemMapper, Subje
         this.updateBatchById(subjectItemList);
         return ResultBody.success();
     }
+
+    @Override
+    public void deleteBatchSubjectItemByBlogUid(List<String> blogUid) {
+        LambdaQueryWrapper<SubjectItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(SubjectItem::getBlogUid, blogUid);
+        List<SubjectItem> subjectItems = this.list(wrapper);
+        subjectItems.forEach(item -> item.setStatus(EnumsStatus.DISABLED));
+        this.updateBatchById(subjectItems);
+    }
 }

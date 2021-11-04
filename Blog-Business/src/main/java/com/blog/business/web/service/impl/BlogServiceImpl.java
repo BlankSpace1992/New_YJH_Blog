@@ -69,6 +69,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     private BlogSortService blogSortService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private SubjectItemService subjectItemService;
     @Value(value = "${BLOG.ORIGINAL_TEMPLATE}")
     private String originalTemplate;
     @Value(value = "${BLOG.REPRINTED_TEMPLATE}")
@@ -1046,7 +1048,25 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         // 获取博客信息
         Blog blog = this.getById(blogVO.getUid());
         blog.setStatus(String.valueOf(EnumsStatus.DISABLED));
-        this.updateById(blog);
+        boolean delete = this.updateById(blog);
+        // 删除缓存以及elasticSearch
+        if (delete) {
+            Map<String, Object> map = new HashMap<>();
+
+            map.put(BaseSysConf.COMMAND, BaseSysConf.DELETE);
+            map.put(BaseSysConf.BLOG_UID, blog.getUid());
+            map.put(BaseSysConf.LEVEL, blog.getLevel());
+            map.put(BaseSysConf.CREATE_TIME, blog.getCreateTime());
+            //发送到RabbitMq
+            rabbitTemplate.convertAndSend(BaseSysConf.EXCHANGE_DIRECT, BaseSysConf.CLOUD_BLOG, JSON.toJSONString(map));
+
+            // 移除所有包含该博客的专题Item
+            List<String> blogUidList = new ArrayList<>(Constants.NUM_ONE);
+            blogUidList.add(blogVO.getUid());
+            subjectItemService.deleteBatchSubjectItemByBlogUid(blogUidList);
+            // 移除该文章下所有评论
+            commentService.batchDeleteCommentByBlogUid(blogUidList);
+        }
         return ResultBody.success();
     }
 
@@ -1062,7 +1082,18 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         blogList.forEach(item -> {
             item.setStatus(String.valueOf(EnumsStatus.DISABLED));
         });
-        this.updateBatchById(blogList);
+        boolean delete = this.updateBatchById(blogList);
+        if (delete) {
+            Map<String, Object> map = new HashMap<>();
+            map.put(BaseSysConf.COMMAND, BaseSysConf.DELETE_BATCH);
+            map.put(BaseSysConf.UID, uidSbf);
+            //发送到RabbitMq
+            rabbitTemplate.convertAndSend(BaseSysConf.EXCHANGE_DIRECT, BaseSysConf.CLOUD_BLOG, JSON.toJSONString(map));
+            // 移除所有包含该博客的专题Item
+            subjectItemService.deleteBatchSubjectItemByBlogUid(uidList);
+            // 移除该文章下所有评论
+            commentService.batchDeleteCommentByBlogUid(uidList);
+        }
         return ResultBody.success();
     }
 
