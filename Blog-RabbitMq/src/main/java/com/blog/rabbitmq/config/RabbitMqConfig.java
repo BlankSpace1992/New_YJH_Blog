@@ -15,9 +15,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-    public static final String BLOG_QUEUE_NAME = "blog.email";
+    public static final String MAIL_QUEUE_NAME = "blog.email";
+    public static final String BLOG_QUEUE_NAME = "cloud.blog";
     public static final String EXCHANGE_DIRECT = "cloud_blog_direct";
     public static final String ROUTING_KEY_EMAIL = "cloud_blog_key";
+    public static final String ROUTING_KEY_BLOG = "cloud.blog";
 
 
     /**
@@ -40,8 +42,20 @@ public class RabbitMqConfig {
      * @author yujunhong
      * @date 2021/9/10 16:48
      */
-    @Bean(value = BLOG_QUEUE_NAME)
+    @Bean(value = MAIL_QUEUE_NAME)
     public Queue blogEmail() {
+        return new Queue(MAIL_QUEUE_NAME);
+    }
+
+    /**
+     * 声明Blog队列
+     *
+     * @return 队列
+     * @author yujunhong
+     * @date 2021/11/4 14:37
+     */
+    @Bean(BLOG_QUEUE_NAME)
+    public Queue cloudBlog() {
         return new Queue(BLOG_QUEUE_NAME);
     }
 
@@ -55,15 +69,31 @@ public class RabbitMqConfig {
      * @date 2021/9/10 16:50
      */
     @Bean
-    public Binding bindingQueueForEmail(@Qualifier(BLOG_QUEUE_NAME) Queue queue,
+    public Binding bindingQueueForEmail(@Qualifier(MAIL_QUEUE_NAME) Queue queue,
                                         @Qualifier(EXCHANGE_DIRECT) Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_EMAIL).noargs();
+    }
+
+    /**
+     * Blog 队列绑定交换机并指定bindingKey
+     *
+     * @param queue    队列
+     * @param exchange 交换机
+     * @return 绑定类
+     * @author yujunhong
+     * @date 2021/9/10 16:50
+     */
+    @Bean
+    public Binding bindingQueueForBlog(@Qualifier(BLOG_QUEUE_NAME) Queue queue,
+                                        @Qualifier(EXCHANGE_DIRECT) Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY_BLOG).noargs();
     }
 
 
     /**
      * 添加这个类进行序列化解析
      * 会自动识别
+     *
      * @param objectMapper json序列化实现类
      * @return mq 消息序列化工具
      */

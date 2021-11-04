@@ -28,6 +28,7 @@ import com.blog.utils.FileUtils;
 import com.blog.utils.IpUtils;
 import com.blog.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -72,6 +73,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     private String originalTemplate;
     @Value(value = "${BLOG.REPRINTED_TEMPLATE}")
     private String printedTemplate;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public IPage<Blog> getBlogByLevel(Integer level, Integer currentPage, Integer useSort) {
@@ -778,7 +781,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         blog.setOutsideLink(blogVO.getOutsideLink());
         blog.setStatus(String.valueOf(EnumsStatus.ENABLE));
         blog.setOpenComment(blogVO.getOpenComment());
-        this.save(blog);
+        boolean save = this.save(blog);
+        // 通过rabbitmq删除缓存Redis以及elasticSearch
+        updateElasticSearchAndRedis(save, blog);
         return ResultBody.success();
     }
 
@@ -824,7 +829,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         blog.setType(blogVO.getType());
         blog.setOutsideLink(blogVO.getOutsideLink());
         blog.setStatus(String.valueOf(EnumsStatus.ENABLE));
-        this.updateById(blog);
+        boolean update = this.updateById(blog);
+        // 通过rabbitmq删除缓存Redis以及elasticSearch
+        updateElasticSearchAndRedis(update, blog);
         return ResultBody.success();
     }
 
@@ -1308,7 +1315,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         } else {
             String reprintedTemplate = printedTemplate;
             String[] variable = {blog.getArticlesPart(), blog.getAuthor()};
-            String str = String.format(reprintedTemplate, variable[0],variable[1]);
+            String str = String.format(reprintedTemplate, variable[0], variable[1]);
             blog.setCopyright(str);
         }
     }
@@ -1440,5 +1447,29 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 保存成功后，需要发送消息到elasticSearch 和 redis
+     *
+     * @param isSave 是否为保存
+     * @param blog   博客实体
+     * @author yujunhong
+     * @date 2021/11/4 14:04
+     */
+    private void updateElasticSearchAndRedis(boolean isSave, Blog blog) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(BaseSysConf.BLOG_UID, blog.getUid());
+        map.put(BaseSysConf.LEVEL, blog.getLevel());
+        map.put(BaseSysConf.CREATE_TIME, blog.getCreateTime());
+        // 保存操作,且文章已经设置为已发布
+        if (isSave && EnumsStatus.PUBLISH.equals(blog.getIsPublish())) {
+            map.put(BaseSysConf.COMMAND, BaseSysConf.ADD);
+        }
+        // 只需要删除redis中该条博客信息即可
+        else if (EnumsStatus.NO_PUBLISH.equals(blog.getIsPublish())) {
+            map.put(BaseSysConf.COMMAND, BaseSysConf.EDIT);
+        }
+        rabbitTemplate.convertAndSend(BaseSysConf.EXCHANGE_DIRECT, BaseSysConf.CLOUD_BLOG, map);
     }
 }

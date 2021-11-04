@@ -114,8 +114,8 @@ public class BaseSysConf {
     public static final  String DELETE_BATCH = "deleteBatch";
     public static final  String EDIT_BATCH = "editBatch";
     public static final  String DELETE_ALL = "deleteAll";
-    public static final  String EXCHANGE_DIRECT = "exchange.direct";
-    public static final  String MOGU_BLOG = "mogu.blog";
+    public static final  String EXCHANGE_DIRECT = "cloud_blog_direct";
+    public static final  String CLOUD_BLOG = "cloud.blog";
 
     /**
      * redis相关
