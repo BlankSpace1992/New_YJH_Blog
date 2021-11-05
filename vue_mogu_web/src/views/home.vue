@@ -1086,7 +1086,6 @@
           getWebConfig().then(response => {
             if (response.data.code === this.$ECode.SUCCESS) {
               this.info = response.data.result;
-              console.log("获取网站配置信息", response.data.result);
               // 存储在Vuex中
               this.setWebConfigData(response.data.result)
               this.openComment = this.info.openComment

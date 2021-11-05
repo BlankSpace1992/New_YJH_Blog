@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="box loginBox" v-if="showLogin == true">
-      <div class="title"  >
+      <div class="title">
         <span class="t1">
           {{showPasswordLogin == false ? "微信扫码登录":"登录"}}
         </span>
@@ -19,7 +19,8 @@
             <el-input v-model="loginForm.userName" placeholder="请输入用户名或邮箱" :disabled="loginType.password"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" :disabled="loginType.password"></el-input>
+            <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"
+                      :disabled="loginType.password"></el-input>
           </el-form-item>
           <el-row class="btn">
             <el-button class="loginBtn" type="primary" @click="startLogin" :disabled="loginType.password">登录</el-button>
@@ -81,7 +82,8 @@
       <el-divider></el-divider>
       <el-form :rules="rules" :label-position="labelPosition" :model="registerForm" ref="registerForm">
         <el-form-item label="用户名" prop="userName">
-          <el-input v-model="registerForm.userName" placeholder="用户名长度在5~20之间" :disabled="loginType.password"></el-input>
+          <el-input v-model="registerForm.userName" placeholder="用户名长度在5~20之间"
+                    :disabled="loginType.password"></el-input>
         </el-form-item>
 
         <el-form-item label="昵称" prop="nickName">
@@ -89,11 +91,13 @@
         </el-form-item>
 
         <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="registerForm.password" placeholder="密码长度在5~20之间" :disabled="loginType.password"></el-input>
+          <el-input type="password" v-model="registerForm.password" placeholder="密码长度在5~20之间"
+                    :disabled="loginType.password"></el-input>
         </el-form-item>
 
         <el-form-item label="重复密码" prop="password2">
-          <el-input type="password" v-model="registerForm.password2" placeholder="请再次输入密码" :disabled="loginType.password"></el-input>
+          <el-input type="password" v-model="registerForm.password2" placeholder="请再次输入密码"
+                    :disabled="loginType.password"></el-input>
         </el-form-item>
 
         <el-form-item label="邮箱" prop="email">
@@ -101,7 +105,8 @@
         </el-form-item>
 
         <el-row class="btn">
-          <el-button class="loginBtn" type="primary" @click="startRegister" :disabled="loginType.password">注册</el-button>
+          <el-button class="loginBtn" type="primary" @click="startRegister" :disabled="loginType.password">注册
+          </el-button>
           <el-button class="registerBtn" type="info" @click="goLogin" :disabled="loginType.password">返回登录</el-button>
         </el-row>
 
@@ -116,7 +121,8 @@
 
 <script>
   import {login, localLogin, localRegister, getWechatOrCodeTicket} from "@/api/user";
-  import { Loading } from 'element-ui';
+  import {Loading} from 'element-ui';
+
   export default {
     name: "share",
     data() {
@@ -149,48 +155,48 @@
         loginType: {
           password: false,
           gitee: false,
-          github: true,
-          qq: true,
-          wechat: true
+          github: false,
+          qq: false,
+          wechat: false
         },
         loginRules: {
           userName: [
             {required: true, message: '请输入用户名', trigger: 'blur'},
-            { min: 5, message: "用户名长度大于等于 5 个字符", trigger: "blur" },
-            { max: 20, message: "用户名长度不能大于 20 个字符", trigger: "blur" }
+            {min: 5, message: "用户名长度大于等于 5 个字符", trigger: "blur"},
+            {max: 20, message: "用户名长度不能大于 20 个字符", trigger: "blur"}
           ],
           nickName: [
             {required: true, message: '请输入昵称', trigger: 'blur'},
-            { min: 1, message: "用户名长度大于等于 1 个字符", trigger: "blur" },
-            { max: 20, message: "用户名长度不能大于 20 个字符", trigger: "blur" }
+            {min: 1, message: "用户名长度大于等于 1 个字符", trigger: "blur"},
+            {max: 20, message: "用户名长度不能大于 20 个字符", trigger: "blur"}
           ],
           password: [
-            { required: true, message: "请输入密码", trigger: "blur" },
-            { min: 5, message: "密码长度需要大于等于 5 个字符", trigger: "blur" },
-            { max: 20, message: "密码长度不能大于 20 个字符", trigger: "blur" }
+            {required: true, message: "请输入密码", trigger: "blur"},
+            {min: 5, message: "密码长度需要大于等于 5 个字符", trigger: "blur"},
+            {max: 20, message: "密码长度不能大于 20 个字符", trigger: "blur"}
           ]
         },
         rules: {
           userName: [
             {required: true, message: '请输入用户名', trigger: 'blur'},
-            { min: 5, message: "用户名长度大于等于 5 个字符", trigger: "blur" },
-            { max: 20, message: "用户名长度不能大于 20 个字符", trigger: "blur" }
+            {min: 5, message: "用户名长度大于等于 5 个字符", trigger: "blur"},
+            {max: 20, message: "用户名长度不能大于 20 个字符", trigger: "blur"}
           ],
           nickName: [
             {required: true, message: '请输入昵称', trigger: 'blur'}
           ],
           password: [
-            { required: true, message: "请输入密码", trigger: "blur" },
-            { min: 5, message: "密码长度需要大于等于 5 个字符", trigger: "blur" },
-            { max: 20, message: "密码长度不能大于 20 个字符", trigger: "blur" }
+            {required: true, message: "请输入密码", trigger: "blur"},
+            {min: 5, message: "密码长度需要大于等于 5 个字符", trigger: "blur"},
+            {max: 20, message: "密码长度不能大于 20 个字符", trigger: "blur"}
           ],
           password2: [
-            { required: true, message: "请再次输入密码", trigger: "blur" },
-            { min: 5, message: "密码长度需要大于等于 5 个字符", trigger: "blur" },
-            { max: 20, message: "密码长度不能大于 20 个字符", trigger: "blur" }
+            {required: true, message: "请再次输入密码", trigger: "blur"},
+            {min: 5, message: "密码长度需要大于等于 5 个字符", trigger: "blur"},
+            {max: 20, message: "密码长度不能大于 20 个字符", trigger: "blur"}
           ],
           email: [
-            { required: true, message: "邮箱不能为空", trigger: "blur" },
+            {required: true, message: "邮箱不能为空", trigger: "blur"},
             {pattern: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/, message: '请输入正确的邮箱'},
           ]
         }
@@ -201,30 +207,37 @@
       this.setLoginTypeList()
     },
     methods: {
-      setLoginTypeList: function() {
+      setLoginTypeList: function () {
         // 获取登录方式列表
         let webConfigData = this.$store.state.app.webConfigData
-        if(webConfigData.loginTypeList != undefined) {
-          let loginTypeList = JSON.parse(webConfigData.loginTypeList)
-          for(let a=0; a<loginTypeList.length; a++) {
-            switch (loginTypeList[a]) {
-              case "1": {
-                this.loginType.password = false
-              } break;
-              case "2": {
-                this.loginType.gitee = false
-              } break;
-              case "3": {
-                this.loginType.github = false
-              } break;
-              case "4": {
-                this.loginType.qq = false
-              } break;
-              case "5": {
-                this.loginType.wechat = false
-              } break;
-              default: {
-                console.log("登录方式设置有误！！")
+        if (webConfigData !== undefined) {
+          if (webConfigData.loginTypeList !== undefined) {
+            let loginTypeList = JSON.parse(webConfigData.loginTypeList)
+            for (let a = 0; a < loginTypeList.length; a++) {
+              switch (loginTypeList[a]) {
+                case "1": {
+                  this.loginType.password = false
+                }
+                  break;
+                case "2": {
+                  this.loginType.gitee = false
+                }
+                  break;
+                case "3": {
+                  this.loginType.github = false
+                }
+                  break;
+                case "4": {
+                  this.loginType.qq = false
+                }
+                  break;
+                case "5": {
+                  this.loginType.wechat = false
+                }
+                  break;
+                default: {
+                  console.log("登录方式设置有误！！")
+                }
               }
             }
           }
@@ -233,7 +246,7 @@
       startLogin: function () {
         this.$refs.loginForm.validate((valid) => {
           console.log("开始校验", valid)
-          if(!valid) {
+          if (!valid) {
             console.log('校验失败')
             return;
           } else {
@@ -258,13 +271,13 @@
       },
       startRegister: function () {
         this.$refs.registerForm.validate((valid) => {
-          if(!valid) {
+          if (!valid) {
             console.log('校验失败')
             return;
           } else {
             let passWord = this.registerForm.password;
             let passWord2 = this.registerForm.password2;
-            if(passWord != passWord2) {
+            if (passWord != passWord2) {
               this.$message({
                 type: "success",
                 message: "两次密码不一致"
@@ -298,15 +311,15 @@
         this.showLogin = true;
       },
       goRegister: function () {
-        this.registerForm.userName="";
-        this.registerForm.password="";
-        this.registerForm.password2="";
-        this.registerForm.email="";
+        this.registerForm.userName = "";
+        this.registerForm.password = "";
+        this.registerForm.password2 = "";
+        this.registerForm.email = "";
         this.showLogin = false;
       },
       goAuth: function (source) {
         // 判断是否点击公众号登录
-        if(source == "wechat") {
+        if (source == "wechat") {
           console.log("点击公众号登录")
           getWechatOrCodeTicket().then(response => {
             if (response.code == this.$ECode.SUCCESS) {
@@ -325,14 +338,14 @@
         var params = new URLSearchParams();
         params.append("source", source);
         login(params).then(response => {
-          console.log("登陆参数",response);
+          console.log("登陆参数", response);
           if (response.data.code == this.$ECode.SUCCESS) {
             var token = response.data.result.token;
             window.location.href = response.data.result.url
           }
         });
       },
-      closeLogin: function() {
+      closeLogin: function () {
         this.$emit("closeLoginBox", "");
       }
     }
@@ -365,6 +378,7 @@
     text-align: center;
     line-height: 48px;
   }
+
   .box .title .t2 {
     font-size: 16px;
     float: right;

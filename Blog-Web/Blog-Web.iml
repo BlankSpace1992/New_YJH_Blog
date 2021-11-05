@@ -154,8 +154,8 @@
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.2.5.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.18" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.6.1" level="project" />
-    <orderEntry type="library" name="Maven: me.zhyd.oauth:JustAuth:1.15.1" level="project" />
-    <orderEntry type="library" name="Maven: com.xkcoding.http:simple-http:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: me.zhyd.oauth:JustAuth:1.16.5" level="project" />
+    <orderEntry type="library" name="Maven: com.xkcoding.http:simple-http:1.0.5" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.47" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:4.4.1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okio:okio:2.4.3" level="project" />
