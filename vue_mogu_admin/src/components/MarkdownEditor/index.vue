@@ -113,8 +113,8 @@
       initData: function () {
         var that = this
         this.$nextTick(() => {
-          if(that.vditor.vditor.lute) {
-            that.vditor.setValue("")
+          if(this.vditor.lute) {
+            this.vditor.setValue("")
             localStorage.setItem('vditorvditor', "")
           }
         });

@@ -99,7 +99,7 @@
         params.isShow = 1;
         getPictureSortList(params).then(function (response) {
           if (response.code == that.$ECode.SUCCESS) {
-            var pictureSorts = response.data.records;
+            var pictureSorts = response.result.records;
             that.pictureSorts = pictureSorts;
             //默认初始化第一个
             if (pictureSorts.length > 0) {
@@ -115,10 +115,10 @@
                   var newObject = {
                     pictureSortUid: pictureSortUid,
                     name: name,
-                    pictures: response.data.records,
-                    pageSize: response.data.size,
-                    currentPage: response.data.current,
-                    total: response.data.total
+                    pictures: response.result.records,
+                    pageSize: response.result.size,
+                    currentPage: response.result.current,
+                    total: response.result.total
                   };
                   Vue.set(that.pictureSorts, 0, newObject);
                 } else {
@@ -178,7 +178,7 @@
         pictureSortParams.uid = pictureSortUid
         getPictureSortByUid(pictureSortParams).then(function (sortResponse) {
           if (sortResponse.code == that.$ECode.SUCCESS) {
-            var pictureSort = sortResponse.data;
+            var pictureSort = sortResponse.result;
             var params = {}
             params.pictureSortUid = pictureSortUid
             params.currentPage = val
@@ -188,10 +188,10 @@
                 var newObject = {
                   pictureSortUid: pictureSortUid,
                   name: pictureSort.name,
-                  pictures: response.data.records,
-                  pageSize: response.data.size,
-                  currentPage: response.data.current,
-                  total: response.data.total
+                  pictures: response.result.records,
+                  pageSize: response.result.size,
+                  currentPage: response.result.current,
+                  total: response.result.total
                 };
                 Vue.set(that.pictureSorts, that.activeName, newObject);
               } else {
@@ -213,7 +213,6 @@
         params.pageSize = 500;
         params.isShow = 1;
         getPictureSortList(params).then(function (response) {
-          console.log("图片信息",response);
           if (response.code === "200") {
             //成功
             var pictureSorts = response.result.records;
@@ -309,14 +308,14 @@
         params.pageSize = 24;
         getPictureList(params).then(function (response) {
           if (response.code == that.$ECode.SUCCESS) {
-            if (response.data.records.length > 0) {
+            if (response.result.records.length > 0) {
               var newObject = {
                 pictureSortUid: pictureSortUid,
                 name: name,
-                pictures: response.data.records,
-                pageSize: response.data.size,
-                currentPage: response.data.current,
-                total: response.data.total
+                pictures: response.result.records,
+                pageSize: response.result.size,
+                currentPage: response.result.current,
+                total: response.result.total
               };
               Vue.set(that.pictureSorts, index, newObject);
             }
